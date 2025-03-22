@@ -1,17 +1,14 @@
-import { useState } from "react";
+import BankOperations from "./BankOperations";
+import CashFlow from "./CashFlow";
+import BankReconciliation from "./BankReconciliation";
 
 export default function TreasuryPage() {
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Tesoreria</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Aquí irán los componentes:
-        - TransferenciasForm
-        - ChequesForm
-        - FlujoCaja
-        - ConciliacionBancaria
-        */}
-      </div>
+      <h2 className="text-2xl font-bold">Tesorería</h2>
+      <BankOperations />
+      <CashFlow />
+      <BankReconciliation />
     </div>
   );
 }

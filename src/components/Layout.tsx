@@ -8,6 +8,8 @@ const navItems = [
   { label: "Compras", path: "/compras" },
   { label: "Proyectos", path: "/proyectos" },
   { label: "Inventario", path: "/inventario" },
+  { label: "Tesorería", path: "/tesoreria" },
+  { label: "Reportes", path: "/reportes" },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
