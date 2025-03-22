@@ -48,12 +48,14 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Gestión de Inventario</h1>
+    <div className="space-y-6 p-6">
+      <h1 className="text-2xl font-bold text-gray-900">
+        Gestión de Inventario
+      </h1>
 
       {/* Resumen del Inventario */}
       {report && (
-        <div className="mb-8">
+        <div className="mb-6">
           <InventorySummary report={report} />
         </div>
       )}

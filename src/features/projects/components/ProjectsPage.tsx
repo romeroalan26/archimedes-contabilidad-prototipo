@@ -5,7 +5,8 @@ import ProjectForm from "./ProjectForm";
 
 export default function ProjectsPage() {
   return (
-    <div className="p-6">
+    <div className="space-y-6 p-6">
+      <h1 className="text-2xl font-bold text-gray-900">Proyectos / Obras</h1>
       <Routes>
         <Route path="/" element={<ProjectList />} />
         <Route path="/nuevo" element={<ProjectForm mode="create" />} />

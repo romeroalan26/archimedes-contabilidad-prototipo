@@ -7,11 +7,11 @@ import {
 
 export const mockProjects: Project[] = [
   {
-    id: 1,
+    id: "1",
     nombre: "Edificio Residencial Torres del Sol",
     codigo: "PROJ-001",
     ubicacion: "Av. Principal 123",
-    estado: "activo",
+    estado: "Activo",
     fechaInicio: "2024-01-15",
     presupuesto: 1500000,
     costoActual: 450000,
@@ -19,11 +19,11 @@ export const mockProjects: Project[] = [
     responsable: "Juan Pérez",
   },
   {
-    id: 2,
+    id: "2",
     nombre: "Centro Comercial Plaza Central",
     codigo: "PROJ-002",
     ubicacion: "Calle Comercial 456",
-    estado: "pausado",
+    estado: "Pausado",
     fechaInicio: "2024-02-01",
     presupuesto: 2500000,
     costoActual: 750000,
@@ -31,11 +31,11 @@ export const mockProjects: Project[] = [
     responsable: "María García",
   },
   {
-    id: 3,
+    id: "3",
     nombre: "Oficinas Corporativas",
     codigo: "PROJ-003",
     ubicacion: "Zona Empresarial 789",
-    estado: "completado",
+    estado: "Completado",
     fechaInicio: "2023-10-01",
     fechaFin: "2024-03-15",
     presupuesto: 800000,

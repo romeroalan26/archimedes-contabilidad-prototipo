@@ -1,14 +1,26 @@
 export interface Project {
-  id: number;
-  nombre: string;
+  id: string;
   codigo: string;
-  ubicacion: string;
-  estado: "activo" | "completado" | "pausado";
+  nombre: string;
+  descripcion: string;
   fechaInicio: string;
   fechaFin?: string;
+  estado: "Activo" | "Completado" | "Pausado";
   presupuesto: number;
   costoActual: number;
+  ubicacion: string;
+  responsable: string;
+}
+
+export interface ProjectFormData {
+  codigo: string;
+  nombre: string;
   descripcion: string;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: "Activo" | "Completado" | "Pausado";
+  presupuesto: number;
+  ubicacion: string;
   responsable: string;
 }
 

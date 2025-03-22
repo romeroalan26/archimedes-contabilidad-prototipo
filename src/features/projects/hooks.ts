@@ -17,7 +17,7 @@ export const useProjects = () => {
   });
 };
 
-export const useProject = (id: number) => {
+export const useProject = (id: string) => {
   return useQuery({
     queryKey: ["project", id],
     queryFn: () => getProjectById(id),
@@ -38,7 +38,7 @@ export const useCreateProject = () => {
 export const useUpdateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Project> }) =>
+    mutationFn: ({ id, data }: { id: string; data: Partial<Project> }) =>
       updateProject(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });

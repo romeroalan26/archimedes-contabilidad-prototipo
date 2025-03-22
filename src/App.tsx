@@ -12,7 +12,7 @@ import AssetsPage from "./features/assets/AssetsPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
-import NcfPage from "./features/ncf/NcfPage";
+import { NCFPage } from "./features/ncf/NcfPage";
 
 export default function App() {
   const { user } = useAuth();
@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/contabilidad" element={<AccountingPage />} />
         <Route path="/nomina" element={<PayrollPage />} />
         <Route path="/activos" element={<AssetsPage />} />
-        <Route path="/ncf" element={<NcfPage />} />
+        <Route path="/ncf" element={<NCFPage />} />
       </Routes>
     </Layout>
   );

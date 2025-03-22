@@ -18,36 +18,46 @@ export default function AssetsPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Cargando activos...</div>
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Cargando activos...</span>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center text-red-600">
-          Error al cargar los activos. Por favor, intente nuevamente.
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-2xl mx-auto bg-red-50 p-4 rounded-lg border border-red-200">
+          <div className="text-red-700 text-center">
+            Error al cargar los activos. Por favor, intente nuevamente.
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8">
-      <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-8 pl-12 md:pl-0">
-        Gestión de Activos Fijos
-      </h1>
-      <div className="flex flex-col space-y-6 md:space-y-0 md:grid md:grid-cols-2 md:gap-8">
-        <div className="w-full">
-          <AssetForm
-            onSubmit={handleNewAsset}
-            isLoading={createAssetMutation.isPending}
-          />
-        </div>
-        <div className="w-full">
-          <AssetList assets={assets} />
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Gestión de Activos Fijos
+        </h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Registrar Nuevo Activo
+            </h2>
+            <AssetForm
+              onSubmit={handleNewAsset}
+              isLoading={createAssetMutation.isPending}
+            />
+          </div>
+          <div>
+            <AssetList assets={assets} />
+          </div>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ interface ProjectFormData {
   nombre: string;
   codigo: string;
   ubicacion: string;
-  estado: "activo" | "completado" | "pausado";
+  estado: "Activo" | "Completado" | "Pausado";
   fechaInicio: string;
   fechaFin?: string;
   presupuesto: number;
@@ -22,16 +22,19 @@ interface ProjectFormProps {
 
 export default function ProjectForm({ project, mode }: ProjectFormProps) {
   const navigate = useNavigate();
-  const createProject = useCreateProject();
-  const updateProject = useUpdateProject();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ProjectFormData>({
-    defaultValues: project,
+    defaultValues: project || {
+      estado: "Activo",
+      presupuesto: 0,
+    },
   });
+
+  const createProject = useCreateProject();
+  const updateProject = useUpdateProject();
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
@@ -47,20 +50,21 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-2xl font-bold mb-6">
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">
         {mode === "create" ? "Nuevo Proyecto" : "Editar Proyecto"}
       </h2>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Nombre
             </label>
             <input
               type="text"
               {...register("nombre", { required: "El nombre es requerido" })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.nombre && (
               <p className="mt-1 text-sm text-red-600">
@@ -70,13 +74,13 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Código
             </label>
             <input
               type="text"
               {...register("codigo", { required: "El código es requerido" })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.codigo && (
               <p className="mt-1 text-sm text-red-600">
@@ -86,7 +90,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Ubicación
             </label>
             <input
@@ -94,7 +98,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
               {...register("ubicacion", {
                 required: "La ubicación es requerida",
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.ubicacion && (
               <p className="mt-1 text-sm text-red-600">
@@ -104,26 +108,21 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Estado
             </label>
             <select
-              {...register("estado", { required: "El estado es requerido" })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              {...register("estado")}
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="activo">Activo</option>
-              <option value="completado">Completado</option>
-              <option value="pausado">Pausado</option>
+              <option value="Activo">Activo</option>
+              <option value="Pausado">Pausado</option>
+              <option value="Completado">Completado</option>
             </select>
-            {errors.estado && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.estado.message}
-              </p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Fecha Inicio
             </label>
             <input
@@ -131,7 +130,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
               {...register("fechaInicio", {
                 required: "La fecha de inicio es requerida",
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.fechaInicio && (
               <p className="mt-1 text-sm text-red-600">
@@ -141,18 +140,18 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Fecha Fin
             </label>
             <input
               type="date"
               {...register("fechaFin")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Presupuesto
             </label>
             <input
@@ -162,7 +161,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
                 required: "El presupuesto es requerido",
                 min: { value: 0, message: "El presupuesto debe ser mayor a 0" },
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.presupuesto && (
               <p className="mt-1 text-sm text-red-600">
@@ -172,7 +171,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Responsable
             </label>
             <input
@@ -180,7 +179,7 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
               {...register("responsable", {
                 required: "El responsable es requerido",
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.responsable && (
               <p className="mt-1 text-sm text-red-600">
@@ -191,35 +190,27 @@ export default function ProjectForm({ project, mode }: ProjectFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Descripción
           </label>
           <textarea
-            {...register("descripcion", {
-              required: "La descripción es requerida",
-            })}
+            {...register("descripcion")}
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
           />
-          {errors.descripcion && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.descripcion.message}
-            </p>
-          )}
         </div>
 
         <div className="flex justify-end space-x-4">
           <button
             type="button"
             onClick={() => navigate("/proyectos")}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            disabled={createProject.isPending || updateProject.isPending}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             {mode === "create" ? "Crear Proyecto" : "Guardar Cambios"}
           </button>

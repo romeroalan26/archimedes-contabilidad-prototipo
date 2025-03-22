@@ -29,7 +29,7 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const getProjectById = async (
-  id: number
+  id: string
 ): Promise<Project | undefined> => {
   await delay(300);
   simulateError();
@@ -46,7 +46,7 @@ export const createProject = async (
   await delay(500);
   const newProject: Project = {
     ...project,
-    id: mockProjects.length + 1,
+    id: String(mockProjects.length + 1),
     costoActual: 0,
   };
   mockProjects.push(newProject);
@@ -54,7 +54,7 @@ export const createProject = async (
 };
 
 export const updateProject = async (
-  id: number,
+  id: string,
   project: Partial<Project>
 ): Promise<Project> => {
   await delay(500);
