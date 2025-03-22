@@ -1,16 +1,17 @@
+import SupplierList from "./SupplierList";
+import PurchasesForm from "./PurchasesForm";
+import PayableStatus from "./PayableStatus";
+
 export default function PurchasesPage() {
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Compras</h2>
-      <div className="bg-white rounded shadow">
-        <div className="p-4 border-b">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Nueva Compra
-          </button>
+    <div className="space-y-8">
+      <h2 className="text-2xl font-bold">Compras</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          <SupplierList />
+          <PayableStatus />
         </div>
-        <div className="p-4">
-          <p className="text-gray-500">No hay compras registradas</p>
-        </div>
+        <PurchasesForm />
       </div>
     </div>
   );
