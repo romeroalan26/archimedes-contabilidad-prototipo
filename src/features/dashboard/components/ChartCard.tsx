@@ -8,9 +8,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  Scale,
-  CoreScaleOptions,
-  Tick,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -37,30 +34,15 @@ export default function ChartCard({ title, data }: ChartCardProps) {
         position: "top" as const,
       },
       title: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function (
-            this: Scale<CoreScaleOptions>,
-            tickValue: string | number
-          ) {
-            return `$${Number(tickValue).toLocaleString()}`;
-          },
-        },
+        display: true,
+        text: title,
       },
     },
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-4">{title}</h3>
-      <div className="h-64">
-        <Line options={options} data={data} />
-      </div>
+    <div className="bg-white p-4 rounded-lg shadow">
+      <Line options={options} data={data} />
     </div>
   );
 }

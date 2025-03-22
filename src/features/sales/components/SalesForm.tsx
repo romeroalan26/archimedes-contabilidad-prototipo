@@ -23,8 +23,6 @@ export default function SalesForm({
 }: SalesFormProps) {
   const {
     register,
-    handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<SaleFormData>();
   const [items, setItems] = useState<Omit<SaleItem, "id">[]>([]);

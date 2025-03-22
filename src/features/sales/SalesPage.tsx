@@ -1,13 +1,9 @@
 import { useState } from "react";
-import {
-  Client,
-  Sale,
-  AccountStatement as AccountStatementType,
-} from "./types";
-import { mockClients, mockSales, mockAccountStatements } from "./salesData";
+import { Client, Sale } from "./types";
+import { mockClients, mockAccountStatements } from "./salesData";
 import ClientList from "./components/ClientList";
 import SalesForm from "./components/SalesForm";
-import AccountStatement from "./components/AccountStatement";
+import AccountStatementComponent from "./components/AccountStatement";
 
 // TODO: Reemplazar con React Query cuando esté disponible
 const useClients = () => {
@@ -91,7 +87,7 @@ export default function SalesPage() {
           />
         </div>
         <div>
-          <AccountStatement
+          <AccountStatementComponent
             statements={statements || []}
             isLoading={isLoadingStatements}
             error={statementsError}
