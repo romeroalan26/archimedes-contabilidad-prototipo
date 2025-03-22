@@ -7,6 +7,7 @@ const navItems = [
   { label: "Ventas", path: "/ventas" },
   { label: "Compras", path: "/compras" },
   { label: "Proyectos", path: "/proyectos" },
+  { label: "Inventario", path: "/inventario" },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {

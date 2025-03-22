@@ -3,6 +3,7 @@ import DashboardPage from "./features/dashboard/DashboardPage";
 import SalesPage from "./features/sales/SalesPage";
 import PurchasesPage from "./features/purchases/PurchasesPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
+import InventoryPage from "./features/inventory/InventoryPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/ventas" element={<SalesPage />} />
         <Route path="/compras" element={<PurchasesPage />} />
         <Route path="/proyectos" element={<ProjectsPage />} />
+        <Route path="/inventario" element={<InventoryPage />} />
       </Routes>
     </Layout>
   );
