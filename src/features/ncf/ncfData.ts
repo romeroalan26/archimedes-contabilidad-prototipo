@@ -1,27 +1,46 @@
-export interface Ncf {
-  id: number;
-  tipo: string;
-  numero: string;
-  cliente: string;
-  fecha: string;
-  estado: "Emitido" | "Anulado";
-}
+import { Ncf } from "./types";
 
-export const ncfSimulados: Ncf[] = [
+export const mockNcf: Ncf[] = [
   {
     id: 1,
-    tipo: "Factura de Crédito Fiscal",
+    tipo: "B01",
     numero: "B0100000001",
     cliente: "Constructora XYZ",
     fecha: "2025-03-01",
     estado: "Emitido",
+    monto: 1000,
+    itbis: 180,
+    total: 1180,
+    observaciones: "Factura de materiales",
+    createdAt: "2025-03-01T10:00:00Z",
+    updatedAt: "2025-03-01T10:00:00Z",
   },
   {
     id: 2,
-    tipo: "Factura de Consumo",
+    tipo: "B02",
     numero: "B0200000002",
     cliente: "Inversiones ABC",
     fecha: "2025-03-02",
     estado: "Emitido",
+    monto: 500,
+    itbis: 90,
+    total: 590,
+    observaciones: "Servicios de consultoría",
+    createdAt: "2025-03-02T14:30:00Z",
+    updatedAt: "2025-03-02T14:30:00Z",
+  },
+  {
+    id: 3,
+    tipo: "E31",
+    numero: "E3100000001",
+    cliente: "Empresa Digital",
+    fecha: "2025-03-03",
+    estado: "Enviado",
+    monto: 2000,
+    itbis: 360,
+    total: 2360,
+    observaciones: "Servicios de desarrollo",
+    createdAt: "2025-03-03T09:15:00Z",
+    updatedAt: "2025-03-03T09:15:00Z",
   },
 ];

@@ -15,7 +15,7 @@ export function calculateDepreciation(
 }
 
 export function createNewAsset(formData: AssetFormData): Asset {
-  const id = Math.random().toString(36).substr(2, 9);
+  const depreciationRate = (1 / formData.usefulLife) * 100;
   const currentValue = calculateDepreciation(
     formData.originalValue,
     formData.usefulLife,
@@ -23,10 +23,12 @@ export function createNewAsset(formData: AssetFormData): Asset {
   );
 
   return {
-    id,
+    id: Math.random().toString(36).substr(2, 9),
     ...formData,
     currentValue,
-    depreciationRate: 20, // 20% anual
-    status: currentValue > 0 ? "active" : "deprecated",
+    depreciationRate,
+    status: "active",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 }

@@ -77,7 +77,11 @@ export default function AssetForm({
             <option value="">Seleccione una categoría</option>
             {assetCategories.map((category) => (
               <option key={category} value={category}>
-                {category}
+                {category === "equipment" && "Equipos"}
+                {category === "furniture" && "Mobiliario"}
+                {category === "vehicles" && "Vehículos"}
+                {category === "buildings" && "Edificios"}
+                {category === "other" && "Otros"}
               </option>
             ))}
           </select>

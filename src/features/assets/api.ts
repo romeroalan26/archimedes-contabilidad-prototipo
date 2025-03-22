@@ -1,5 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Asset, AssetFormData } from "./types";
+import { mockAssets } from "./mockData";
+import { createNewAsset } from "./utils";
+
+// Simular delay de red
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Simular error aleatorio (20% de probabilidad)
+const simulateError = () => {
+  if (Math.random() < 0.2) {
+    throw new Error("Error de conexión simulado");
+  }
+};
 
 // API endpoints (to be replaced with actual endpoints)
 const API_BASE_URL = "/api/assets";
@@ -12,19 +24,17 @@ export interface ApiResponse<T> {
 
 // API functions
 const fetchAssets = async (): Promise<Asset[]> => {
-  const response = await fetch(API_BASE_URL);
-  if (!response.ok) throw new Error("Failed to fetch assets");
-  return response.json();
+  await delay(500);
+  simulateError();
+  return mockAssets;
 };
 
 const createAsset = async (asset: AssetFormData): Promise<Asset> => {
-  const response = await fetch(API_BASE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(asset),
-  });
-  if (!response.ok) throw new Error("Failed to create asset");
-  return response.json();
+  await delay(800);
+  simulateError();
+  const newAsset = createNewAsset(asset);
+  mockAssets.push(newAsset);
+  return newAsset;
 };
 
 // React Query hooks
