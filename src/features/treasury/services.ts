@@ -3,6 +3,7 @@ import type {
   BankOperation,
   CashFlowEntry,
   BankReconciliation,
+  Transaction,
 } from "./types";
 import {
   mockBankAccounts,
@@ -119,8 +120,7 @@ export const createReconciliation = async (
 
 export const updateReconciliationStatus = async (
   id: number,
-  estado: BankReconciliation["estado"],
-  observaciones?: string
+  estado: BankReconciliation["estado"]
 ): Promise<BankReconciliation> => {
   await delay(500);
   simulateError();
@@ -130,4 +130,23 @@ export const updateReconciliationStatus = async (
   }
   reconciliation.estado = estado;
   return reconciliation;
+};
+
+interface TransactionParams {
+  amount: number;
+  date: string;
+  type: "income" | "expense";
+  category: string;
+  description: string;
+}
+
+export const createTransaction = async (
+  params: TransactionParams
+): Promise<Transaction> => {
+  await delay(800);
+  simulateError();
+  return {
+    id: Math.floor(Math.random() * 1000),
+    ...params,
+  };
 };

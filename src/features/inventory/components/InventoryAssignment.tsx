@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Product, Project } from "../types";
+import { Product } from "../types";
 import {
   useProjects,
   useAssignments,

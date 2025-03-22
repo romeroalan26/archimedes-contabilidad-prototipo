@@ -40,3 +40,12 @@ export interface BankReconciliation {
   operacionesConciliadas: number[];
   estado: "pendiente" | "conciliado" | "discrepancia";
 }
+
+export interface Transaction {
+  id: number;
+  date: string;
+  amount: number;
+  type: "income" | "expense";
+  category: string;
+  description: string;
+}

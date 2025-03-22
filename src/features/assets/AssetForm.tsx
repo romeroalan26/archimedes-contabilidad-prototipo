@@ -3,15 +3,28 @@ import { AssetFormData } from "./types";
 import { assetCategories } from "./mockData";
 
 interface AssetFormProps {
-  onSubmit: (data: AssetFormData) => void;
+  onSubmit: (data: AssetFormData) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export default function AssetForm({ onSubmit }: AssetFormProps) {
-  const { register, handleSubmit, reset } = useForm<AssetFormData>();
+export default function AssetForm({
+  onSubmit,
+  isLoading = false,
+}: AssetFormProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AssetFormData>();
 
-  const handleFormSubmit = (data: AssetFormData) => {
-    onSubmit(data);
-    reset();
+  const handleFormSubmit = async (data: AssetFormData) => {
+    try {
+      await onSubmit(data);
+      reset();
+    } catch (error) {
+      // Error is handled by the parent component
+    }
   };
 
   return (
@@ -29,26 +42,36 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
           </label>
           <input
             type="text"
-            {...register("name", { required: true })}
+            {...register("name", { required: "El nombre es requerido" })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
           />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Descripción
           </label>
           <textarea
-            {...register("description", { required: true })}
+            {...register("description", {
+              required: "La descripción es requerida",
+            })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
             rows={2}
           />
+          {errors.description && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.description.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Categoría
           </label>
           <select
-            {...register("category", { required: true })}
+            {...register("category", { required: "La categoría es requerida" })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
           >
             <option value="">Seleccione una categoría</option>
@@ -58,6 +81,11 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
               </option>
             ))}
           </select>
+          {errors.category && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.category.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -65,9 +93,16 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
           </label>
           <input
             type="date"
-            {...register("acquisitionDate", { required: true })}
+            {...register("acquisitionDate", {
+              required: "La fecha es requerida",
+            })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
           />
+          {errors.acquisitionDate && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.acquisitionDate.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -76,9 +111,17 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
           <input
             type="number"
             step="0.01"
-            {...register("originalValue", { required: true, min: 0 })}
+            {...register("originalValue", {
+              required: "El valor es requerido",
+              min: { value: 0, message: "El valor debe ser mayor a 0" },
+            })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
           />
+          {errors.originalValue && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.originalValue.message}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -86,15 +129,26 @@ export default function AssetForm({ onSubmit }: AssetFormProps) {
           </label>
           <input
             type="number"
-            {...register("usefulLife", { required: true, min: 1 })}
+            {...register("usefulLife", {
+              required: "La vida útil es requerida",
+              min: { value: 1, message: "La vida útil debe ser mayor a 0" },
+            })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm md:text-base"
           />
+          {errors.usefulLife && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.usefulLife.message}
+            </p>
+          )}
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm md:text-base"
+          disabled={isLoading}
+          className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm md:text-base ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Registrar Activo
+          {isLoading ? "Registrando..." : "Registrar Activo"}
         </button>
       </form>
     </div>

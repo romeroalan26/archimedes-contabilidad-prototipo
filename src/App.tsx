@@ -13,7 +13,6 @@ import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
 import NcfPage from "./features/ncf/NcfPage";
-import { BrowserRouter as Router } from "react-router-dom";
 
 export default function App() {
   const { user } = useAuth();

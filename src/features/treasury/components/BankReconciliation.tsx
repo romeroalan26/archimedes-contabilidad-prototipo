@@ -48,11 +48,10 @@ export function BankReconciliation() {
 
   const handleStatusUpdate = async (
     id: number,
-    estado: BankReconciliation["estado"],
-    observaciones?: string
+    estado: BankReconciliation["estado"]
   ) => {
     try {
-      await updateStatus.mutateAsync({ id, estado, observaciones });
+      await updateStatus.mutateAsync({ id, estado });
     } catch (error) {
       console.error("Error al actualizar estado:", error);
     }

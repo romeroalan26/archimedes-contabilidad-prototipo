@@ -8,7 +8,7 @@ import {
   getProjectCosts,
   getProjectProfitability,
 } from "./services";
-import type { Project, ProjectResource, ProjectCost } from "./types";
+import type { Project } from "./types";
 
 export const useProjects = () => {
   return useQuery({

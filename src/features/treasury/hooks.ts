@@ -11,12 +11,7 @@ import {
   createReconciliation,
   updateReconciliationStatus,
 } from "./services";
-import type {
-  BankAccount,
-  BankOperation,
-  CashFlowEntry,
-  BankReconciliation,
-} from "./types";
+import type { BankOperation, BankReconciliation } from "./types";
 
 // Hooks para Cuentas Bancarias
 export const useBankAccounts = () => {
@@ -104,20 +99,19 @@ export const useCreateReconciliation = () => {
   });
 };
 
-export const useUpdateReconciliationStatus = () => {
+export function useUpdateReconciliationStatus() {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       id,
       estado,
-      observaciones,
     }: {
       id: number;
       estado: BankReconciliation["estado"];
-      observaciones?: string;
-    }) => updateReconciliationStatus(id, estado, observaciones),
+    }) => updateReconciliationStatus(id, estado),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reconciliations"] });
     },
   });
-};
+}
