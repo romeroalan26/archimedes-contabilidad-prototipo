@@ -6,6 +6,7 @@ import ProjectsPage from "./features/projects/ProjectsPage";
 import InventoryPage from "./features/inventory/InventoryPage";
 import TreasuryPage from "./features/treasury/TreasuryPage";
 import ReportsPage from "./features/reports/ReportsPage";
+import AccountingPage from "./features/accounting/AccountingPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/inventario" element={<InventoryPage />} />
         <Route path="/tesoreria" element={<TreasuryPage />} />
         <Route path="/reportes" element={<ReportsPage />} />
+        <Route path="/contabilidad" element={<AccountingPage />} />
       </Routes>
     </Layout>
   );
