@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Client, Sale } from "./types";
 import { mockClients, mockAccountStatements } from "./salesData";
+import { salesService } from "./services/salesService";
 import ClientList from "./components/ClientList";
 import SalesForm from "./components/SalesForm";
 import AccountStatementComponent from "./components/AccountStatement";
 
-// TODO: Reemplazar con React Query cuando esté disponible
+// TODO: Replace with React Query
 const useClients = () => {
   // Simulación de datos - Reemplazar con React Query
   return {
@@ -26,15 +27,26 @@ const useAccountStatements = (clientId?: number) => {
   };
 };
 
+// TODO: Implementar con React Query
 const useCreateSale = () => {
-  // Simulación de mutación - Reemplazar con React Query
   return {
     mutate: async (sale: Omit<Sale, "id">) => {
-      console.log("Creando venta:", sale);
-      // Simular delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return sale;
+      try {
+        return await salesService.createSale(sale);
+      } catch (error) {
+        console.error("Error creating sale:", error);
+        throw error;
+      }
     },
+    isLoading: false,
+    error: null,
+  };
+};
+
+// TODO: Implementar con React Query
+const useSalesList = () => {
+  return {
+    data: [],
     isLoading: false,
     error: null,
   };
@@ -57,11 +69,16 @@ export default function SalesPage() {
     isLoading: isCreatingSale,
     error: createSaleError,
   } = useCreateSale();
+  const {
+    data: sales,
+    isLoading: isLoadingSales,
+    error: salesError,
+  } = useSalesList();
 
   const handleCreateSale = async (sale: Omit<Sale, "id">) => {
     try {
       await createSale(sale);
-      // TODO: Actualizar la lista de ventas y el estado de cuenta
+      // TODO: Actualizar la lista de ventas y el estado de cuenta usando React Query
     } catch (error) {
       console.error("Error al crear la venta:", error);
     }

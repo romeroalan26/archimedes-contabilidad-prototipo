@@ -12,7 +12,10 @@ export interface SaleItem {
   productId: number;
   quantity: number;
   price: number;
+  itbis: number; // ITBIS por item
 }
+
+export type SaleType = "credit" | "cash" | "mixed";
 
 export interface Sale {
   id: number;
@@ -21,6 +24,10 @@ export interface Sale {
   total: number;
   status: "pending" | "completed" | "cancelled";
   items: SaleItem[];
+  type: SaleType;
+  itbis: number; // ITBIS total
+  cashAmount?: number; // Monto en efectivo (para ventas mixtas)
+  creditAmount?: number; // Monto a crédito (para ventas mixtas)
 }
 
 export interface AccountStatement {

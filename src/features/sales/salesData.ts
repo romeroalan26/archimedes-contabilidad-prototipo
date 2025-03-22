@@ -34,12 +34,15 @@ export const mockSales: Sale[] = [
     date: new Date("2024-02-20"),
     total: 15000,
     status: "completed",
+    type: "cash",
+    itbis: 15000 * 0.18,
     items: [
       {
         id: 1,
         productId: 1,
         quantity: 2,
         price: 7500,
+        itbis: 7500 * 0.18,
       },
     ],
   },
@@ -49,12 +52,15 @@ export const mockSales: Sale[] = [
     date: new Date("2024-02-19"),
     total: 25000,
     status: "pending",
+    type: "credit",
+    itbis: 25000 * 0.18,
     items: [
       {
         id: 2,
         productId: 2,
         quantity: 1,
         price: 25000,
+        itbis: 25000 * 0.18,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Client, Sale, SaleItem } from "../types";
+import { Client, Sale, SaleItem, SaleType } from "../types";
 
 interface SalesFormProps {
   client?: Client;
@@ -12,6 +12,9 @@ interface SalesFormProps {
 
 interface SaleFormData {
   items: Omit<SaleItem, "id">[];
+  type: SaleType;
+  cashAmount?: number;
+  creditAmount?: number;
 }
 
 export default function SalesForm({
@@ -23,9 +26,11 @@ export default function SalesForm({
 }: SalesFormProps) {
   const {
     register,
+    watch,
     formState: { errors },
   } = useForm<SaleFormData>();
   const [items, setItems] = useState<Omit<SaleItem, "id">[]>([]);
+  const saleType = watch("type");
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,17 +40,49 @@ export default function SalesForm({
       (sum, item) => sum + item.quantity * item.price,
       0
     );
+    const itbis = items.reduce((sum, item) => sum + item.itbis, 0);
+
+    // TODO: Implementar la lógica contable real en el backend
+    /*
+    Lógica contable según tipo de venta:
+    
+    1. Venta a Crédito:
+    - Débito: Cuenta por cobrar cliente (total)
+    - Crédito: Ingresos (total - itbis)
+    - Crédito: Inventario (costo de los productos)
+    - Crédito: Impuestos por pagar (itbis)
+    
+    2. Venta de Contado:
+    - Débito: Caja/anticipo cliente (total)
+    - Crédito: Ingresos (total - itbis)
+    - Crédito: Inventario (costo de los productos)
+    - Crédito: Impuestos por pagar (itbis)
+    
+    3. Venta Mixta:
+    - Débito: Caja/anticipo cliente (cashAmount)
+    - Débito: Cuenta por cobrar cliente (creditAmount)
+    - Crédito: Ingresos (total - itbis)
+    - Crédito: Inventario (costo de los productos)
+    - Crédito: Impuestos por pagar (itbis)
+    */
+
     onSubmit({
       clientId: client.id,
       date: new Date(),
       total,
       status: "pending",
       items: items.map((item, index) => ({ ...item, id: index + 1 })),
+      type: saleType,
+      itbis,
+      ...(saleType === "mixed" && {
+        cashAmount: watch("cashAmount"),
+        creditAmount: watch("creditAmount"),
+      }),
     });
   };
 
   const addItem = () => {
-    setItems([...items, { productId: 0, quantity: 1, price: 0 }]);
+    setItems([...items, { productId: 0, quantity: 1, price: 0, itbis: 0 }]);
   };
 
   const removeItem = (index: number) => {
@@ -102,9 +139,74 @@ export default function SalesForm({
           </div>
         )}
 
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Tipo de Venta
+          </label>
+          <select
+            {...register("type", { required: "El tipo de venta es requerido" })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="">Seleccione un tipo</option>
+            <option value="credit">Crédito</option>
+            <option value="cash">Contado</option>
+            <option value="mixed">Mixta</option>
+          </select>
+          {errors.type && (
+            <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
+          )}
+        </div>
+
+        {saleType === "mixed" && (
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Monto en Efectivo
+              </label>
+              <input
+                type="number"
+                {...register("cashAmount", {
+                  required: "El monto en efectivo es requerido",
+                  min: {
+                    value: 0,
+                    message: "El monto debe ser mayor o igual a 0",
+                  },
+                })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+              {errors.cashAmount && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.cashAmount.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Monto a Crédito
+              </label>
+              <input
+                type="number"
+                {...register("creditAmount", {
+                  required: "El monto a crédito es requerido",
+                  min: {
+                    value: 0,
+                    message: "El monto debe ser mayor o igual a 0",
+                  },
+                })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+              {errors.creditAmount && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.creditAmount.message}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-4">
           {items.map((item, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4 items-end">
+            <div key={index} className="grid grid-cols-5 gap-4 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Producto
@@ -174,6 +276,31 @@ export default function SalesForm({
                 {errors.items?.[index]?.price && (
                   <p className="mt-1 text-sm text-red-600">
                     {errors.items[index].price.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  ITBIS
+                </label>
+                <input
+                  type="number"
+                  {...register(`items.${index}.itbis`, {
+                    required: "El ITBIS es requerido",
+                    min: {
+                      value: 0,
+                      message: "El ITBIS debe ser mayor o igual a 0",
+                    },
+                  })}
+                  value={item.itbis}
+                  onChange={(e) =>
+                    updateItem(index, "itbis", parseInt(e.target.value))
+                  }
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+                {errors.items?.[index]?.itbis && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.items[index].itbis.message}
                   </p>
                 )}
               </div>

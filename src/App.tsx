@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "./features/dashboard/DashboardPage";
 import SalesPage from "./features/sales/SalesPage";
 import PurchasesPage from "./features/purchases/PurchasesPage";
+import NewPurchasePage from "./features/purchases/pages/NewPurchasePage";
 import ProjectsPage from "./features/projects/components/ProjectsPage";
 import InventoryPage from "./features/inventory/InventoryPage";
 import TreasuryPage from "./features/treasury/TreasuryPage";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/ventas" element={<SalesPage />} />
         <Route path="/compras" element={<PurchasesPage />} />
+        <Route path="/compras/new" element={<NewPurchasePage />} />
         <Route path="/proyectos/*" element={<ProjectsPage />} />
         <Route path="/inventario" element={<InventoryPage />} />
         <Route path="/tesoreria" element={<TreasuryPage />} />
