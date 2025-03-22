@@ -174,6 +174,44 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    label: "Activos Fijos",
+    path: "/activos",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+    ),
+  },
+  {
+    label: "NCF y e-CF",
+    path: "/ncf",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -331,8 +369,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       )}
 
       {/* Contenido principal */}
-      <main className="flex-1 p-6 md:p-8 relative bg-gray-50">
-        <div className="max-w-7xl mx-auto">{children}</div>
+      <main className="flex-1 min-h-screen bg-gray-50">
+        <div className="pt-20 md:pt-0">
+          <div className="max-w-7xl mx-auto px-6 md:px-8">{children}</div>
+        </div>
       </main>
     </div>
   );
