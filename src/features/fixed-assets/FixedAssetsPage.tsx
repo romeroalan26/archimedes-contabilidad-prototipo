@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FixedAssetForm } from "./FixedAssetForm.tsx";
-import { FixedAssetList } from "./FixedAssetList.tsx";
-import { FixedAssetSummary } from "./FixedAssetSummary.tsx";
+import { FixedAssetForm } from "./components/FixedAssetForm";
+import { FixedAssetList } from "./components/FixedAssetList";
+import { FixedAssetSummary } from "./components/FixedAssetSummary";
 
 export function FixedAssetsPage() {
   const [showForm, setShowForm] = useState(false);
@@ -20,7 +20,7 @@ export function FixedAssetsPage() {
 
       {showForm && (
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <FixedAssetForm />
+          <FixedAssetForm onSuccess={() => setShowForm(false)} />
         </div>
       )}
 
