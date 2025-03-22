@@ -1,6 +1,6 @@
-import EmployeeList from "./EmployeeList";
-import PayrollForm from "./PayrollForm";
-import PayrollSummary from "./PayrollSummary";
+import EmployeeList from "./EmployeeList.tsx";
+import PayrollForm from "./PayrollForm.tsx";
+import PayrollSummary from "./PayrollSummary.tsx";
 
 export default function PayrollPage() {
   return (
