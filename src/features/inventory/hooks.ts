@@ -11,8 +11,13 @@ import {
   createCategory,
   getStockAlerts,
   getInventoryReport,
+  getProjects,
+  getProjectById,
+  getAssignments,
+  createAssignment,
+  updateAssignmentStatus,
 } from "./services";
-import type { Product } from "./types";
+import type { Product, InventoryAssignment } from "./types";
 
 // Hooks para Productos
 export const useProducts = () => {
@@ -118,5 +123,61 @@ export const useInventoryReport = () => {
   return useQuery({
     queryKey: ["inventoryReport"],
     queryFn: getInventoryReport,
+  });
+};
+
+// Hooks para Proyectos
+export const useProjects = () => {
+  return useQuery({
+    queryKey: ["projects"],
+    queryFn: getProjects,
+  });
+};
+
+export const useProject = (id: number) => {
+  return useQuery({
+    queryKey: ["projects", id],
+    queryFn: () => getProjectById(id),
+    enabled: !!id,
+  });
+};
+
+// Hooks para Asignaciones
+export const useAssignments = () => {
+  return useQuery({
+    queryKey: ["assignments"],
+    queryFn: getAssignments,
+  });
+};
+
+export const useCreateAssignment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createAssignment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["assignments"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["stockAlerts"] });
+    },
+  });
+};
+
+export const useUpdateAssignmentStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      estado,
+    }: {
+      id: number;
+      estado: InventoryAssignment["estado"];
+    }) => updateAssignmentStatus(id, estado),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["assignments"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["stockAlerts"] });
+    },
   });
 };

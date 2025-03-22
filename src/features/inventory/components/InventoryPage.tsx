@@ -10,10 +10,11 @@ import InventoryMovement from "./InventoryMovement";
 import ProductList from "./ProductList";
 import StockAlerts from "./StockAlerts";
 import InventorySummary from "./InventorySummary";
+import InventoryAssignment from "./InventoryAssignment";
 
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<
-    "products" | "movements" | "alerts"
+    "products" | "movements" | "alerts" | "assignments"
   >("products");
 
   const { data: products = [], isLoading: isLoadingProducts } = useProducts();
@@ -89,6 +90,16 @@ export default function InventoryPage() {
             } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Alertas de Stock
+          </button>
+          <button
+            onClick={() => setActiveTab("assignments")}
+            className={`${
+              activeTab === "assignments"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+          >
+            Asignaciones
           </button>
         </nav>
       </div>
@@ -177,6 +188,12 @@ export default function InventoryPage() {
         {activeTab === "alerts" && (
           <div className="space-y-6">
             <StockAlerts alerts={alerts} products={products} />
+          </div>
+        )}
+
+        {activeTab === "assignments" && (
+          <div className="space-y-6">
+            <InventoryAssignment products={products} />
           </div>
         )}
       </div>

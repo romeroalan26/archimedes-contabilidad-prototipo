@@ -81,6 +81,12 @@ export default function InventoryMovement({
                 if (tipo === "salida" && cantidad > selectedProduct.stock) {
                   return "No hay suficiente stock disponible";
                 }
+                if (
+                  tipo === "entrada" &&
+                  cantidad + selectedProduct.stock > selectedProduct.stockMaximo
+                ) {
+                  return `La entrada excedería el stock máximo permitido (${selectedProduct.stockMaximo})`;
+                }
                 return true;
               },
             })}

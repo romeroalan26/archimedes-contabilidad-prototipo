@@ -1,13 +1,17 @@
 import {
   Product,
+  Project,
   InventoryMovement,
+  InventoryAssignment,
   Category,
   StockAlert,
   InventoryReport,
 } from "./types";
 import {
   mockProducts,
+  mockProjects,
   mockMovements,
+  mockAssignments,
   mockCategories,
   mockStockAlerts,
   mockInventoryReport,
@@ -16,9 +20,9 @@ import {
 // Simular delay de red
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Productos
+// Servicios para Productos
 export const getProducts = async (): Promise<Product[]> => {
-  await delay(500);
+  await delay(300);
   return mockProducts;
 };
 
@@ -50,12 +54,7 @@ export const updateProduct = async (
   await delay(500);
   const index = mockProducts.findIndex((p) => p.id === id);
   if (index === -1) throw new Error("Producto no encontrado");
-
-  mockProducts[index] = {
-    ...mockProducts[index],
-    ...product,
-    updatedAt: new Date().toISOString(),
-  };
+  mockProducts[index] = { ...mockProducts[index], ...product };
   return mockProducts[index];
 };
 
@@ -66,9 +65,9 @@ export const deleteProduct = async (id: number): Promise<void> => {
   mockProducts.splice(index, 1);
 };
 
-// Movimientos
+// Servicios para Movimientos
 export const getMovements = async (): Promise<InventoryMovement[]> => {
-  await delay(500);
+  await delay(300);
   return mockMovements;
 };
 
@@ -88,15 +87,70 @@ export const createMovement = async (
   if (product) {
     product.stock +=
       movement.tipo === "entrada" ? movement.cantidad : -movement.cantidad;
-    product.updatedAt = new Date().toISOString();
   }
 
   return newMovement;
 };
 
-// Categorías
-export const getCategories = async (): Promise<Category[]> => {
+// Servicios para Proyectos
+export const getProjects = async (): Promise<Project[]> => {
+  await delay(300);
+  return mockProjects;
+};
+
+export const getProjectById = async (
+  id: number
+): Promise<Project | undefined> => {
+  await delay(300);
+  return mockProjects.find((p) => p.id === id);
+};
+
+// Servicios para Asignaciones
+export const getAssignments = async (): Promise<InventoryAssignment[]> => {
+  await delay(300);
+  return mockAssignments;
+};
+
+export const createAssignment = async (
+  assignment: Omit<InventoryAssignment, "id" | "fecha" | "usuario" | "estado">
+): Promise<InventoryAssignment> => {
   await delay(500);
+  const newAssignment: InventoryAssignment = {
+    ...assignment,
+    id: mockAssignments.length + 1,
+    fecha: new Date().toISOString().split("T")[0],
+    usuario: "admin",
+    estado: "pendiente",
+  };
+  mockAssignments.push(newAssignment);
+  return newAssignment;
+};
+
+export const updateAssignmentStatus = async (
+  id: number,
+  estado: InventoryAssignment["estado"]
+): Promise<InventoryAssignment> => {
+  await delay(500);
+  const index = mockAssignments.findIndex((a) => a.id === id);
+  if (index === -1) throw new Error("Asignación no encontrada");
+
+  const assignment = mockAssignments[index];
+  mockAssignments[index] = { ...assignment, estado };
+
+  // Si se aprueba, actualizar el stock
+  if (estado === "aprobada") {
+    const product = mockProducts.find((p) => p.id === assignment.productId);
+    if (product) {
+      product.stock -= assignment.cantidad;
+    }
+  }
+
+  return mockAssignments[index];
+};
+
+// Servicios para Categorías
+export const getCategories = async (): Promise<Category[]> => {
+  await delay(300);
   return mockCategories;
 };
 
@@ -112,14 +166,14 @@ export const createCategory = async (
   return newCategory;
 };
 
-// Alertas de Stock
+// Servicios para Alertas de Stock
 export const getStockAlerts = async (): Promise<StockAlert[]> => {
-  await delay(500);
+  await delay(300);
   return mockStockAlerts;
 };
 
-// Reportes
+// Servicios para Reportes
 export const getInventoryReport = async (): Promise<InventoryReport> => {
-  await delay(800);
+  await delay(500);
   return mockInventoryReport;
 };
