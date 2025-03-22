@@ -1,10 +1,13 @@
-const inventario = [
-  { id: 1, nombre: "Bloques", unidad: "unidad", stock: 800 },
-  { id: 2, nombre: "Cemento", unidad: "saco", stock: 200 },
-  { id: 3, nombre: "Varilla", unidad: "barra", stock: 350 },
-];
+type Props = {
+  inventario: {
+    id: number;
+    nombre: string;
+    unidad: string;
+    stock: number;
+  }[];
+};
 
-export default function InventoryList() {
+export default function InventoryList({ inventario }: Props) {
   return (
     <div className="bg-white p-4 rounded shadow">
       <h3 className="text-lg font-semibold mb-4">Inventario General</h3>

@@ -1,10 +1,14 @@
 import { useForm } from "react-hook-form";
 
-export default function InventoryMovement() {
+type Props = {
+  actualizarStock: (data: any) => void;
+};
+
+export default function InventoryMovement({ actualizarStock }: Props) {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: any) => {
-    console.log("Movimiento registrado:", data);
+    actualizarStock(data);
     reset();
   };
 
