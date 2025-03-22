@@ -1,78 +1,70 @@
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import { KpiData, AlertData } from "./types";
+import { mockDashboardData } from "./dashboardData.tsx";
+import KpiCard from "./components/KpiCard";
+import AlertCard from "./components/AlertCard";
+import ChartCard from "./components/ChartCard";
 
-const data = [
-  { name: "Ene", ingresos: 15000, egresos: 10000 },
-  { name: "Feb", ingresos: 18000, egresos: 13000 },
-  { name: "Mar", ingresos: 12000, egresos: 7000 },
-  { name: "Abr", ingresos: 20000, egresos: 15000 },
-];
-
-const kpis = [
-  { label: "Ingresos", value: "$65,000" },
-  { label: "Egresos", value: "$45,000" },
-  { label: "Balance", value: "$20,000" },
-];
-
-const alertas = [
-  "Pago a proveedor - 25 marzo",
-  "Cobro de cliente - 27 marzo",
-  "Pago TSS - 30 marzo",
-];
+// TODO: Reemplazar con React Query cuando esté disponible
+const useDashboardData = () => {
+  // Simulación de datos - Reemplazar con React Query
+  return {
+    data: mockDashboardData,
+    isLoading: false,
+    error: null,
+  };
+};
 
 export default function DashboardPage() {
+  const { data, isLoading, error } = useDashboardData();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-red-600">
+          Error al cargar los datos del dashboard
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold">Dashboard</h2>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {kpis.map((kpi) => (
-          <div
-            key={kpi.label}
-            className="bg-white p-4 rounded shadow text-center"
-          >
-            <h3 className="text-sm text-gray-500">{kpi.label}</h3>
-            <p className="text-xl font-bold text-blue-600">{kpi.value}</p>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data.kpis.map((kpi: KpiData, index: number) => (
+          <KpiCard key={index} data={kpi} />
         ))}
       </div>
 
-      {/* Gráfico de ingresos vs egresos */}
-      <div className="bg-white p-4 rounded shadow">
-        <h3 className="text-lg font-semibold mb-4">Ingresos vs Egresos</h3>
-        <div className="w-full h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="ingresos" fill="#3b82f6" />
-              <Bar dataKey="egresos" fill="#ef4444" />
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Gráficos y Alertas */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Gráficos */}
+        <div className="lg:col-span-2 space-y-6">
+          <ChartCard title="Ingresos" data={data.revenueChart} />
+          <ChartCard title="Gastos" data={data.expensesChart} />
         </div>
-      </div>
 
-      {/* Alertas de pagos/cobros */}
-      <div className="bg-white p-4 rounded shadow">
-        <h3 className="text-lg font-semibold mb-4">Alertas</h3>
-        <ul className="list-disc pl-5 text-sm text-gray-700">
-          {alertas.map((alerta, idx) => (
-            <li key={idx}>{alerta}</li>
-          ))}
-        </ul>
+        {/* Alertas */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Alertas Recientes
+          </h2>
+          <div className="space-y-4">
+            {data.alerts.map((alert: AlertData) => (
+              <AlertCard key={alert.id} data={alert} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
