@@ -122,9 +122,9 @@ export default function PurchasesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Compras</h1>
+    <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-900">Compras</h1>
         <button
           onClick={() => navigate("/compras/new")}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -133,8 +133,8 @@ export default function PurchasesPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <SupplierList
             suppliers={suppliers || []}
             onSelectSupplier={setSelectedSupplier}
@@ -161,7 +161,7 @@ export default function PurchasesPage() {
         </div>
       </div>
 
-      <div className="mt-8">
+      <div>
         <h2 className="text-xl font-semibold mb-4">Lista de Compras</h2>
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full">

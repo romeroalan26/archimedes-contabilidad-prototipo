@@ -1,5 +1,5 @@
-import { useEmployees, useCalculatePayroll } from "./hooks";
-import { Employee } from "./employeesData";
+import { useEmployees, useCalculatePayroll } from "../../hooks";
+import { Employee } from "../../types/employee";
 
 export function PayrollSummary() {
   const { data: employees, isLoading } = useEmployees();
@@ -135,4 +135,4 @@ function EmployeePayrollRow({ employee }: { employee: Employee }) {
       </td>
     </tr>
   );
-}
+} 

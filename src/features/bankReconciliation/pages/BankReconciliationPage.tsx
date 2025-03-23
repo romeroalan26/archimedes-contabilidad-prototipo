@@ -57,10 +57,12 @@ export const BankReconciliationPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">Conciliación Bancaria</h1>
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Conciliación Bancaria</h1>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <h2 className="text-xl font-semibold mb-4">Nueva Conciliación</h2>
           <ReconciliationForm
@@ -128,29 +130,11 @@ export const BankReconciliationPage: React.FC = () => {
       </div>
 
       {selectedReconciliation && (
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Movimientos</h2>
-            <div className="space-x-2">
-              <button
-                onClick={handleExportExcel}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Exportar Excel
-              </button>
-              <button
-                onClick={handleExportPDF}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Exportar PDF
-              </button>
-            </div>
-          </div>
-          <MovementsList
-            movements={selectedReconciliation.movements}
-            onToggleReconciliation={handleToggleMovement}
-          />
-          <div className="mt-4 grid grid-cols-3 gap-4">
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Detalles de Conciliación
+          </h2>
+          <div className="grid grid-cols-3 gap-4">
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-sm text-gray-600">Balance en Banco</p>
               <p className="text-lg font-semibold">

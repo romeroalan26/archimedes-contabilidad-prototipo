@@ -8,7 +8,9 @@ import InventoryPage from "./features/inventory/InventoryPage";
 import TreasuryPage from "./features/treasury/TreasuryPage";
 import ReportsPage from "./features/reports/ReportsPage";
 import AccountingPage from "./features/accounting/AccountingPage";
-import { PayrollPage } from "./features/payroll/PayrollPage";
+import { PayrollPage } from "./features/payroll/pages/PayrollPage";
+import { PayrollHistoryPage } from "./features/payroll/pages/PayrollHistoryPage";
+import { PayrollDetailPage } from "./features/payroll/pages/PayrollDetailPage";
 import AssetsPage from "./features/assets/AssetsPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
@@ -16,9 +18,9 @@ import { useAuth } from "./state/useAuth";
 import { NCFPage } from "./features/ncf/NcfPage";
 
 export default function App() {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  if (!user) return <LoginPage />;
+  if (!isAuthenticated) return <LoginPage />;
 
   return (
     <Layout>
@@ -27,13 +29,17 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/ventas" element={<SalesPage />} />
         <Route path="/compras" element={<PurchasesPage />} />
-        <Route path="/compras/new" element={<NewPurchasePage />} />
+        <Route path="/compras/nueva" element={<NewPurchasePage />} />
         <Route path="/proyectos/*" element={<ProjectsPage />} />
         <Route path="/inventario" element={<InventoryPage />} />
         <Route path="/tesoreria" element={<TreasuryPage />} />
         <Route path="/reportes" element={<ReportsPage />} />
         <Route path="/contabilidad" element={<AccountingPage />} />
-        <Route path="/nomina" element={<PayrollPage />} />
+        <Route path="/nomina">
+          <Route index element={<PayrollPage />} />
+          <Route path="historial" element={<PayrollHistoryPage />} />
+          <Route path=":id" element={<PayrollDetailPage />} />
+        </Route>
         <Route path="/activos" element={<AssetsPage />} />
         <Route path="/ncf" element={<NCFPage />} />
       </Routes>

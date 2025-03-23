@@ -7,7 +7,7 @@ export default function ProjectList() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-4">
+      <div className="flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -24,8 +24,8 @@ export default function ProjectList() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white rounded-lg shadow">
+      <div className="flex justify-between items-center p-6 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900">
           Lista de Proyectos
         </h2>

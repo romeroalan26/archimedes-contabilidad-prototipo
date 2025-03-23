@@ -52,3 +52,121 @@ export default tseslint.config({
   },
 });
 ```
+
+# Archimedes Contabilidad
+
+Sistema de contabilidad y gestión empresarial.
+
+## Estructura del Proyecto
+
+```
+src/
+├── features/
+│   ├── payroll/                 # Módulo de Nómina
+│   │   ├── components/          # Componentes reutilizables
+│   │   │   ├── PayrollForm.tsx  # Formulario de nómina
+│   │   │   └── PayrollList.tsx  # Lista de nóminas
+│   │   ├── hooks/              # Hooks personalizados
+│   │   │   ├── usePayroll.ts   # Hook principal de nómina
+│   │   │   └── useEmployees.ts # Hook de gestión de empleados
+│   │   ├── pages/              # Páginas del módulo
+│   │   │   ├── PayrollPage.tsx # Página principal
+│   │   │   └── PayrollHistoryPage.tsx # Historial
+│   │   ├── services/           # Servicios y API
+│   │   │   └── index.ts        # Servicios de nómina
+│   │   ├── types/              # Tipos y interfaces
+│   │   │   ├── payroll.ts      # Tipos de nómina
+│   │   │   └── employee.ts     # Tipos de empleado
+│   │   └── utils/              # Utilidades
+│   │       ├── calculations.ts # Cálculos de nómina
+│   │       ├── export.ts       # Exportación de reportes
+│   │       └── validations.ts  # Validaciones
+│   └── ...
+└── ...
+```
+
+## Módulo de Nómina
+
+El módulo de nómina permite gestionar el proceso de cálculo y pago de salarios, incluyendo:
+
+### Características Principales
+
+- Cálculo automático de salarios netos
+- Gestión de bonificaciones y deducciones
+- Exportación de reportes en múltiples formatos
+- Historial de nóminas con filtros avanzados
+- Validaciones de negocio integradas
+
+### Exportación de Reportes
+
+El módulo soporta la exportación de reportes en los siguientes formatos:
+
+1. **TSS (Tesoreria de la Seguridad Social)**
+   - Formato estándar para reportes de nómina
+   - Validación de datos requeridos
+   - Generación de archivo plano
+
+2. **Excel**
+   - Resumen de nóminas
+   - Totales y subtotales
+   - Formato profesional con estilos
+
+3. **PDF**
+   - Reporte individual por empleado
+   - Diseño profesional con encabezados y pie de página
+   - Tablas y formatos de moneda
+
+### Integración
+
+Para integrar el módulo con el backend:
+
+1. Actualizar las URLs en `services/index.ts`
+2. Implementar los endpoints correspondientes
+3. Configurar las variables de entorno necesarias
+
+### Pruebas
+
+El módulo incluye pruebas unitarias para:
+
+- Cálculos de nómina
+- Validaciones de datos
+- Generación de reportes
+- Manejo de errores
+
+Para ejecutar las pruebas:
+
+```bash
+npm test src/features/payroll
+```
+
+### Próximos Pasos
+
+1. Implementar exportación TSS con formato específico
+2. Mejorar la generación de reportes PDF/Excel
+3. Agregar más opciones de filtrado en el historial
+4. Implementar validaciones de negocio adicionales
+5. Optimizar el rendimiento de la paginación
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Desarrollo
+
+```bash
+npm run dev
+```
+
+## Construcción
+
+```bash
+npm run build
+```
+
+## Pruebas
+
+```bash
+npm test
+```

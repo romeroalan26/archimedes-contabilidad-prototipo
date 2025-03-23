@@ -1,0 +1,52 @@
+{
+  "tss": {
+    "porcentajes": {
+      "empleado": {
+        "sfs": 0.0304,
+        "afp": 0.0287
+      },
+      "empleador": {
+        "sfs": 0.0709,
+        "afp": 0.0710,
+        "infotep": 0.01,
+        "riesgoLaboralBase": 0.01,
+        "riesgoLaboralVariable": 0.002
+      }
+    },
+    "topes": {
+      "sfs": 193525.00,
+      "afp": 387050.00,
+      "riesgoLaboral": 77410.00
+    }
+  },
+  "isr": {
+    "tramosAnuales": [
+      {
+        "desde": 0,
+        "hasta": 416220.00,
+        "tasa": 0,
+        "exceso": 0
+      },
+      {
+        "desde": 416220.01,
+        "hasta": 624329.00,
+        "tasa": 0.15,
+        "exceso": 416220.01
+      },
+      {
+        "desde": 624329.01,
+        "hasta": 867123.00,
+        "tasa": 0.20,
+        "exceso": 624329.01,
+        "cuotaFija": 31216.00
+      },
+      {
+        "desde": 867123.01,
+        "hasta": null,
+        "tasa": 0.25,
+        "exceso": 867123.01,
+        "cuotaFija": 79776.00
+      }
+    ]
+  }
+} 

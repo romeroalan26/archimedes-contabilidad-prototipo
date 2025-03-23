@@ -4,6 +4,8 @@ export interface Employee {
   cedula: string;
   posicion: string;
   salario: number;
+  fechaIngreso: string;
+  estado: 'activo' | 'inactivo';
 }
 
 export const empleadosSimulados: Employee[] = [
@@ -13,6 +15,8 @@ export const empleadosSimulados: Employee[] = [
     cedula: "00112345678",
     posicion: "Maestro Constructor",
     salario: 35000,
+    fechaIngreso: "2023-01-15",
+    estado: "activo"
   },
   {
     id: 2,
@@ -20,5 +24,7 @@ export const empleadosSimulados: Employee[] = [
     cedula: "00198765432",
     posicion: "Contadora",
     salario: 55000,
+    fechaIngreso: "2023-03-01",
+    estado: "activo"
   },
 ];

@@ -18,19 +18,17 @@ export default function AssetsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2 text-gray-600">Cargando activos...</span>
-        </div>
+      <div className="flex items-center justify-center p-6">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2 text-gray-600">Cargando activos...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-2xl mx-auto bg-red-50 p-4 rounded-lg border border-red-200">
+      <div className="p-6">
+        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
           <div className="text-red-700 text-center">
             Error al cargar los activos. Por favor, intente nuevamente.
           </div>
@@ -40,24 +38,24 @@ export default function AssetsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+    <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-900">
           Gestión de Activos Fijos
         </h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Registrar Nuevo Activo
-            </h2>
-            <AssetForm
-              onSubmit={handleNewAsset}
-              isLoading={createAssetMutation.isPending}
-            />
-          </div>
-          <div>
-            <AssetList assets={assets} />
-          </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Registrar Nuevo Activo
+          </h2>
+          <AssetForm
+            onSubmit={handleNewAsset}
+            isLoading={createAssetMutation.isPending}
+          />
+        </div>
+        <div>
+          <AssetList assets={assets} />
         </div>
       </div>
     </div>
