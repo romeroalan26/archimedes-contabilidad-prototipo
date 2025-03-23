@@ -41,7 +41,7 @@ export default function ChartCard({ title, data }: ChartCardProps) {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
+    <div className="bg-white p-4 rounded-lg shadow h-[300px]">
       <Line options={options} data={data} />
     </div>
   );
