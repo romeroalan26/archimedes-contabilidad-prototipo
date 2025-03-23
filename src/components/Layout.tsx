@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../state/useAuth";
 
@@ -221,16 +221,45 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  // Cerrar el menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById('sidebar');
+      const hamburgerButton = document.getElementById('hamburger-button');
+      
+      if (isSidebarOpen && sidebar && hamburgerButton) {
+        const isClickInsideSidebar = sidebar.contains(event.target as Node);
+        const isClickOnHamburger = hamburgerButton.contains(event.target as Node);
+        
+        if (!isClickInsideSidebar && !isClickOnHamburger) {
+          setIsSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSidebarOpen]);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+      {/* Overlay para móvil */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Botón hamburguesa para móvil */}
       <button
+        id="hamburger-button"
         onClick={toggleSidebar}
         aria-label={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={isSidebarOpen}
         className={`
-          md:hidden fixed top-6 left-6 z-[100]
-          p-2.5 rounded-xl
+          md:hidden fixed top-4 left-4 z-[100]
+          p-2 rounded-xl
           bg-gray-800 text-gray-200 shadow-lg
           hover:bg-gray-700 hover:text-white
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
@@ -260,6 +289,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* Sidebar */}
       <aside
+        id="sidebar"
         className={`
           fixed md:static inset-y-0 left-0 z-50
           w-72 bg-gray-900 text-white
@@ -329,7 +359,11 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Contenido principal */}
-      <main className="flex-1 p-6 md:p-8 overflow-x-hidden">
+      <main className={`
+        flex-1 p-6 md:p-8 overflow-x-hidden
+        transition-all duration-200 ease-in-out
+        ${isSidebarOpen ? 'blur-sm' : 'blur-0'}
+      `}>
         {children}
       </main>
     </div>
