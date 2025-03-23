@@ -11,34 +11,58 @@ export function aplicarTopeCotizable(valor: number, tope: number): number {
 /**
  * Calcula los aportes TSS del empleado
  */
-export function calcularAportesTSSEmpleado(sueldo: number): { afp: number, sfs: number } {
-  const sueldoCotizableAFP = aplicarTopeCotizable(sueldo, payrollConfig.tss.topes.afp);
-  const sueldoCotizableSFS = aplicarTopeCotizable(sueldo, payrollConfig.tss.topes.sfs);
+export function calcularAportesTSSEmpleado(sueldo: number): {
+  afp: number;
+  sfs: number;
+} {
+  const sueldoCotizableAFP = aplicarTopeCotizable(
+    sueldo,
+    payrollConfig.tss.topes.afp
+  );
+  const sueldoCotizableSFS = aplicarTopeCotizable(
+    sueldo,
+    payrollConfig.tss.topes.sfs
+  );
 
   return {
     afp: sueldoCotizableAFP * payrollConfig.tss.porcentajes.empleado.afp,
-    sfs: sueldoCotizableSFS * payrollConfig.tss.porcentajes.empleado.sfs
+    sfs: sueldoCotizableSFS * payrollConfig.tss.porcentajes.empleado.sfs,
   };
 }
 
 /**
  * Calcula los aportes TSS del empleador
  */
-export function calcularAportesTSSEmpleador(sueldo: number, factorRiesgo: number = 0.01): { 
-  afp: number, 
-  sfs: number, 
-  infotep: number, 
-  riesgoLaboral: number 
+export function calcularAportesTSSEmpleador(
+  sueldo: number,
+  factorRiesgo: number = 0.01
+): {
+  afp: number;
+  sfs: number;
+  infotep: number;
+  riesgoLaboral: number;
 } {
-  const sueldoCotizableAFP = aplicarTopeCotizable(sueldo, payrollConfig.tss.topes.afp);
-  const sueldoCotizableSFS = aplicarTopeCotizable(sueldo, payrollConfig.tss.topes.sfs);
-  const sueldoCotizableRiesgo = aplicarTopeCotizable(sueldo, payrollConfig.tss.topes.riesgoLaboral);
+  const sueldoCotizableAFP = aplicarTopeCotizable(
+    sueldo,
+    payrollConfig.tss.topes.afp
+  );
+  const sueldoCotizableSFS = aplicarTopeCotizable(
+    sueldo,
+    payrollConfig.tss.topes.sfs
+  );
+  const sueldoCotizableRiesgo = aplicarTopeCotizable(
+    sueldo,
+    payrollConfig.tss.topes.riesgoLaboral
+  );
 
   return {
     afp: sueldoCotizableAFP * payrollConfig.tss.porcentajes.empleador.afp,
     sfs: sueldoCotizableSFS * payrollConfig.tss.porcentajes.empleador.sfs,
     infotep: sueldo * payrollConfig.tss.porcentajes.empleador.infotep,
-    riesgoLaboral: sueldoCotizableRiesgo * (payrollConfig.tss.porcentajes.empleador.riesgoLaboralBase + factorRiesgo)
+    riesgoLaboral:
+      sueldoCotizableRiesgo *
+      (payrollConfig.tss.porcentajes.empleador.riesgoLaboralBase +
+        factorRiesgo),
   };
 }
 
@@ -46,15 +70,15 @@ export function calcularAportesTSSEmpleador(sueldo: number, factorRiesgo: number
  * Calcula el ISR según la tabla de 2024
  */
 export function calcularISR(sueldoLuegoTSS: number): number {
-  const tramo = payrollConfig.isr.tramosAnuales.find(t => 
-    sueldoLuegoTSS >= t.desde && (!t.hasta || sueldoLuegoTSS <= t.hasta)
+  const tramo = payrollConfig.isr.tramosAnuales.find(
+    (t) => sueldoLuegoTSS >= t.desde && (!t.hasta || sueldoLuegoTSS <= t.hasta)
   );
-  
+
   if (!tramo) return 0;
 
   const baseImponible = sueldoLuegoTSS - tramo.exceso;
   const impuesto = baseImponible * tramo.tasa;
-  
+
   return impuesto + (tramo.cuotaFija || 0);
 }
 
@@ -64,7 +88,12 @@ export function calcularISR(sueldoLuegoTSS: number): number {
 export function calcularSalarioNeto(sueldo: number): {
   bruto: number;
   tssEmpleado: { afp: number; sfs: number };
-  tssEmpleador: { afp: number; sfs: number; infotep: number; riesgoLaboral: number };
+  tssEmpleador: {
+    afp: number;
+    sfs: number;
+    infotep: number;
+    riesgoLaboral: number;
+  };
   isr: number;
   neto: number;
 } {
@@ -79,7 +108,7 @@ export function calcularSalarioNeto(sueldo: number): {
     tssEmpleado,
     tssEmpleador,
     isr,
-    neto
+    neto,
   };
 }
 
@@ -87,14 +116,20 @@ export function calcularSalarioNeto(sueldo: number): {
  * Calcula el total de bonificaciones
  */
 export function calculateTotalBonificaciones(payroll: PayrollDetails): number {
-  return payroll.bonificaciones.reduce((total, bonificacion) => total + bonificacion.monto, 0);
+  return payroll.bonificaciones.reduce(
+    (total, bonificacion) => total + bonificacion.monto,
+    0
+  );
 }
 
 /**
  * Calcula el total de deducciones
  */
 export function calculateTotalDeducciones(payroll: PayrollDetails): number {
-  return payroll.deducciones.reduce((total, deduccion) => total + deduccion.monto, 0);
+  return payroll.deducciones.reduce(
+    (total, deduccion) => total + deduccion.monto,
+    0
+  );
 }
 
 /**
@@ -112,7 +147,7 @@ export function calculatePayrollDeductions(salarioBase: number): {
   return {
     afp: tssEmpleado.afp,
     ars: tssEmpleado.sfs,
-    isr
+    isr,
   };
 }
 
@@ -121,9 +156,16 @@ export const calculatePayrollNet = (
   bonificaciones: Bonificacion[],
   deducciones: Deduccion[]
 ) => {
-  const totalBonificaciones = bonificaciones.reduce((sum, b) => sum + b.monto, 0);
+  const totalBonificaciones = bonificaciones.reduce(
+    (sum, b) => sum + b.monto,
+    0
+  );
   const totalDeducciones = deducciones.reduce((sum, d) => sum + d.monto, 0);
   const { afp, ars, isr } = calculatePayrollDeductions(salarioBase);
 
-  return salarioBase + totalBonificaciones - totalDeducciones - afp - ars - isr;
-}; 
+  // Calcular salario bruto con bonificaciones
+  const salarioBruto = salarioBase + totalBonificaciones;
+
+  // Calcular salario neto restando todas las deducciones
+  return salarioBruto - totalDeducciones - afp - ars - isr;
+};

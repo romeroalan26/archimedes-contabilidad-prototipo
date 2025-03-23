@@ -59,4 +59,12 @@ export const useCalculatePayroll = (employeeId: number) => {
     queryKey: ["payroll-calculation", employeeId],
     queryFn: () => payrollServices.calculatePayroll(employeeId),
   });
-}; 
+};
+
+export function usePayrollByEmployee(employeeId: number) {
+  return useQuery<PayrollDetails[]>({
+    queryKey: ["payrolls", "employee", employeeId],
+    queryFn: () =>
+      payrollServices.getPayrollHistory({ empleadoId: employeeId }),
+  });
+}

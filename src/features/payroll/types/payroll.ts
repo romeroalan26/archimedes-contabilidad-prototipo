@@ -31,7 +31,7 @@ export interface PayrollDetails {
   ars: number;
   isr: number;
   salarioNeto: number;
-  estado: "pendiente" | "aprobado" | "rechazado";
+  estado: "PENDIENTE" | "APROBADO" | "RECHAZADO";
   fechaCreacion: string;
   fechaActualizacion: string;
   tssEmpleado: {
@@ -47,10 +47,28 @@ export interface PayrollDetails {
 }
 
 export interface PayrollSummary {
+  periodo: {
+    inicio: string;
+    fin: string;
+    fechaPago: string;
+  };
   totalEmpleados: number;
   totalNomina: number;
   totalDeducciones: number;
   totalNeto: number;
-  periodo: PayrollPeriod;
-  estado: 'pendiente' | 'procesado' | 'pagado';
-} 
+  estado: "PROCESADO" | "PENDIENTE" | "CANCELADO";
+  distribucion: {
+    porEmpleado: Array<{
+      nombre: string;
+      salarioBase: number;
+      bonificaciones: number;
+      deducciones: number;
+      neto: number;
+    }>;
+    porCategoria: Array<{
+      categoria: string;
+      monto: number;
+      color: string;
+    }>;
+  };
+}

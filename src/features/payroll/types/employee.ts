@@ -5,8 +5,8 @@ export interface Employee {
   posicion: string;
   salario: number;
   fechaIngreso: string;
-  estado: 'activo' | 'inactivo';
-  tipoContrato: '01' | '02' | '03'; // 01 = Indefinido, 02 = Temporal, 03 = Por Obra
+  estado: "ACTIVO" | "INACTIVO";
+  tipoContrato: "indefinido" | "temporal";
 }
 
 export interface EmployeeFormData {
@@ -15,5 +15,5 @@ export interface EmployeeFormData {
   posicion: string;
   salario: number;
   fechaIngreso: string;
-  estado: 'activo' | 'inactivo';
-} 
+  estado: "activo" | "inactivo";
+}

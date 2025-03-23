@@ -9,31 +9,37 @@ import { formatCurrency } from "../../utils/format";
 
 const payrollSchema = z.object({
   empleadoId: z.number().min(1, "Debe seleccionar un empleado"),
-  periodo: z.object({
-    inicio: z.string().min(1, "La fecha de inicio es requerida"),
-    fin: z.string().min(1, "La fecha de fin es requerida"),
-    fechaPago: z.string().min(1, "La fecha de pago es requerida"),
-  }).refine((data) => new Date(data.inicio) < new Date(data.fin), {
-    message: "La fecha de inicio debe ser anterior a la fecha de fin",
-  }),
+  periodo: z
+    .object({
+      inicio: z.string().min(1, "La fecha de inicio es requerida"),
+      fin: z.string().min(1, "La fecha de fin es requerida"),
+      fechaPago: z.string().min(1, "La fecha de pago es requerida"),
+    })
+    .refine((data) => new Date(data.inicio) < new Date(data.fin), {
+      message: "La fecha de inicio debe ser anterior a la fecha de fin",
+    }),
   salarioBase: z.number().min(0, "El salario base debe ser mayor o igual a 0"),
-  bonificaciones: z.array(z.object({
-    tipo: z.enum(["horasExtra", "comision", "otro"]),
-    monto: z.number().min(0, "El monto debe ser mayor o igual a 0"),
-    descripcion: z.string().min(1, "La descripción es requerida"),
-  })),
-  deducciones: z.array(z.object({
-    tipo: z.enum(["prestamo", "adelanto", "otro"]),
-    monto: z.number().min(0, "El monto debe ser mayor o igual a 0"),
-    descripcion: z.string().min(1, "La descripción es requerida"),
-  })),
+  bonificaciones: z.array(
+    z.object({
+      tipo: z.enum(["horasExtra", "comision", "otro"]),
+      monto: z.number().min(0, "El monto debe ser mayor o igual a 0"),
+      descripcion: z.string().min(1, "La descripción es requerida"),
+    })
+  ),
+  deducciones: z.array(
+    z.object({
+      tipo: z.enum(["prestamo", "adelanto", "otro"]),
+      monto: z.number().min(0, "El monto debe ser mayor o igual a 0"),
+      descripcion: z.string().min(1, "La descripción es requerida"),
+    })
+  ),
 });
 
 type PayrollFormData = z.infer<typeof payrollSchema>;
 
 export function PayrollForm() {
   const createPayroll = useCreatePayroll();
-  
+
   const {
     register,
     handleSubmit,
@@ -55,7 +61,11 @@ export function PayrollForm() {
   const onSubmit = async (data: PayrollFormData) => {
     try {
       const now = new Date().toISOString();
-      const netSalary = calculatePayrollNet(data.salarioBase, data.bonificaciones, data.deducciones);
+      const netSalary = calculatePayrollNet(
+        data.salarioBase,
+        data.bonificaciones,
+        data.deducciones
+      );
 
       const payrollData = {
         ...data,
@@ -63,9 +73,9 @@ export function PayrollForm() {
         afp: calculo.tssEmpleado.afp,
         ars: calculo.tssEmpleado.sfs,
         salarioNeto: netSalary,
-        estado: 'pendiente' as const,
+        estado: "PENDIENTE" as const,
         fechaCreacion: now,
-        fechaActualizacion: now
+        fechaActualizacion: now,
       };
 
       await createPayroll.mutateAsync(payrollData);
@@ -123,7 +133,9 @@ export function PayrollForm() {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             {errors.periodo?.inicio && (
-              <p className="text-red-500 text-sm">{errors.periodo.inicio.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.periodo.inicio.message}
+              </p>
             )}
           </div>
 
@@ -137,7 +149,9 @@ export function PayrollForm() {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             {errors.periodo?.fin && (
-              <p className="text-red-500 text-sm">{errors.periodo.fin.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.periodo.fin.message}
+              </p>
             )}
           </div>
 
@@ -151,7 +165,9 @@ export function PayrollForm() {
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             {errors.periodo?.fechaPago && (
-              <p className="text-red-500 text-sm">{errors.periodo.fechaPago.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.periodo.fechaPago.message}
+              </p>
             )}
           </div>
         </div>
@@ -173,7 +189,9 @@ export function PayrollForm() {
 
         <div>
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Bonificaciones</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              Bonificaciones
+            </h3>
             <button
               type="button"
               onClick={addBonificacion}
@@ -195,7 +213,9 @@ export function PayrollForm() {
               <input
                 type="number"
                 step="0.01"
-                {...register(`bonificaciones.${index}.monto`, { valueAsNumber: true })}
+                {...register(`bonificaciones.${index}.monto`, {
+                  valueAsNumber: true,
+                })}
                 className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
               <input
@@ -231,16 +251,32 @@ export function PayrollForm() {
               <input
                 type="number"
                 step="0.01"
-                {...register(`deducciones.${index}.monto`, { valueAsNumber: true })}
+                {...register(`deducciones.${index}.monto`, {
+                  valueAsNumber: true,
+                })}
                 className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
               <input
                 type="text"
                 {...register(`deducciones.${index}.descripcion`)}
                 className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Descripción de la deducción"
               />
             </div>
           ))}
+          <div className="mt-2 text-right">
+            <span className="text-sm font-medium text-gray-700">
+              Total Deducciones:{" "}
+            </span>
+            <span className="text-sm font-semibold text-red-600">
+              {formatCurrency(
+                watch("deducciones")?.reduce(
+                  (sum, d) => sum + (d.monto || 0),
+                  0
+                ) || 0
+              )}
+            </span>
+          </div>
         </div>
 
         <button
@@ -254,8 +290,10 @@ export function PayrollForm() {
 
       {salarioBase > 0 && (
         <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Desglose de Cálculos</h3>
-          
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Desglose de Cálculos
+          </h3>
+
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="font-medium">Sueldo Bruto:</span>
@@ -289,7 +327,9 @@ export function PayrollForm() {
             </div>
 
             <div className="border-t pt-2">
-              <h4 className="font-medium text-gray-700">Aportes del Empleador:</h4>
+              <h4 className="font-medium text-gray-700">
+                Aportes del Empleador:
+              </h4>
               <div className="ml-4 space-y-1">
                 <div className="flex justify-between">
                   <span>AFP:</span>
@@ -305,7 +345,9 @@ export function PayrollForm() {
                 </div>
                 <div className="flex justify-between">
                   <span>Riesgo Laboral:</span>
-                  <span>{formatCurrency(calculo.tssEmpleador.riesgoLaboral)}</span>
+                  <span>
+                    {formatCurrency(calculo.tssEmpleador.riesgoLaboral)}
+                  </span>
                 </div>
                 <div className="flex justify-between font-medium">
                   <span>Total Aportes:</span>
@@ -325,4 +367,4 @@ export function PayrollForm() {
       )}
     </div>
   );
-} 
+}

@@ -1,138 +1,129 @@
-import { useEmployees, useCalculatePayroll } from "../../hooks";
-import { Employee } from "../../types/employee";
+import { mockResumen } from "../../__mocks__/mockResumen";
+import { formatCurrency } from "../../utils/format";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 
 export function PayrollSummary() {
-  const { data: employees, isLoading } = useEmployees();
-
-  if (isLoading) {
-    return <div className="text-center py-4">Cargando resumen...</div>;
-  }
+  const { distribucion } = mockResumen;
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-6">Resumen de Nómina</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold">Resumen de Nómina</h2>
+        <div className="text-sm text-gray-500">
+          Período:{" "}
+          {format(new Date(mockResumen.periodo.inicio), "dd/MM/yyyy", {
+            locale: es,
+          })}{" "}
+          -{" "}
+          {format(new Date(mockResumen.periodo.fin), "dd/MM/yyyy", {
+            locale: es,
+          })}
+        </div>
+      </div>
 
       {/* Resumen General */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-700">Total Salarios</h3>
+          <h3 className="text-sm font-medium text-blue-700">Total Empleados</h3>
           <p className="text-2xl font-bold text-blue-900">
-            RD${" "}
-            {employees
-              ?.reduce((total, employee) => total + employee.salario, 0)
-              .toFixed(2)}
-          </p>
-        </div>
-        <div className="bg-red-50 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-red-700">Total AFP</h3>
-          <p className="text-2xl font-bold text-red-900">
-            RD${" "}
-            {employees
-              ?.reduce((total, employee) => {
-                const payroll = useCalculatePayroll(employee.id).data;
-                return total + (payroll?.afp || 0);
-              }, 0)
-              .toFixed(2)}
-          </p>
-        </div>
-        <div className="bg-yellow-50 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-yellow-700">Total ARS</h3>
-          <p className="text-2xl font-bold text-yellow-900">
-            RD${" "}
-            {employees
-              ?.reduce((total, employee) => {
-                const payroll = useCalculatePayroll(employee.id).data;
-                return total + (payroll?.ars || 0);
-              }, 0)
-              .toFixed(2)}
+            {mockResumen.totalEmpleados}
           </p>
         </div>
         <div className="bg-green-50 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-green-700">Total ISR</h3>
+          <h3 className="text-sm font-medium text-green-700">Nómina Bruta</h3>
           <p className="text-2xl font-bold text-green-900">
-            RD${" "}
-            {employees
-              ?.reduce((total, employee) => {
-                const payroll = useCalculatePayroll(employee.id).data;
-                return total + (payroll?.isr || 0);
-              }, 0)
-              .toFixed(2)}
+            {formatCurrency(mockResumen.totalNomina)}
+          </p>
+        </div>
+        <div className="bg-red-50 p-4 rounded-lg">
+          <h3 className="text-sm font-medium text-red-700">
+            Total Deducciones
+          </h3>
+          <p className="text-2xl font-bold text-red-900">
+            {formatCurrency(mockResumen.totalDeducciones)}
+          </p>
+        </div>
+        <div className="bg-purple-50 p-4 rounded-lg">
+          <h3 className="text-sm font-medium text-purple-700">Salario Neto</h3>
+          <p className="text-2xl font-bold text-purple-900">
+            {formatCurrency(mockResumen.totalNeto)}
           </p>
         </div>
       </div>
 
-      {/* Tabla de Detalles */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Empleado
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Salario
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                AFP
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ARS
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ISR
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Neto
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {employees?.map((employee) => (
-              <EmployeePayrollRow key={employee.id} employee={employee} />
-            ))}
-          </tbody>
-        </table>
+      {/* Estado de la Nómina */}
+      <div className="mb-8">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Estado</h3>
+        <div className="flex items-center">
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              mockResumen.estado === "PROCESADO"
+                ? "bg-green-100 text-green-800"
+                : mockResumen.estado === "PENDIENTE"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {mockResumen.estado.charAt(0) +
+              mockResumen.estado.slice(1).toLowerCase()}
+          </span>
+        </div>
+      </div>
+
+      {/* Gráfico de Distribución por Categoría */}
+      <div className="mt-8">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Distribución de Nómina
+        </h3>
+        <div className="h-96">
+          {distribucion.porCategoria.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={distribucion.porCategoria}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="categoria" tick={{ fontSize: 12 }} />
+                <YAxis
+                  tickFormatter={(value) => formatCurrency(value)}
+                  width={120}
+                  tick={{ fontSize: 12 }}
+                />
+                <Tooltip
+                  formatter={(value: number) => formatCurrency(value)}
+                  labelFormatter={(label) => label}
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "0.5rem",
+                    padding: "0.5rem",
+                  }}
+                />
+                <Bar dataKey="monto" radius={[4, 4, 0, 0]}>
+                  {distribucion.porCategoria.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+              <p className="text-gray-500">
+                No hay datos para mostrar en el gráfico
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-function EmployeePayrollRow({ employee }: { employee: Employee }) {
-  const { data: payroll, isLoading } = useCalculatePayroll(employee.id);
-
-  if (isLoading) {
-    return (
-      <tr>
-        <td colSpan={6} className="px-6 py-4 text-center">
-          Cargando datos...
-        </td>
-      </tr>
-    );
-  }
-
-  return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm font-medium text-gray-900">
-          {employee.nombre}
-        </div>
-        <div className="text-sm text-gray-500">{employee.posicion}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        RD$ {employee.salario.toFixed(2)}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        RD$ {payroll?.afp.toFixed(2)}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        RD$ {payroll?.ars.toFixed(2)}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        RD$ {payroll?.isr.toFixed(2)}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        RD$ {payroll?.salarioNeto.toFixed(2)}
-      </td>
-    </tr>
-  );
-} 

@@ -2,13 +2,27 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { usePayrollHistory, useEmployees } from "../hooks";
 import { formatCurrency } from "../utils/format";
-import { calculateTotalBonificaciones, calculateTotalDeducciones } from "../utils/calculations";
+import {
+  calculateTotalBonificaciones,
+  calculateTotalDeducciones,
+} from "../utils/calculations";
 import type { PayrollDetails } from "../types/payroll";
-import { generateTSSFile, generateExcelReport, generatePDFReport } from "../utils/export";
+import type { Employee } from "../types/employee";
+import {
+  generateTSSFile,
+  generateExcelReport,
+  generatePDFReport,
+} from "../utils/export";
 import { toast } from "react-hot-toast";
-import { format, isWithinInterval, parseISO, isAfter, isBefore } from "date-fns";
+import {
+  format,
+  isWithinInterval,
+  parseISO,
+  isAfter,
+  isBefore,
+} from "date-fns";
 import { es } from "date-fns/locale";
-import { mockEmployees, mockPayrolls } from "../__mocks__/mockTSSData";
+import { mockPayrolls } from "../__mocks__/mockPayrolls";
 
 export function PayrollHistoryPage() {
   const [filters, setFilters] = useState({
@@ -23,7 +37,38 @@ export function PayrollHistoryPage() {
   const itemsPerPage = 10;
 
   // TODO: Replace with actual API calls
-  const employees = mockEmployees;
+  const employees: Employee[] = [
+    {
+      id: 1,
+      nombre: "Juan Pérez",
+      cedula: "123456789",
+      posicion: "Desarrollador",
+      salario: 45000,
+      fechaIngreso: "2024-01-01",
+      estado: "ACTIVO" as const,
+      tipoContrato: "indefinido",
+    },
+    {
+      id: 2,
+      nombre: "María García",
+      cedula: "987654321",
+      posicion: "Diseñadora",
+      salario: 35000,
+      fechaIngreso: "2024-01-01",
+      estado: "ACTIVO" as const,
+      tipoContrato: "indefinido",
+    },
+    {
+      id: 3,
+      nombre: "Carlos López",
+      cedula: "456789123",
+      posicion: "Gerente",
+      salario: 55000,
+      fechaIngreso: "2024-01-01",
+      estado: "ACTIVO" as const,
+      tipoContrato: "indefinido",
+    },
+  ];
   const payrolls = mockPayrolls;
   const loadingEmployees = false;
   const loadingPayrolls = false;
@@ -52,7 +97,10 @@ export function PayrollHistoryPage() {
   const filteredPayrolls = useMemo(() => {
     return payrolls.filter((payroll) => {
       // Filter by employee
-      if (filters.empleadoId && payroll.empleadoId !== Number(filters.empleadoId)) {
+      if (
+        filters.empleadoId &&
+        payroll.empleadoId !== Number(filters.empleadoId)
+      ) {
         return false;
       }
 
@@ -66,7 +114,12 @@ export function PayrollHistoryPage() {
         const startDate = parseISO(filters.periodoInicio);
         const endDate = parseISO(filters.periodoFin);
 
-        if (!isWithinInterval(payrollStartDate, { start: startDate, end: endDate })) {
+        if (
+          !isWithinInterval(payrollStartDate, {
+            start: startDate,
+            end: endDate,
+          })
+        ) {
           return false;
         }
       }
@@ -126,12 +179,12 @@ export function PayrollHistoryPage() {
 
   const handleExportPDF = async (payrollId: number) => {
     try {
-      const payroll = payrolls.find(p => p.id === payrollId);
+      const payroll = payrolls.find((p) => p.id === payrollId);
       if (!payroll) throw new Error("Nómina no encontrada");
-      
-      const employee = employees?.find(e => e.id === payroll.empleadoId);
+
+      const employee = employees?.find((e) => e.id === payroll.empleadoId);
       if (!employee) throw new Error("Empleado no encontrado");
-      
+
       const file = await generatePDFReport(payroll, employee);
       const url = URL.createObjectURL(file);
       const a = document.createElement("a");
@@ -149,13 +202,19 @@ export function PayrollHistoryPage() {
   };
 
   if (error) {
-    return <div className="text-red-500">Error al cargar el historial de nóminas</div>;
+    return (
+      <div className="text-red-500">
+        Error al cargar el historial de nóminas
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Historial de Nóminas</h2>
+        <h2 className="text-2xl font-bold text-gray-900">
+          Historial de Nóminas
+        </h2>
         <div className="space-x-2">
           <button
             onClick={handleExportTSS}
@@ -182,7 +241,9 @@ export function PayrollHistoryPage() {
           </label>
           <select
             value={filters.empleadoId}
-            onChange={(e) => setFilters({ ...filters, empleadoId: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, empleadoId: e.target.value })
+            }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             disabled={loadingEmployees}
           >
@@ -209,7 +270,7 @@ export function PayrollHistoryPage() {
             }}
             max={filters.periodoFin || undefined}
             className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
-              dateError ? 'border-red-300' : 'border-gray-300'
+              dateError ? "border-red-300" : "border-gray-300"
             }`}
           />
           {dateError && (
@@ -231,7 +292,7 @@ export function PayrollHistoryPage() {
             }}
             min={filters.periodoInicio || undefined}
             className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
-              dateError ? 'border-red-300' : 'border-gray-300'
+              dateError ? "border-red-300" : "border-gray-300"
             }`}
           />
         </div>
@@ -255,6 +316,9 @@ export function PayrollHistoryPage() {
                 Salario Base
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Deducciones
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Salario Neto
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -268,67 +332,85 @@ export function PayrollHistoryPage() {
           <tbody className="bg-white divide-y divide-gray-200">
             {loadingPayrolls ? (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center">
+                <td colSpan={8} className="px-6 py-4 text-center">
                   Cargando...
                 </td>
               </tr>
             ) : filteredPayrolls.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
                   No se encontraron resultados para los filtros seleccionados.
                 </td>
               </tr>
             ) : (
-              paginatedPayrolls.map((payroll) => (
-                <tr key={payroll.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {payroll.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {employees?.find((e) => e.id === payroll.empleadoId)?.nombre || payroll.empleadoId}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(payroll.periodo.inicio), "dd/MM/yyyy", { locale: es })}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Intl.NumberFormat("es-DO", {
-                      style: "currency",
-                      currency: "DOP",
-                    }).format(payroll.salarioBase)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Intl.NumberFormat("es-DO", {
-                      style: "currency",
-                      currency: "DOP",
-                    }).format(payroll.salarioNeto)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        payroll.estado === "pendiente"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {payroll.estado}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleExportPDF(payroll.id)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      PDF
-                    </button>
-                    <Link
-                      to={`/nomina/${payroll.id}`}
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      Ver más
-                    </Link>
-                  </td>
-                </tr>
-              ))
+              paginatedPayrolls.map((payroll) => {
+                const totalDeducciones = payroll.deducciones.reduce(
+                  (sum, d) => sum + d.monto,
+                  0
+                );
+                const deduccionesText =
+                  totalDeducciones > 0
+                    ? `${payroll.deducciones.length} deducción(es)`
+                    : "Sin deducciones";
+
+                return (
+                  <tr key={payroll.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {payroll.id}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {employees?.find((e) => e.id === payroll.empleadoId)
+                        ?.nombre || payroll.empleadoId}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {format(new Date(payroll.periodo.inicio), "dd/MM/yyyy", {
+                        locale: es,
+                      })}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Intl.NumberFormat("es-DO", {
+                        style: "currency",
+                        currency: "DOP",
+                      }).format(payroll.salarioBase)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <span className="text-red-600">{deduccionesText}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Intl.NumberFormat("es-DO", {
+                        style: "currency",
+                        currency: "DOP",
+                      }).format(payroll.salarioNeto)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          payroll.estado === "PENDIENTE"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {payroll.estado.charAt(0) +
+                          payroll.estado.slice(1).toLowerCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                      <button
+                        onClick={() => handleExportPDF(payroll.id)}
+                        className="text-blue-600 hover:text-blue-900"
+                      >
+                        PDF
+                      </button>
+                      <Link
+                        to={`/nomina/${payroll.id}`}
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
+                        Ver más
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
@@ -358,4 +440,4 @@ export function PayrollHistoryPage() {
       )}
     </div>
   );
-} 
+}

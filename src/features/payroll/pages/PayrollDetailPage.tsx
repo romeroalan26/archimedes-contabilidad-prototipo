@@ -1,7 +1,10 @@
 import { useParams } from "react-router-dom";
 import { usePayrollDetails } from "../hooks";
 import { formatCurrency } from "../utils/format.ts";
-import { calculateTotalBonificaciones, calculateTotalDeducciones } from "../utils/calculations";
+import {
+  calculateTotalBonificaciones,
+  calculateTotalDeducciones,
+} from "../utils/calculations";
 
 export function PayrollDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -49,7 +52,9 @@ export function PayrollDetailPage() {
             <div key={index} className="flex justify-between items-center">
               <div>
                 <p className="font-medium capitalize">{bonificacion.tipo}</p>
-                <p className="text-sm text-gray-500">{bonificacion.descripcion}</p>
+                <p className="text-sm text-gray-500">
+                  {bonificacion.descripcion}
+                </p>
               </div>
               <p className="font-medium text-green-600">
                 {formatCurrency(bonificacion.monto)}
@@ -69,41 +74,76 @@ export function PayrollDetailPage() {
 
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-medium mb-4">Deducciones</h2>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="font-medium">AFP</p>
-            <p className="font-medium text-red-600">
-              {formatCurrency(payroll.afp)}
-            </p>
-          </div>
-          <div className="flex justify-between items-center">
-            <p className="font-medium">ARS</p>
-            <p className="font-medium text-red-600">
-              {formatCurrency(payroll.ars)}
-            </p>
-          </div>
-          <div className="flex justify-between items-center">
-            <p className="font-medium">ISR</p>
-            <p className="font-medium text-red-600">
-              {formatCurrency(payroll.isr)}
-            </p>
-          </div>
-          {payroll.deducciones.map((deduccion, index) => (
-            <div key={index} className="flex justify-between items-center">
-              <div>
-                <p className="font-medium capitalize">{deduccion.tipo}</p>
-                <p className="text-sm text-gray-500">{deduccion.descripcion}</p>
+        <div className="space-y-6">
+          {/* Deducciones Obligatorias */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-3">
+              Deducciones Obligatorias
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600">AFP</p>
+                <p className="font-medium text-red-600">
+                  {formatCurrency(payroll.afp)}
+                </p>
               </div>
-              <p className="font-medium text-red-600">
-                {formatCurrency(deduccion.monto)}
-              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600">ARS</p>
+                <p className="font-medium text-red-600">
+                  {formatCurrency(payroll.ars)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600">ISR</p>
+                <p className="font-medium text-red-600">
+                  {formatCurrency(payroll.isr)}
+                </p>
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Deducciones Adicionales */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-3">
+              Deducciones Adicionales
+            </h3>
+            {payroll.deducciones.length > 0 ? (
+              <div className="space-y-3">
+                {payroll.deducciones.map((deduccion, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-medium capitalize">{deduccion.tipo}</p>
+                      <p className="text-sm text-gray-500">
+                        {deduccion.descripcion}
+                      </p>
+                    </div>
+                    <p className="font-medium text-red-600">
+                      {formatCurrency(deduccion.monto)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">
+                Sin deducciones adicionales
+              </p>
+            )}
+          </div>
+
+          {/* Total de Deducciones */}
           <div className="border-t pt-4">
             <div className="flex justify-between items-center">
               <p className="font-medium">Total Deducciones</p>
               <p className="font-medium text-red-600">
-                {formatCurrency(calculateTotalDeducciones(payroll))}
+                {formatCurrency(
+                  payroll.afp +
+                    payroll.ars +
+                    payroll.isr +
+                    calculateTotalDeducciones(payroll)
+                )}
               </p>
             </div>
           </div>
@@ -120,4 +160,4 @@ export function PayrollDetailPage() {
       </div>
     </div>
   );
-} 
+}
