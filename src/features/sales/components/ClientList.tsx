@@ -1,62 +1,99 @@
-import { Client } from "../types";
+import { useState } from "react";
+import type { Client } from "../types";
+import { useClientStore } from "../../../stores/clientStore";
 
 interface ClientListProps {
-  clients: Client[];
-  onSelectClient: (client: Client) => void;
-  isLoading?: boolean;
-  error?: Error | null;
+  onEdit?: (client: Client) => void;
+  onCreateNew?: () => void;
 }
 
-export default function ClientList({
-  clients,
-  onSelectClient,
-  isLoading,
-  error,
-}: ClientListProps) {
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+export default function ClientList({ onEdit, onCreateNew }: ClientListProps) {
+  const [search, setSearch] = useState("");
+  const { clients, deleteClient } = useClientStore();
 
-  if (error) {
-    return (
-      <div className="text-red-600 p-4">
-        Error al cargar los clientes: {error.message}
-      </div>
-    );
-  }
+  const filtered = clients.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.rnc.includes(search)
+  );
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("¿Está seguro de que desea eliminar este cliente?")) {
+      deleteClient(id);
+    }
+  };
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold">Lista de Clientes</h2>
-      </div>
-      <div className="divide-y">
-        {clients.map((client) => (
-          <div
-            key={client.id}
-            className="p-4 hover:bg-gray-50 cursor-pointer"
-            onClick={() => onSelectClient(client)}
+    <div className="bg-white p-4 rounded shadow">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Clientes</h3>
+        {onCreateNew && (
+          <button
+            onClick={onCreateNew}
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-medium">{client.name}</h3>
-                <p className="text-sm text-gray-600">{client.email}</p>
-                <p className="text-sm text-gray-600">{client.phone}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-medium">
-                  Balance: RD$ {client.balance.toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-600">{client.address}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+            Nuevo Cliente
+          </button>
+        )}
       </div>
+
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Buscar por nombre o RNC"
+        className="w-full mb-4 p-2 border border-gray-300 rounded"
+      />
+
+      {filtered.length === 0 ? (
+        <div className="text-center py-4 text-gray-500">
+          No hay clientes registrados
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left border-b">
+                <th className="py-2">Nombre</th>
+                <th>RNC</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Tipo Facturación</th>
+                <th>Tipo NCF</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((client) => (
+                <tr key={client.id} className="border-b">
+                  <td className="py-1">{client.name}</td>
+                  <td>{client.rnc}</td>
+                  <td>{client.phone || "-"}</td>
+                  <td>{client.email || "-"}</td>
+                  <td className="capitalize">{client.billingType}</td>
+                  <td className="capitalize">{client.ncfType}</td>
+                  <td className="space-x-2">
+                    {onEdit && (
+                      <button
+                        onClick={() => onEdit(client)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Editar
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(client.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

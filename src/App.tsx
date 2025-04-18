@@ -16,6 +16,7 @@ import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
 import { NCFPage } from "./features/ncf/NcfPage";
+import ClientsPage from "./features/sales/pages/ClientsPage";
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -42,6 +43,7 @@ export default function App() {
         </Route>
         <Route path="/activos" element={<AssetsPage />} />
         <Route path="/ncf" element={<NCFPage />} />
+        <Route path="/clientes" element={<ClientsPage />} />
       </Routes>
     </Layout>
   );

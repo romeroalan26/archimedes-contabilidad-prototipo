@@ -1,11 +1,15 @@
 export interface Client {
-  id: number;
+  id: string;
   name: string;
-  email: string;
-  phone: string;
-  address: string;
-  balance: number;
+  rnc: string;
+  phone?: string;
+  email?: string;
+  billingType: "contado" | "credito" | "mixto";
+  ncfType: "final" | "fiscal" | "gubernamental" | "especial";
 }
+
+export type BillingType = "contado" | "credito" | "mixto";
+export type NCFType = "final" | "fiscal" | "gubernamental" | "especial";
 
 export interface SaleItem {
   id: number;
