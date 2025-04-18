@@ -3,6 +3,7 @@ import type { Client } from "../types";
 import { useClientStore } from "../../../stores/clientStore";
 
 interface ClientListProps {
+  clients?: Client[];
   onSelectClient?: (client: Client) => void;
   onEdit?: (client: Client) => void;
   onCreateNew?: () => void;
@@ -10,13 +11,14 @@ interface ClientListProps {
 }
 
 export default function ClientList({
+  clients = [],
   onSelectClient,
   onEdit,
   onCreateNew,
   selectedClientId,
 }: ClientListProps) {
   const [search, setSearch] = useState("");
-  const { clients, deleteClient } = useClientStore();
+  const { deleteClient } = useClientStore();
 
   const filtered = clients.filter(
     (c) =>
@@ -89,14 +91,20 @@ export default function ClientList({
                   >
                     {onEdit && (
                       <button
-                        onClick={() => onEdit(client)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(client);
+                        }}
                         className="text-blue-600 hover:text-blue-800"
                       >
                         Editar
                       </button>
                     )}
                     <button
-                      onClick={() => handleDelete(client.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(client.id);
+                      }}
                       className="text-red-600 hover:text-red-800"
                     >
                       Eliminar

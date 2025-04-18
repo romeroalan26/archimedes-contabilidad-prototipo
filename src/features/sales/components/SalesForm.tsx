@@ -79,23 +79,21 @@ export default function SalesForm({
     - Crédito: Impuestos por pagar (itbis)
     */
 
-    onSubmit({
-      clientId: parseInt(client.id),
+    const sale: Omit<Sale, "id"> = {
+      clientId: client.id,
       date: new Date(),
       total,
       status: "pending",
-      items: items.map((item, index) => ({ ...item, id: index + 1 })),
-      type: saleType,
+      type: "cash",
       itbis,
-      ...(saleType === "mixed" && {
-        cashAmount: watch("cashAmount"),
-        creditAmount: watch("creditAmount"),
-      }),
-    });
+      items: items.map((item, index) => ({ ...item, id: String(index + 1) })),
+    };
+
+    onSubmit(sale);
   };
 
   const addItem = () => {
-    setItems([...items, { productId: 0, quantity: 1, price: 0, itbis: 0 }]);
+    setItems([...items, { productId: "", quantity: 1, price: 0, itbis: 0 }]);
   };
 
   const removeItem = (index: number) => {

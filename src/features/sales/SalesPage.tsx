@@ -16,7 +16,7 @@ const useClients = () => {
   };
 };
 
-const useAccountStatements = (clientId?: number) => {
+const useAccountStatements = (clientId?: string) => {
   // Simulación de datos - Reemplazar con React Query
   return {
     data: clientId
@@ -92,8 +92,6 @@ export default function SalesPage() {
           <ClientList
             clients={clients || []}
             onSelectClient={setSelectedClient}
-            isLoading={isLoadingClients}
-            error={clientsError}
           />
           <SalesForm
             client={selectedClient}

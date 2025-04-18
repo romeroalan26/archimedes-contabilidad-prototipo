@@ -9,8 +9,8 @@ export interface Client {
 }
 
 export interface SaleItem {
-  id: number;
-  productId: number;
+  id: string;
+  productId: string;
   quantity: number;
   price: number;
   itbis: number; // ITBIS por item
@@ -19,8 +19,8 @@ export interface SaleItem {
 export type SaleType = "credit" | "cash" | "mixed";
 
 export interface Sale {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string;
   date: Date;
   total: number;
   status: "pending" | "completed" | "cancelled";
@@ -32,8 +32,8 @@ export interface Sale {
 }
 
 export interface AccountStatement {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string;
   date: Date;
   type: "sale" | "payment";
   amount: number;
