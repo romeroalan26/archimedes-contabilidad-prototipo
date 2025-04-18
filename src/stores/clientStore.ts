@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import type { Client } from "../features/sales/types";
+import { persist } from "zustand/middleware";
+import { Client } from "../features/sales/types";
 
 interface ClientStore {
   clients: Client[];
@@ -39,18 +40,27 @@ const mockClients: Client[] = [
   },
 ];
 
-export const useClientStore = create<ClientStore>((set) => ({
-  clients: [],
-  addClient: (client) =>
-    set((state) => ({
-      clients: [...state.clients, client],
-    })),
-  updateClient: (client) =>
-    set((state) => ({
-      clients: state.clients.map((c) => (c.id === client.id ? client : c)),
-    })),
-  deleteClient: (id) =>
-    set((state) => ({
-      clients: state.clients.filter((c) => c.id !== id),
-    })),
-}));
+export const useClientStore = create<ClientStore>()(
+  persist(
+    (set) => ({
+      clients: mockClients,
+      addClient: (client) =>
+        set((state) => ({
+          clients: [...state.clients, client],
+        })),
+      updateClient: (updatedClient) =>
+        set((state) => ({
+          clients: state.clients.map((c) =>
+            c.id === updatedClient.id ? updatedClient : c
+          ),
+        })),
+      deleteClient: (id) =>
+        set((state) => ({
+          clients: state.clients.filter((c) => c.id !== id),
+        })),
+    }),
+    {
+      name: "client-storage", // nombre para la clave en localStorage
+    }
+  )
+);

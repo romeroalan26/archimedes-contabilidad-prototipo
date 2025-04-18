@@ -3,11 +3,18 @@ import type { Client } from "../types";
 import { useClientStore } from "../../../stores/clientStore";
 
 interface ClientListProps {
+  onSelectClient?: (client: Client) => void;
   onEdit?: (client: Client) => void;
   onCreateNew?: () => void;
+  selectedClientId?: string;
 }
 
-export default function ClientList({ onEdit, onCreateNew }: ClientListProps) {
+export default function ClientList({
+  onSelectClient,
+  onEdit,
+  onCreateNew,
+  selectedClientId,
+}: ClientListProps) {
   const [search, setSearch] = useState("");
   const { clients, deleteClient } = useClientStore();
 
@@ -65,14 +72,21 @@ export default function ClientList({ onEdit, onCreateNew }: ClientListProps) {
             </thead>
             <tbody>
               {filtered.map((client) => (
-                <tr key={client.id} className="border-b">
+                <tr
+                  key={client.id}
+                  className={`border-b ${selectedClientId === client.id ? "bg-blue-50" : ""} ${onSelectClient ? "cursor-pointer hover:bg-gray-50" : ""}`}
+                  onClick={() => onSelectClient?.(client)}
+                >
                   <td className="py-1">{client.name}</td>
                   <td>{client.rnc}</td>
                   <td>{client.phone || "-"}</td>
                   <td>{client.email || "-"}</td>
                   <td className="capitalize">{client.billingType}</td>
                   <td className="capitalize">{client.ncfType}</td>
-                  <td className="space-x-2">
+                  <td
+                    className="space-x-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {onEdit && (
                       <button
                         onClick={() => onEdit(client)}

@@ -16,6 +16,9 @@ import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./state/useAuth";
 import { NCFPage } from "./features/ncf/NcfPage";
+// import { Formato606Page } from "./features/dgiiFormats/606/Formato606Page";
+// import { Formato607Page } from "./features/dgiiFormats/607/Formato607Page";
+// import { EmployeeDetailsPage } from "./features/payroll/pages/EmployeeDetailsPage";
 import ClientsPage from "./features/sales/pages/ClientsPage";
 
 export default function App() {
@@ -43,6 +46,10 @@ export default function App() {
         </Route>
         <Route path="/activos" element={<AssetsPage />} />
         <Route path="/ncf" element={<NCFPage />} />
+        {/* Comentar las rutas problemáticas */}
+        {/* <Route path="/dgii/formato-606" element={<Formato606Page />} /> */}
+        {/* <Route path="/dgii/formato-607" element={<Formato607Page />} /> */}
+        {/* <Route path="/payroll/employees/:id" element={<EmployeeDetailsPage />} /> */}
         <Route path="/clientes" element={<ClientsPage />} />
       </Routes>
     </Layout>

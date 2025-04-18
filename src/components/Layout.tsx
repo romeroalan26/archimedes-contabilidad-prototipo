@@ -42,6 +42,25 @@ const navItems = [
     ),
   },
   {
+    label: "Clientes",
+    path: "/clientes",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+        />
+      </svg>
+    ),
+  },
+  {
     label: "Compras",
     path: "/compras",
     icon: (
@@ -212,6 +231,44 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    label: "DGII",
+    path: "/dgii/formato-606",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+  },
+  {
+    label: "Formato 607",
+    path: "/dgii/formato-607",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -224,28 +281,30 @@ export default function Layout({ children }: { children: ReactNode }) {
   // Cerrar el menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const sidebar = document.getElementById('sidebar');
-      const hamburgerButton = document.getElementById('hamburger-button');
-      
+      const sidebar = document.getElementById("sidebar");
+      const hamburgerButton = document.getElementById("hamburger-button");
+
       if (isSidebarOpen && sidebar && hamburgerButton) {
         const isClickInsideSidebar = sidebar.contains(event.target as Node);
-        const isClickOnHamburger = hamburgerButton.contains(event.target as Node);
-        
+        const isClickOnHamburger = hamburgerButton.contains(
+          event.target as Node
+        );
+
         if (!isClickInsideSidebar && !isClickOnHamburger) {
           setIsSidebarOpen(false);
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isSidebarOpen]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
       {/* Overlay para móvil */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -282,7 +341,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d={isSidebarOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            d={
+              isSidebarOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+            }
           />
         </svg>
       </button>
@@ -359,11 +420,13 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Contenido principal */}
-      <main className={`
+      <main
+        className={`
         flex-1 p-6 md:p-8 overflow-x-hidden
         transition-all duration-200 ease-in-out
-        ${isSidebarOpen ? 'blur-sm' : 'blur-0'}
-      `}>
+        ${isSidebarOpen ? "blur-sm" : "blur-0"}
+      `}
+      >
         {children}
       </main>
     </div>

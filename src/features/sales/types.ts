@@ -8,9 +8,6 @@ export interface Client {
   ncfType: "final" | "fiscal" | "gubernamental" | "especial";
 }
 
-export type BillingType = "contado" | "credito" | "mixto";
-export type NCFType = "final" | "fiscal" | "gubernamental" | "especial";
-
 export interface SaleItem {
   id: number;
   productId: number;
