@@ -1,14 +1,9 @@
-export interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  balance: number;
-}
+import { Client } from "../../types/types";
+
+export type { Client };
 
 export interface SaleItem {
-  id: number;
+  id: string;
   productId: number;
   quantity: number;
   price: number;
@@ -18,8 +13,8 @@ export interface SaleItem {
 export type SaleType = "credit" | "cash" | "mixed";
 
 export interface Sale {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string; // Updated to match Client interface
   date: Date;
   total: number;
   status: "pending" | "completed" | "cancelled";
@@ -31,8 +26,8 @@ export interface Sale {
 }
 
 export interface AccountStatement {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string; // Updated to match Client interface
   date: Date;
   type: "sale" | "payment";
   amount: number;
