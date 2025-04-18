@@ -1,49 +1,19 @@
 import { useState } from "react";
-import { Client, Sale, SaleItem, SaleType } from "./types";
-import { mockAccountStatements } from "./salesData";
-import { salesService } from "./services/salesService";
-import { ClientList } from "./components/ClientList";
-import { SalesForm } from "./components/SalesForm";
-import AccountStatementComponent from "./components/AccountStatement";
+import { Client } from "../../types/types";
+import { Sale, SaleItem, SaleType } from "./types";
 import { useClientStore } from "../../stores/clientStore";
 import { useSalesStore } from "../../stores/salesStore";
-
-// TODO: Replace with React Query
-const useAccountStatements = (clientId?: string) => {
-  // Simulación de datos - Reemplazar con React Query
-  return {
-    data: mockAccountStatements.filter((s) => s.clientId === clientId),
-    isLoading: false,
-    error: null,
-  };
-};
-
-// TODO: Replace with React Query
-const useCreateSale = () => {
-  // Simulación de mutación - Reemplazar con React Query
-  return {
-    mutate: async (sale: Omit<Sale, "id">) => {
-      // Simulación de creación - Reemplazar con llamada a API
-      console.log("Creando venta:", sale);
-      return Promise.resolve({ id: crypto.randomUUID(), ...sale });
-    },
-    isLoading: false,
-    error: null,
-  };
-};
-
-// TODO: Replace with React Query
-const useSalesList = () => {
-  // Simulación de datos - Reemplazar con React Query
-  return {
-    data: [],
-    isLoading: false,
-    error: null,
-  };
-};
+import { ClientList } from "./components/ClientList";
+import { SalesForm } from "./components/SalesForm";
+import { SalesHistory } from "./components/SalesHistory";
+import { useAccountStatements } from "../../hooks/useAccountStatements";
+import { useCreateSale } from "./hooks/useCreateSale";
+import { useSalesList } from "./hooks/useSalesList";
+import { updateProduct, getProductById } from "../inventory/services";
 
 export function SalesPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [activeTab, setActiveTab] = useState<"new" | "history">("new");
   const clients = useClientStore((state) => state.clients);
   const {
     data: statements,
@@ -82,25 +52,83 @@ export function SalesPage() {
       itbis: data.items.reduce((sum, item) => sum + item.itbis, 0),
     };
 
+    // Update inventory stock
+    for (const item of data.items) {
+      try {
+        await updateProduct(item.productId, {
+          stock: (await getProductById(item.productId))!.stock - item.quantity,
+        });
+      } catch (error) {
+        console.error("Error updating product stock:", error);
+        // You might want to show an error message to the user here
+        return;
+      }
+    }
+
     addSale(sale);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">Ventas</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <ClientList
-            selectedClient={selectedClient}
-            onSelectClient={setSelectedClient}
-          />
+    <div className="h-full flex flex-col">
+      <div className="flex-none p-4 border-b">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setActiveTab("new")}
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
+              activeTab === "new"
+                ? "bg-indigo-100 text-indigo-700"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Nueva Venta
+          </button>
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
+              activeTab === "history"
+                ? "bg-indigo-100 text-indigo-700"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Historial
+          </button>
         </div>
-        <div>
-          <SalesForm
-            selectedClient={selectedClient}
-            onSubmit={handleCreateSale}
-          />
-        </div>
+      </div>
+
+      <div className="flex-1 p-4 overflow-hidden">
+        {activeTab === "new" ? (
+          <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-1 h-full overflow-hidden flex flex-col">
+              <div className="bg-white rounded-lg shadow-sm h-full flex flex-col">
+                <div className="p-4 border-b">
+                  <h2 className="text-lg font-medium text-gray-800">
+                    Clientes
+                  </h2>
+                </div>
+                <div className="flex-1 overflow-auto p-2">
+                  <ClientList
+                    selectedClient={selectedClient}
+                    onSelectClient={setSelectedClient}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-2 h-full overflow-auto">
+              <SalesForm
+                selectedClient={selectedClient}
+                onSubmit={handleCreateSale}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="h-full">
+            <SalesHistory
+              sales={sales || []}
+              isLoading={isLoadingSales}
+              error={salesError}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

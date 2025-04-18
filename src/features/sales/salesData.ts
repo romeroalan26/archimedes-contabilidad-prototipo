@@ -8,7 +8,7 @@ export const mockClients: Client[] = [
     phone: "809-123-4567",
     rnc: "123-456789-0",
     billingType: "contado",
-    ncfType: "final",
+    ncfType: "consumidor_final",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export const mockClients: Client[] = [
     phone: "809-987-6543",
     rnc: "987-654321-0",
     billingType: "credito",
-    ncfType: "fiscal",
+    ncfType: "credito_fiscal",
   },
   {
     id: "3",

@@ -6,71 +6,14 @@ import { validateNcfNumber } from "./services";
 
 const ncfSchema = z.object({
   tipo: z.enum([
-    "B01",
-    "B02",
-    "B03",
-    "B04",
-    "B14",
-    "B15",
-    "B16",
-    "B17",
-    "B18",
-    "B19",
-    "B20",
-    "B21",
-    "B22",
-    "B23",
-    "B24",
-    "B25",
-    "B26",
-    "B27",
-    "B28",
-    "B29",
-    "B30",
-    "B31",
-    "B32",
-    "B33",
-    "B34",
-    "B35",
-    "B36",
-    "B37",
-    "B38",
-    "B39",
-    "B40",
-    "B41",
-    "B42",
-    "B43",
-    "B44",
-    "B45",
-    "B46",
-    "B47",
-    "B48",
-    "B49",
-    "B50",
-    "E31",
-    "E32",
-    "E33",
-    "E34",
-    "E35",
-    "E36",
-    "E37",
-    "E38",
-    "E39",
-    "E40",
-    "E41",
-    "E42",
-    "E43",
-    "E44",
-    "E45",
-    "E46",
-    "E47",
-    "E48",
-    "E49",
-    "E50",
+    "B01", // Consumidor Final
+    "B02", // Crédito Fiscal
+    "B14", // Gubernamental
+    "B15", // Régimen Especial
   ] as const),
   numero: z.string().refine(validateNcfNumber, {
     message:
-      "El número de NCF debe comenzar con B01, B02, etc. y tener 11 dígitos",
+      "El número de NCF debe comenzar con B01, B02, B14, B15 y tener 11 dígitos",
   }),
   cliente: z.string().min(1, "El cliente es requerido"),
   fecha: z.string().refine((date) => !isNaN(Date.parse(date)), {
@@ -121,15 +64,10 @@ export default function NcfForm({ onSubmit, isLoading }: NcfFormProps) {
           {...register("tipo")}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
-          <option value="B01">B01 - Crédito Fiscal</option>
-          <option value="B02">B02 - Consumo</option>
-          <option value="B03">B03 - Gasto Menor</option>
-          <option value="B04">B04 - Gubernamental</option>
-          <option value="B14">B14 - Regímenes Especiales</option>
-          <option value="B15">B15 - Gubernamental</option>
-          <option value="B16">B16 - Zona Franca</option>
-          <option value="B17">B17 - Exportaciones</option>
-          <option value="E31">E31 - e-CF</option>
+          <option value="B01">B01 - Consumidor Final</option>
+          <option value="B02">B02 - Crédito Fiscal</option>
+          <option value="B14">B14 - Gubernamental</option>
+          <option value="B15">B15 - Régimen Especial</option>
         </select>
         {errors.tipo && (
           <p className="mt-1 text-sm text-red-600">{errors.tipo.message}</p>

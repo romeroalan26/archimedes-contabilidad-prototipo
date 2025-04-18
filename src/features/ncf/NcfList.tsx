@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { Ncf, NcfFilters, NcfStatus } from "./types";
+import { Ncf, NcfFilters, NcfStatus, NcfType } from "./types";
 import { useUpdateNcfStatus } from "./hooks";
+
+// Mapeo de tipos técnicos a etiquetas amigables
+const ncfTypeLabels: Record<NcfType, string> = {
+  B01: "B01 - Consumidor Final",
+  B02: "B02 - Crédito Fiscal",
+  B14: "B14 - Gubernamental",
+  B15: "B15 - Régimen Especial",
+};
 
 interface NcfListProps {
   ncfList: Ncf[];
@@ -49,11 +57,10 @@ export default function NcfList({ ncfList, onFiltersChange }: NcfListProps) {
           }
         >
           <option value="">Todos los tipos</option>
-          <option value="B01">Crédito Fiscal</option>
-          <option value="B02">Consumo</option>
-          <option value="B03">Gasto Menor</option>
-          <option value="B04">Gubernamental</option>
-          <option value="E31">e-CF</option>
+          <option value="B01">B01 - Consumidor Final</option>
+          <option value="B02">B02 - Crédito Fiscal</option>
+          <option value="B14">B14 - Gubernamental</option>
+          <option value="B15">B15 - Régimen Especial</option>
         </select>
 
         <select
@@ -136,7 +143,7 @@ export default function NcfList({ ncfList, onFiltersChange }: NcfListProps) {
                 {ncfList.map((ncf) => (
                   <tr key={ncf.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {ncf.tipo}
+                      {ncfTypeLabels[ncf.tipo]}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {ncf.numero}

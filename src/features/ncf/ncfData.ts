@@ -31,8 +31,8 @@ export const mockNcf: Ncf[] = [
   },
   {
     id: 3,
-    tipo: "E31",
-    numero: "E3100000001",
+    tipo: "B14",
+    numero: "B1400000001",
     cliente: "Empresa Digital",
     fecha: "2025-03-03",
     estado: "Enviado",

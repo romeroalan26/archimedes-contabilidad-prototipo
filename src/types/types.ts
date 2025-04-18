@@ -27,10 +27,40 @@ export interface Client {
 
   /**
    * Defines the type of fiscal receipt (NCF) typically assigned to the client:
-   * - final: For final consumers
-   * - fiscal: For registered businesses
-   * - gubernamental: For government entities
-   * - especial: For special cases
+   * - consumidor_final: For final consumers (01)
+   * - credito_fiscal: For registered businesses (02)
+   * - gubernamental: For government entities (14)
+   * - regimen_especial: For special cases (15)
    */
-  ncfType: "final" | "fiscal" | "gubernamental" | "especial";
+  ncfType:
+    | "consumidor_final"
+    | "credito_fiscal"
+    | "gubernamental"
+    | "regimen_especial";
+}
+
+/**
+ * Represents an account statement for a client
+ */
+export interface AccountStatement {
+  /** Unique identifier for the statement */
+  id: string;
+
+  /** Reference to the client ID */
+  clientId: string;
+
+  /** Date of the statement */
+  date: string;
+
+  /** Description of the transaction */
+  description: string;
+
+  /** Amount of the transaction */
+  amount: number;
+
+  /** Type of transaction (debit/credit) */
+  type: "debit" | "credit";
+
+  /** Balance after the transaction */
+  balance: number;
 }

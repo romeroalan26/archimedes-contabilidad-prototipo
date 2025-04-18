@@ -1,16 +1,9 @@
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { Product } from "../types";
-
-interface MovementFormData {
-  productId: string;
-  cantidad: string;
-  tipo: "entrada" | "salida";
-  motivo: string;
-}
 
 interface InventoryMovementProps {
   products: Product[];
-  onSubmit: (data: MovementFormData) => void;
+  onSubmit: (data: any) => Promise<void>;
   isLoading?: boolean;
   error?: Error | null;
 }
@@ -18,117 +11,125 @@ interface InventoryMovementProps {
 export default function InventoryMovement({
   products,
   onSubmit,
-  isLoading,
-  error,
+  isLoading = false,
+  error = null,
 }: InventoryMovementProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    watch,
-  } = useForm<MovementFormData>();
+  const [formData, setFormData] = useState({
+    productId: "",
+    tipo: "entrada",
+    cantidad: "",
+    motivo: "",
+  });
 
-  const selectedProductId = watch("productId");
-  const selectedProduct = products.find(
-    (p) => p.id.toString() === selectedProductId
-  );
-  const tipo = watch("tipo");
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const onFormSubmit = (data: MovementFormData) => {
-    onSubmit(data);
-    reset();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await onSubmit(formData);
+    // Reset form after successful submission
+    setFormData({
+      productId: "",
+      tipo: "entrada",
+      cantidad: "",
+      motivo: "",
+    });
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="text-lg font-semibold mb-4">Registrar Movimiento</h3>
-      {error && <p className="text-red-600 mb-4">Error: {error.message}</p>}
-      <form
-        onSubmit={handleSubmit(onFormSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <div>
-          <label className="block text-sm">Producto</label>
-          <select
-            {...register("productId", { required: "Seleccione un producto" })}
-            className="w-full p-2 border rounded"
-          >
-            <option value="">Seleccione un producto</option>
-            {products.map((product) => (
-              <option key={product.id} value={product.id}>
-                {product.nombre} ({product.codigo})
-              </option>
-            ))}
-          </select>
-          {errors.productId && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors.productId.message}
-            </p>
-          )}
+    <div className="bg-white p-6 rounded-lg shadow-sm">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        Registrar Movimiento de Inventario
+      </h3>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+          {error.message}
         </div>
-        <div>
-          <label className="block text-sm">Cantidad</label>
-          <input
-            type="number"
-            step="0.01"
-            {...register("cantidad", {
-              required: "La cantidad es requerida",
-              min: { value: 0.01, message: "La cantidad debe ser mayor a 0" },
-              validate: (value) => {
-                if (!selectedProduct) return true;
-                const cantidad = parseFloat(value);
-                if (tipo === "salida" && cantidad > selectedProduct.stock) {
-                  return "No hay suficiente stock disponible";
-                }
-                if (
-                  tipo === "entrada" &&
-                  cantidad + selectedProduct.stock > selectedProduct.stockMaximo
-                ) {
-                  return `La entrada excedería el stock máximo permitido (${selectedProduct.stockMaximo})`;
-                }
-                return true;
-              },
-            })}
-            className="w-full p-2 border rounded"
-          />
-          {errors.cantidad && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors.cantidad.message}
-            </p>
-          )}
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Producto
+            </label>
+            <select
+              name="productId"
+              value={formData.productId}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Seleccionar producto</option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.nombre} ({product.codigo}) - Stock: {product.stock}{" "}
+                  {product.unidad}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tipo de Movimiento
+            </label>
+            <select
+              name="tipo"
+              value={formData.tipo}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="entrada">Entrada</option>
+              <option value="salida">Salida</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Cantidad
+            </label>
+            <input
+              type="number"
+              name="cantidad"
+              value={formData.cantidad}
+              onChange={handleChange}
+              required
+              min="0.01"
+              step="0.01"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Motivo
+            </label>
+            <input
+              type="text"
+              name="motivo"
+              value={formData.motivo}
+              onChange={handleChange}
+              required
+              placeholder="Ej: Compra, Venta, Ajuste de inventario"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm">Tipo</label>
-          <select
-            {...register("tipo", {
-              required: "Seleccione el tipo de movimiento",
-            })}
-            className="w-full p-2 border rounded"
-          >
-            <option value="entrada">Entrada</option>
-            <option value="salida">Salida</option>
-          </select>
-          {errors.tipo && (
-            <p className="text-red-600 text-sm mt-1">{errors.tipo.message}</p>
-          )}
-        </div>
-        <div>
-          <label className="block text-sm">Motivo</label>
-          <input
-            type="text"
-            {...register("motivo", { required: "El motivo es requerido" })}
-            className="w-full p-2 border rounded"
-          />
-          {errors.motivo && (
-            <p className="text-red-600 text-sm mt-1">{errors.motivo.message}</p>
-          )}
-        </div>
-        <div className="md:col-span-2">
+
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-blue-400"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
           >
             {isLoading ? "Registrando..." : "Registrar Movimiento"}
           </button>

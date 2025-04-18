@@ -11,7 +11,12 @@ const clientSchema = z.object({
   phone: z.string().optional().or(z.literal("")),
   email: z.string().email("Correo no válido").optional().or(z.literal("")),
   billingType: z.enum(["contado", "credito", "mixto"]),
-  ncfType: z.enum(["final", "fiscal", "gubernamental", "especial"]),
+  ncfType: z.enum([
+    "consumidor_final",
+    "credito_fiscal",
+    "gubernamental",
+    "regimen_especial",
+  ]),
 });
 
 type ClientFormData = z.infer<typeof clientSchema>;
@@ -43,7 +48,7 @@ export function ClientForm({
       phone: "",
       email: "",
       billingType: "contado",
-      ncfType: "final",
+      ncfType: "consumidor_final",
     },
   });
 
@@ -145,17 +150,20 @@ export function ClientForm({
 
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Tipo de NCF *
+          Tipo de NCF
         </label>
         <select
           {...register("ncfType")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
-          <option value="final">Final</option>
-          <option value="fiscal">Fiscal</option>
-          <option value="gubernamental">Gubernamental</option>
-          <option value="especial">Especial</option>
+          <option value="consumidor_final">01 - Consumidor Final</option>
+          <option value="credito_fiscal">02 - Crédito Fiscal</option>
+          <option value="gubernamental">14 - Gubernamental</option>
+          <option value="regimen_especial">15 - Régimen Especial</option>
         </select>
+        {errors.ncfType && (
+          <p className="mt-1 text-sm text-red-600">{errors.ncfType.message}</p>
+        )}
       </div>
 
       <div className="flex justify-end space-x-3 pt-4">

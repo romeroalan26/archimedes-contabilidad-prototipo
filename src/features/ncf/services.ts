@@ -13,7 +13,7 @@ const simulateError = () => {
 
 // Función auxiliar para validar número de NCF
 export function validateNcfNumber(numero: string): boolean {
-  const ncfPattern = /^(B|E)(0[1-9]|[1-4][0-9]|50)\d{8}$/;
+  const ncfPattern = /^B(01|02|14|15)\d{8}$/;
   return ncfPattern.test(numero);
 }
 
