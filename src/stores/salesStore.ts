@@ -10,10 +10,16 @@ type SalesStore = {
 
 export const useSalesStore = create<SalesStore>((set) => ({
   sales: [],
-  addSale: (sale) =>
-    set((state) => ({
-      sales: [...state.sales, { ...sale, id: crypto.randomUUID() }],
-    })),
+  addSale: (sale) => {
+    console.log("Store: Adding sale", sale);
+    set((state) => {
+      const newState = {
+        sales: [...state.sales, { ...sale, id: crypto.randomUUID() }],
+      };
+      console.log("Store: New state", newState);
+      return newState;
+    });
+  },
   updateSale: (sale) =>
     set((state) => ({
       sales: state.sales.map((s) => (s.id === sale.id ? sale : s)),

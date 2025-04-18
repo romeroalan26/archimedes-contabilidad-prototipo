@@ -41,6 +41,7 @@ export function SalesPage() {
     cashAmount?: number;
     creditAmount?: number;
   }) => {
+    console.log("handleCreateSale called with data:", data);
     const sale: Omit<Sale, "id"> = {
       ...data,
       date: new Date(),
@@ -51,6 +52,8 @@ export function SalesPage() {
       status: "pending",
       itbis: data.items.reduce((sum, item) => sum + item.itbis, 0),
     };
+
+    console.log("Created sale object:", sale);
 
     // Update inventory stock
     for (const item of data.items) {
@@ -65,7 +68,9 @@ export function SalesPage() {
       }
     }
 
+    console.log("Adding sale to store");
     addSale(sale);
+    console.log("Sale added to store");
   };
 
   return (

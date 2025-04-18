@@ -89,6 +89,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted", { selectedClient, items, saleType });
     if (!selectedClient) return;
 
     // Validate stock before submitting
@@ -102,7 +103,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       return;
     }
 
-    onSubmit({
+    const formData = {
       clientId: selectedClient.id,
       items: items.map((item) => ({ ...item, id: crypto.randomUUID() })),
       type: saleType,
@@ -111,7 +112,10 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
         : saleType === "cash"
           ? { cashAmount: calculateTotal() }
           : { creditAmount: calculateTotal() }),
-    });
+    };
+
+    console.log("Submitting form data:", formData);
+    onSubmit(formData);
   };
 
   const calculateTotal = () => {

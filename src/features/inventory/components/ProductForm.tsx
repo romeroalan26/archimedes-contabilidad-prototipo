@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Product } from "../types";
 import { useCreateProduct, useUpdateProduct } from "../hooks";
 import { getCategories } from "../services";
+import { UNIDADES_MEDIDA } from "../constants";
 
 interface ProductFormProps {
   product?: Product;
@@ -14,6 +15,8 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState(product?.unidad || "unidad");
+  const [showUnitDescription, setShowUnitDescription] = useState(false);
 
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
@@ -70,6 +73,10 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     }
   };
 
+  const selectedUnitDetails = UNIDADES_MEDIDA.find(
+    (u) => u.id === selectedUnit
+  );
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -99,7 +106,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -207,21 +214,52 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
               ))}
             </select>
           </div>
-          <div>
+          <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Unidad
+              Unidad de Medida
+              <button
+                type="button"
+                className="ml-2 text-gray-400 hover:text-gray-600"
+                onMouseEnter={() => setShowUnitDescription(true)}
+                onMouseLeave={() => setShowUnitDescription(false)}
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
             </label>
-            <input
-              type="text"
+            <select
               name="unidad"
-              defaultValue={product?.unidad}
+              value={selectedUnit}
+              onChange={(e) => setSelectedUnit(e.target.value)}
               required
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+            >
+              {UNIDADES_MEDIDA.map((unidad) => (
+                <option key={unidad.id} value={unidad.id}>
+                  {unidad.label}
+                </option>
+              ))}
+            </select>
+            {showUnitDescription && selectedUnitDetails && (
+              <div className="absolute z-10 mt-1 w-full p-2 bg-gray-100 border border-gray-200 rounded-md shadow-lg text-sm text-gray-600">
+                {selectedUnitDetails.description}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4">
+        <div className="flex justify-end space-x-3 mt-6">
           <button
             type="button"
             onClick={onClose}
