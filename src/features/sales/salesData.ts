@@ -9,6 +9,7 @@ export const mockClients: Client[] = [
     rnc: "123-456789-0",
     billingType: "contado",
     ncfType: "consumidor_final",
+    status: "activo"
   },
   {
     id: "2",
@@ -18,6 +19,7 @@ export const mockClients: Client[] = [
     rnc: "987-654321-0",
     billingType: "credito",
     ncfType: "credito_fiscal",
+    status: "activo"
   },
   {
     id: "3",
@@ -27,6 +29,7 @@ export const mockClients: Client[] = [
     rnc: "456-789012-0",
     billingType: "mixto",
     ncfType: "gubernamental",
+    status: "activo"
   },
 ];
 

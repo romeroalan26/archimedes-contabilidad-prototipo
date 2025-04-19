@@ -22,6 +22,7 @@ export async function saveClient(
     email: client.email || "",
     billingType: client.billingType,
     ncfType: client.ncfType,
+    status: client.status || "activo",
   };
 
   console.log("Cliente simulado guardado:", savedClient);
