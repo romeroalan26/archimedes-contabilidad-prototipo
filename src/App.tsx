@@ -14,11 +14,12 @@ import { PayrollDetailPage } from "./features/payroll/pages/PayrollDetailPage";
 import AssetsPage from "./features/assets/AssetsPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
-import { useAuth } from "./state/useAuth";
+import { useAuth } from "./stores/authStore";
 import { NCFPage } from "./features/ncf/NcfPage";
 import { Formato606Page } from "./features/dgiiFormats/606/Formato606Page";
 import { Formato607Page } from "./features/dgiiFormats/607/Formato607Page";
 import { EmployeeDetailsPage } from "./features/payroll/pages/EmployeeDetailsPage";
+import { ClientsPage } from "./features/clients/ClientsPage";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/tesoreria" element={<TreasuryPage />} />
           <Route path="/reportes" element={<ReportsPage />} />
           <Route path="/contabilidad" element={<AccountingPage />} />
+          <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/nomina">
             <Route index element={<PayrollPage />} />
             <Route path="historial" element={<PayrollHistoryPage />} />

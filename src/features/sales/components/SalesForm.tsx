@@ -12,6 +12,8 @@ interface SalesFormProps {
     type: SaleType;
     cashAmount?: number;
     creditAmount?: number;
+    advancePayment?: number;
+    remainingBalance?: number;
   }) => void;
 }
 
@@ -23,11 +25,15 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       quantity: number;
       price: number;
       itbis: number;
+      discount: number;
+      discountedSubtotal: number;
     }>
   >([]);
   const [saleType, setSaleType] = useState<SaleType>("cash");
   const [cashAmount, setCashAmount] = useState<number>(0);
   const [creditAmount, setCreditAmount] = useState<number>(0);
+  const [advancePayment, setAdvancePayment] = useState<number>(0);
+  const [remainingBalance, setRemainingBalance] = useState<number>(0);
 
   useEffect(() => {
     // Load inventory products
@@ -48,8 +54,21 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       setSaleType("cash");
       setCashAmount(0);
       setCreditAmount(0);
+      setAdvancePayment(0);
+      setRemainingBalance(0);
     }
   }, [selectedClient]);
+
+  // Calculate remaining balance whenever advance payment or total changes
+  useEffect(() => {
+    const total = calculateTotal();
+    if (saleType === "credit" || saleType === "mixed") {
+      const remaining = total - advancePayment;
+      setRemainingBalance(remaining >= 0 ? remaining : 0);
+    } else {
+      setRemainingBalance(0);
+    }
+  }, [advancePayment, items, saleType]);
 
   const handleAddItem = () => {
     setItems([
@@ -59,12 +78,25 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
         quantity: 1,
         price: 0,
         itbis: 0,
+        discount: 0,
+        discountedSubtotal: 0,
       },
     ]);
   };
 
   const handleRemoveItem = (index: number) => {
     setItems(items.filter((_, i) => i !== index));
+  };
+
+  const calculateSubtotal = (
+    quantity: number,
+    price: number,
+    itbis: number,
+    discount: number
+  ) => {
+    const subtotal = quantity * price + itbis;
+    const discountedAmount = subtotal * (discount / 100);
+    return subtotal - discountedAmount;
   };
 
   const handleItemChange = (
@@ -84,6 +116,17 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     }
 
     item[field] = value;
+
+    // Recalculate discounted subtotal whenever quantity, price, itbis, or discount changes
+    if (["quantity", "price", "itbis", "discount"].includes(field)) {
+      item.discountedSubtotal = calculateSubtotal(
+        item.quantity,
+        item.price,
+        item.itbis,
+        item.discount
+      );
+    }
+
     setItems(newItems);
   };
 
@@ -103,15 +146,37 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       return;
     }
 
+    // Validate advance payment
+    const total = calculateTotal();
+    if (advancePayment > total) {
+      alert("El avance no puede ser mayor al total de la venta");
+      return;
+    }
+
     const formData = {
       clientId: selectedClient.id,
-      items: items.map((item) => ({ ...item, id: crypto.randomUUID() })),
+      items: items.map((item) => ({
+        ...item,
+        id: crypto.randomUUID(),
+        discountedSubtotal: calculateSubtotal(
+          item.quantity,
+          item.price,
+          item.itbis,
+          item.discount
+        ),
+      })),
       type: saleType,
       ...(saleType === "mixed"
         ? { cashAmount, creditAmount }
         : saleType === "cash"
           ? { cashAmount: calculateTotal() }
           : { creditAmount: calculateTotal() }),
+      ...(saleType === "credit" || saleType === "mixed"
+        ? {
+            advancePayment,
+            remainingBalance: total - advancePayment,
+          }
+        : {}),
     };
 
     console.log("Submitting form data:", formData);
@@ -120,7 +185,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
 
   const calculateTotal = () => {
     return items.reduce((acc, item) => {
-      return acc + item.quantity * item.price + item.itbis;
+      return acc + item.discountedSubtotal;
     }, 0);
   };
 
@@ -175,6 +240,30 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
                 </div>
               </div>
             )}
+            {(saleType === "credit" || saleType === "mixed") && (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-gray-600">Avance:</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max={calculateTotal()}
+                    value={advancePayment}
+                    onChange={(e) => setAdvancePayment(Number(e.target.value))}
+                    className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-gray-600">Pendiente:</label>
+                  <input
+                    type="number"
+                    value={remainingBalance}
+                    readOnly
+                    className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -200,6 +289,9 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
                     Producto
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Detalles
+                  </th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Cantidad
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -207,6 +299,9 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ITBIS
+                  </th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Descuento (%)
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Subtotal
@@ -217,75 +312,128 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {items.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <select
-                        value={item.productId}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            "productId",
-                            Number(e.target.value)
-                          )
-                        }
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                      >
-                        <option value={0}>Seleccione un producto</option>
-                        {products
-                          .filter((p) => p.stock > 0)
-                          .map((product) => (
-                            <option key={product.id} value={product.id}>
-                              {product.nombre} (Stock: {product.stock})
-                            </option>
-                          ))}
-                      </select>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            "quantity",
-                            Number(e.target.value)
-                          )
-                        }
-                        className="block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                      />
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <input
-                        type="number"
-                        value={item.price}
-                        readOnly
-                        className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
-                      />
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <input
-                        type="number"
-                        value={item.itbis}
-                        readOnly
-                        className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
-                      />
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                      {(item.quantity * item.price + item.itbis).toFixed(2)}
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItem(index)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {items.map((item, index) => {
+                  const selectedProduct = products.find(
+                    (p) => p.id === item.productId
+                  );
+                  const subtotal = item.quantity * item.price + item.itbis;
+                  return (
+                    <tr key={index}>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <select
+                          value={item.productId}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "productId",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                        >
+                          <option value={0}>Seleccione un producto</option>
+                          {products
+                            .filter((p) => p.stock > 0)
+                            .map((product) => (
+                              <option key={product.id} value={product.id}>
+                                {product.nombre} (Stock: {product.stock})
+                              </option>
+                            ))}
+                        </select>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {selectedProduct && (
+                          <div className="group relative">
+                            <span className="text-sm text-gray-500 cursor-help">
+                              {selectedProduct.codigo} -{" "}
+                              {selectedProduct.unidad}
+                            </span>
+                            <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                              <p className="font-medium">
+                                {selectedProduct.nombre}
+                              </p>
+                              <p className="mt-1">
+                                {selectedProduct.descripcion}
+                              </p>
+                              <p className="mt-1">
+                                Código: {selectedProduct.codigo}
+                              </p>
+                              <p>Unidad: {selectedProduct.unidad}</p>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "quantity",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <input
+                          type="number"
+                          value={item.price}
+                          readOnly
+                          className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <input
+                          type="number"
+                          value={item.itbis}
+                          readOnly
+                          className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={item.discount}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "discount",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm">
+                          <div className="text-gray-500">
+                            {subtotal.toFixed(2)}
+                          </div>
+                          {item.discount > 0 && (
+                            <div className="text-green-600 font-medium">
+                              {item.discountedSubtotal.toFixed(2)}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(index)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -295,10 +443,25 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       <div className="flex-none p-4 border-t">
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600">
-            Total:{" "}
-            <span className="font-medium text-gray-900">
-              ${calculateTotal().toFixed(2)}
-            </span>
+            <div>
+              Subtotal:{" "}
+              <span className="font-medium text-gray-900">
+                $
+                {items
+                  .reduce(
+                    (acc, item) =>
+                      acc + (item.quantity * item.price + item.itbis),
+                    0
+                  )
+                  .toFixed(2)}
+              </span>
+            </div>
+            <div>
+              Total con descuentos:{" "}
+              <span className="font-medium text-green-600">
+                ${calculateTotal().toFixed(2)}
+              </span>
+            </div>
           </div>
           <button
             type="submit"

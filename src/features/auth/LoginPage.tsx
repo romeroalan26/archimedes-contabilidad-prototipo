@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../state/useAuth";
+import { useAuth } from "../../stores/authStore";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -87,7 +87,10 @@ export default function LoginPage() {
           <div className="text-center text-sm text-gray-600">
             <p>
               ¿Olvidaste tu contraseña?{" "}
-              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">
+              <a
+                href="#"
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
                 Recupérala aquí
               </a>
             </p>

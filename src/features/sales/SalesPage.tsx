@@ -41,6 +41,8 @@ export function SalesPage() {
     type: SaleType;
     cashAmount?: number;
     creditAmount?: number;
+    advancePayment?: number;
+    remainingBalance?: number;
   }) => {
     // Verificar que haya productos seleccionados
     if (!data.items || data.items.length === 0) {
@@ -57,6 +59,10 @@ export function SalesPage() {
       ),
       status: "pending",
       itbis: data.items.reduce((sum, item) => sum + item.itbis, 0),
+      advancePayment: data.advancePayment || 0,
+      remainingBalance: data.remainingBalance || 0,
+      payments: [],
+      totalPaid: data.advancePayment || 0,
     };
 
     console.log("Created sale object:", sale);
@@ -85,7 +91,7 @@ export function SalesPage() {
   return (
     <div className="h-full flex flex-col">
       {showSuccessMessage && (
-        <div className="fixed bottom-4 md:bottom-auto md:top-4 left-0 right-0 md:left-auto md:right-4 mx-auto w-max bg-white border-l-4 border-green-500 text-gray-800 p-4 rounded shadow-lg z-50 flex items-center animate-slide-up md:animate-slide-in">
+        <div className="fixed top-4 left-0 right-0 mx-auto w-96 bg-white border-l-4 border-green-500 text-gray-800 p-4 rounded shadow-lg z-50 flex items-center animate-slide-in">
           <div className="flex-shrink-0 mr-3">
             <svg
               className="h-6 w-6 text-green-500"

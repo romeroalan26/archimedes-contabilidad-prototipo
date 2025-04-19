@@ -1,5 +1,9 @@
 import { Sale } from "../types";
 import { useClientStore } from "../../../stores/clientStore";
+import { generateInvoicePDF } from "./InvoicePDF";
+import { SalePayments } from "./SalePayments";
+import { useSalesStore } from "../../../stores/salesStore";
+import { formatCurrency } from "../../../utils/formatters";
 
 interface SaleDetailsModalProps {
   sale: Sale | null;
@@ -9,8 +13,62 @@ interface SaleDetailsModalProps {
 export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
   const clients = useClientStore((state) => state.clients);
   const client = clients.find((c) => c.id === sale?.clientId);
+  const updateSale = useSalesStore((state) => state.updateSale);
 
   if (!sale) return null;
+
+  const handlePrintInvoice = () => {
+    if (client) {
+      generateInvoicePDF({ sale, client });
+    }
+  };
+
+  const handleUpdateSale = (updatedSale: Sale) => {
+    updateSale(updatedSale);
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "partial":
+        return "bg-yellow-100 text-yellow-800";
+      case "pending":
+        return "bg-red-100 text-red-800";
+      case "cancelled":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "Completado";
+      case "partial":
+        return "Parcial";
+      case "pending":
+        return "Pendiente";
+      case "cancelled":
+        return "Cancelado";
+      default:
+        return status;
+    }
+  };
+
+  const getSaleTypeLabel = (type: string) => {
+    switch (type) {
+      case "cash":
+        return "Contado";
+      case "credit":
+        return "Crédito";
+      case "mixed":
+        return "Mixto";
+      default:
+        return type;
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
@@ -19,24 +77,45 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
           <h2 className="text-xl font-semibold text-gray-800">
             Detalles de Venta
           </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={handlePrintInvoice}
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+              <svg
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                />
+              </svg>
+              Imprimir Factura
+            </button>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="p-6 overflow-y-auto">
@@ -62,30 +141,30 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
                   <dt className="text-sm text-gray-500">Estado</dt>
                   <dd>
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        sale.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : sale.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                      }`}
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                        sale.status
+                      )}`}
                     >
-                      {sale.status === "completed"
-                        ? "Completada"
-                        : sale.status === "pending"
-                          ? "Pendiente"
-                          : "Cancelada"}
+                      {getStatusLabel(sale.status)}
                     </span>
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-gray-500">Tipo de Venta</dt>
+                  <dt className="text-sm text-gray-500">Tipo</dt>
                   <dd className="text-sm font-medium text-gray-900">
-                    {sale.type === "cash"
-                      ? "Contado"
-                      : sale.type === "credit"
-                        ? "Crédito"
-                        : "Mixta"}
+                    {getSaleTypeLabel(sale.type)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-sm text-gray-500">Total</dt>
+                  <dd className="text-sm font-medium text-gray-900">
+                    {formatCurrency(sale.total)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-sm text-gray-500">ITBIS</dt>
+                  <dd className="text-sm font-medium text-gray-900">
+                    {formatCurrency(sale.itbis)}
                   </dd>
                 </div>
                 {sale.type === "mixed" && (
@@ -95,13 +174,31 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
                         Monto en Efectivo
                       </dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        ${sale.cashAmount?.toFixed(2)}
+                        {formatCurrency(sale.cashAmount || 0)}
                       </dd>
                     </div>
                     <div>
                       <dt className="text-sm text-gray-500">Monto a Crédito</dt>
                       <dd className="text-sm font-medium text-gray-900">
-                        ${sale.creditAmount?.toFixed(2)}
+                        {formatCurrency(sale.creditAmount || 0)}
+                      </dd>
+                    </div>
+                  </>
+                )}
+                {sale.type === "credit" && (
+                  <>
+                    <div>
+                      <dt className="text-sm text-gray-500">Avance</dt>
+                      <dd className="text-sm font-medium text-gray-900">
+                        {formatCurrency(sale.advancePayment || 0)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-sm text-gray-500">
+                        Balance Pendiente
+                      </dt>
+                      <dd className="text-sm font-medium text-gray-900">
+                        {formatCurrency(sale.remainingBalance || 0)}
                       </dd>
                     </div>
                   </>
@@ -110,79 +207,78 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Totales</h3>
-              <dl className="mt-2 space-y-2">
-                <div>
-                  <dt className="text-sm text-gray-500">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    ${(sale.total - sale.itbis).toFixed(2)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">ITBIS</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    ${sale.itbis.toFixed(2)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">Total</dt>
-                  <dd className="text-lg font-bold text-gray-900">
-                    ${sale.total.toFixed(2)}
-                  </dd>
-                </div>
-              </dl>
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                Productos
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Producto
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Cantidad
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Precio
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        ITBIS
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Subtotal
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {sale.items.map((item) => (
+                      <tr key={item.id}>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                          {item.productId}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                          {item.quantity}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                          {formatCurrency(item.price)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                          {formatCurrency(item.itbis)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                          {formatCurrency(item.quantity * item.price)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-gray-50">
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-3 py-2 text-right text-sm font-medium text-gray-500"
+                      >
+                        Total:
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {formatCurrency(sale.total)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div className="mt-8">
-            <h3 className="text-sm font-medium text-gray-500 mb-4">
-              Productos
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      Producto
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      Cantidad
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      Precio
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      ITBIS
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                      Subtotal
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {sale.items.map((item) => (
-                    <tr key={item.id}>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                        {item.productId}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                        {item.quantity}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                        ${item.price.toFixed(2)}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                        ${item.itbis.toFixed(2)}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                        ${(item.quantity * item.price + item.itbis).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Sección de Pagos */}
+          {(sale.type === "credit" || sale.type === "mixed") && (
+            <div className="mt-6">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                Historial de Pagos
+              </h3>
+              <SalePayments sale={sale} onUpdateSale={handleUpdateSale} />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

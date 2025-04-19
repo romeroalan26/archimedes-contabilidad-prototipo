@@ -10,22 +10,33 @@ type SalesStore = {
 
 export const useSalesStore = create<SalesStore>((set) => ({
   sales: [],
-  addSale: (sale) => {
-    console.log("Store: Adding sale", sale);
-    set((state) => {
-      const newState = {
-        sales: [...state.sales, { ...sale, id: crypto.randomUUID() }],
-      };
-      console.log("Store: New state", newState);
-      return newState;
-    });
+
+  addSale: (saleData) => {
+    const newSale: Sale = {
+      ...saleData,
+      id: crypto.randomUUID(),
+      payments: [],
+      totalPaid: saleData.advancePayment || 0,
+      remainingBalance: saleData.total - (saleData.advancePayment || 0),
+      status:
+        saleData.advancePayment && saleData.advancePayment > 0
+          ? "partial"
+          : "pending",
+    };
+    set((state) => ({ sales: [...state.sales, newSale] }));
   },
-  updateSale: (sale) =>
+
+  updateSale: (updatedSale) => {
     set((state) => ({
-      sales: state.sales.map((s) => (s.id === sale.id ? sale : s)),
-    })),
-  removeSale: (id) =>
+      sales: state.sales.map((sale) =>
+        sale.id === updatedSale.id ? updatedSale : sale
+      ),
+    }));
+  },
+
+  removeSale: (id) => {
     set((state) => ({
-      sales: state.sales.filter((s) => s.id !== id),
-    })),
+      sales: state.sales.filter((sale) => sale.id !== id),
+    }));
+  },
 }));
