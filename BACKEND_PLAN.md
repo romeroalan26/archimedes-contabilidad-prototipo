@@ -12,6 +12,7 @@ Definir las estructuras de datos necesarias para cada módulo del sistema contab
 
 ### 2. Módulos incluidos
 
+- Clientes ✅
 - Ventas ✅
 - Inventario ⏳
 - Compras ⏳
@@ -39,20 +40,11 @@ Cada módulo tendrá su propia sección con:
 
 ---
 
-## ✅ Módulo de Ventas (validado)
+## ✅ Módulo de Clientes (nuevo)
 
-🔁 **Importado desde canvas `Ventas Esquema Datos Backend`**
+El módulo de Clientes gestiona toda la información relacionada con los clientes del sistema, permitiendo su reutilización en diferentes módulos como Ventas, Reportes, Tesorería y DGII.
 
-- Entidades: Venta, Cliente, Producto, DetalleVenta
-- Relaciones:
-  - Cliente 1:N Ventas
-  - Venta 1:N DetalleVenta
-  - Producto 1:N DetalleVenta
-- Ver estructura en canvas correspondiente
-
-### 📌 Clientes (gestionados dentro del módulo de Ventas)
-
-Aunque no hay un módulo independiente de clientes, el formulario y la lista de clientes están contenidos en el flujo de ventas. La entidad `Client` tiene la siguiente estructura:
+### 📌 Entidad Cliente
 
 ```ts
 interface Client {
@@ -70,9 +62,8 @@ interface Client {
 }
 ```
 
-- Relación: Cliente 1:N Venta
 - Validaciones: `name` y `rnc` obligatorios (Zod), `email` y `phone` opcionales
-- Este cliente se selecciona al momento de crear una venta
+- Los clientes son entidades centrales que pueden ser referenciadas desde múltiples módulos
 
 #### Ejemplo de JSON:
 
@@ -87,6 +78,19 @@ interface Client {
   "ncfType": "credito_fiscal"
 }
 ```
+
+---
+
+## ✅ Módulo de Ventas
+
+🔁 **Importado desde canvas `Ventas Esquema Datos Backend`**
+
+- Entidades: Venta, Producto, DetalleVenta
+- Relaciones:
+  - Cliente 1:N Ventas (referencia al módulo de Clientes)
+  - Venta 1:N DetalleVenta
+  - Producto 1:N DetalleVenta
+- Ver estructura en canvas correspondiente
 
 ---
 

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sale } from "../types";
 import { SaleDetailsModal } from "./SaleDetailsModal";
 import { generateInvoicePDF } from "./InvoicePDF";
 import { useClientStore } from "../../../stores/clientStore";
+import { Product } from "../../inventory/types";
+import { getProducts } from "../../inventory/services";
 
 interface SalesHistoryProps {
   sales: Sale[];
@@ -12,7 +14,25 @@ interface SalesHistoryProps {
 
 export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
   const clients = useClientStore((state) => state.clients);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const inventoryProducts = await getProducts();
+        setProducts(inventoryProducts);
+      } catch (error) {
+        console.error("Error loading products:", error);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  const getProductName = (productId: number) => {
+    const product = products.find((p) => p.id === productId);
+    return product ? product.nombre : `Producto ${productId}`;
+  };
 
   console.log("SalesHistory received sales:", sales);
 
@@ -56,6 +76,9 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                 Cliente
               </th>
               <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Productos
+              </th>
+              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Total
               </th>
               <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -87,6 +110,11 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                 <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                   {sale.clientId}
                 </td>
+                <td className="px-3 py-2 text-sm text-gray-500">
+                  {sale.items
+                    .map((item) => getProductName(item.productId))
+                    .join(", ")}
+                </td>
                 <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                   ${sale.total.toFixed(2)}
                 </td>
@@ -98,16 +126,20 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       sale.status === "completed"
                         ? "bg-green-100 text-green-800"
-                        : sale.status === "pending"
+                        : sale.status === "partial"
                           ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
+                          : sale.status === "pending"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-gray-100 text-gray-800"
                     }`}
                   >
                     {sale.status === "completed"
                       ? "Completada"
-                      : sale.status === "pending"
-                        ? "Pendiente"
-                        : "Cancelada"}
+                      : sale.status === "partial"
+                        ? "Parcial"
+                        : sale.status === "pending"
+                          ? "Pendiente"
+                          : "Cancelada"}
                   </span>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">

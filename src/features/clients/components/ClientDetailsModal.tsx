@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Client } from "../../../types/types";
 import { useClientStore } from "../../../stores/clientStore";
 import { ClientForm } from "../../../components/ClientForm";
@@ -11,12 +11,17 @@ interface ClientDetailsModalProps {
 }
 
 export function ClientDetailsModal({
-  client,
+  client: initialClient,
   onClose,
 }: ClientDetailsModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const updateClient = useClientStore((state) => state.updateClient);
   const sales = useSalesStore((state) => state.sales);
+
+  // Obtener el cliente actualizado del store
+  const clients = useClientStore((state) => state.clients);
+  const client =
+    clients.find((c) => c.id === initialClient.id) || initialClient;
 
   // Filter sales for this client
   const clientSales = sales.filter((sale) => sale.clientId === client.id);
@@ -109,6 +114,7 @@ export function ClientDetailsModal({
                 defaultValues={client}
                 isEdit={true}
                 onClose={handleCloseEdit}
+                onSubmit={handleUpdateClient}
               />
             </div>
           ) : (
@@ -159,8 +165,14 @@ export function ClientDetailsModal({
                   <div>
                     <dt className="text-sm text-gray-500">Estado</dt>
                     <dd>
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Activo
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          client.status === "activo"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {client.status === "activo" ? "Activo" : "Inactivo"}
                       </span>
                     </dd>
                   </div>

@@ -17,6 +17,7 @@ const clientSchema = z.object({
     "gubernamental",
     "regimen_especial",
   ]),
+  status: z.enum(["activo", "inactivo"]).default("activo"),
 });
 
 type ClientFormData = z.infer<typeof clientSchema>;
@@ -25,12 +26,14 @@ interface ClientFormProps {
   defaultValues?: Client;
   isEdit?: boolean;
   onClose?: () => void;
+  onSubmit?: (client: Client) => void;
 }
 
 export function ClientForm({
   defaultValues,
   isEdit = false,
   onClose,
+  onSubmit: onSubmitProp,
 }: ClientFormProps) {
   const addClient = useClientStore((state) => state.addClient);
   const updateClient = useClientStore((state) => state.updateClient);
@@ -49,6 +52,7 @@ export function ClientForm({
       email: "",
       billingType: "contado",
       ncfType: "consumidor_final",
+      status: "activo",
     },
   });
 
@@ -65,9 +69,12 @@ export function ClientForm({
     };
 
     if (isEdit && defaultValues) {
-      updateClient({ ...newClient, id: defaultValues.id });
+      const updatedClient = { ...newClient, id: defaultValues.id };
+      updateClient(updatedClient);
+      onSubmitProp?.(updatedClient);
     } else {
       addClient(newClient);
+      onSubmitProp?.(newClient);
     }
 
     onClose?.();
@@ -163,6 +170,22 @@ export function ClientForm({
         </select>
         {errors.ncfType && (
           <p className="mt-1 text-sm text-red-600">{errors.ncfType.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Estado
+        </label>
+        <select
+          {...register("status")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+        {errors.status && (
+          <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>
         )}
       </div>
 

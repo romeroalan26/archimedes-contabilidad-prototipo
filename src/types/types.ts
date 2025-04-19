@@ -37,6 +37,13 @@ export interface Client {
     | "credito_fiscal"
     | "gubernamental"
     | "regimen_especial";
+
+  /**
+   * Client's status in the system:
+   * - activo: Active client
+   * - inactivo: Inactive client
+   */
+  status: "activo" | "inactivo";
 }
 
 /**

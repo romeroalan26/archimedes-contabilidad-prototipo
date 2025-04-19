@@ -45,11 +45,13 @@ export function SalePayments({ sale, onUpdateSale }: SalePaymentsProps) {
     const remainingBalance = sale.total - totalPaid;
 
     // Determinar el nuevo estado
-    let newStatus = sale.status;
-    if (remainingBalance === 0) {
+    let newStatus: Sale["status"];
+    if (remainingBalance <= 0) {
       newStatus = "completed";
     } else if (totalPaid > 0) {
       newStatus = "partial";
+    } else {
+      newStatus = "pending";
     }
 
     const updatedSale: Sale = {

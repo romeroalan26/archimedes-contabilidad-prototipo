@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Sale } from "../features/sales/types";
 
 type SalesStore = {
@@ -8,35 +9,42 @@ type SalesStore = {
   removeSale: (id: string) => void;
 };
 
-export const useSalesStore = create<SalesStore>((set) => ({
-  sales: [],
+export const useSalesStore = create<SalesStore>()(
+  persist(
+    (set) => ({
+      sales: [],
 
-  addSale: (saleData) => {
-    const newSale: Sale = {
-      ...saleData,
-      id: crypto.randomUUID(),
-      payments: [],
-      totalPaid: saleData.advancePayment || 0,
-      remainingBalance: saleData.total - (saleData.advancePayment || 0),
-      status:
-        saleData.advancePayment && saleData.advancePayment > 0
-          ? "partial"
-          : "pending",
-    };
-    set((state) => ({ sales: [...state.sales, newSale] }));
-  },
+      addSale: (saleData) => {
+        const newSale: Sale = {
+          ...saleData,
+          id: crypto.randomUUID(),
+          payments: [],
+          totalPaid: saleData.advancePayment || 0,
+          remainingBalance: saleData.total - (saleData.advancePayment || 0),
+          status:
+            saleData.advancePayment && saleData.advancePayment > 0
+              ? "partial"
+              : "pending",
+        };
+        set((state) => ({ sales: [...state.sales, newSale] }));
+      },
 
-  updateSale: (updatedSale) => {
-    set((state) => ({
-      sales: state.sales.map((sale) =>
-        sale.id === updatedSale.id ? updatedSale : sale
-      ),
-    }));
-  },
+      updateSale: (updatedSale) => {
+        set((state) => ({
+          sales: state.sales.map((sale) =>
+            sale.id === updatedSale.id ? updatedSale : sale
+          ),
+        }));
+      },
 
-  removeSale: (id) => {
-    set((state) => ({
-      sales: state.sales.filter((sale) => sale.id !== id),
-    }));
-  },
-}));
+      removeSale: (id) => {
+        set((state) => ({
+          sales: state.sales.filter((sale) => sale.id !== id),
+        }));
+      },
+    }),
+    {
+      name: "sales-storage",
+    }
+  )
+);

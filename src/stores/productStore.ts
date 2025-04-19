@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface Product {
   id: number;
@@ -14,31 +15,40 @@ interface ProductStore {
   removeProduct: (id: number) => void;
 }
 
-export const useProductStore = create<ProductStore>((set) => ({
-  products: [
+export const useProductStore = create<ProductStore>()(
+  persist(
+    (set) => ({
+      products: [
+        {
+          id: 1,
+          name: "Producto 1",
+          price: 100,
+          itbis: 18,
+        },
+        {
+          id: 2,
+          name: "Producto 2",
+          price: 200,
+          itbis: 36,
+        },
+      ],
+      addProduct: (product) =>
+        set((state) => ({
+          products: [...state.products, product],
+        })),
+      updateProduct: (product) =>
+        set((state) => ({
+          products: state.products.map((p) =>
+            p.id === product.id ? product : p
+          ),
+        })),
+      removeProduct: (id) =>
+        set((state) => ({
+          products: state.products.filter((p) => p.id !== id),
+        })),
+    }),
     {
-      id: 1,
-      name: "Producto 1",
-      price: 100,
-      itbis: 18,
-    },
-    {
-      id: 2,
-      name: "Producto 2",
-      price: 200,
-      itbis: 36,
-    },
-  ],
-  addProduct: (product) =>
-    set((state) => ({
-      products: [...state.products, product],
-    })),
-  updateProduct: (product) =>
-    set((state) => ({
-      products: state.products.map((p) => (p.id === product.id ? product : p)),
-    })),
-  removeProduct: (id) =>
-    set((state) => ({
-      products: state.products.filter((p) => p.id !== id),
-    })),
-}));
+      name: "inventory-storage",
+    }
+  )
+);
