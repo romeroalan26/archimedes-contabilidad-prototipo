@@ -14,6 +14,7 @@ import { updateProduct, getProductById } from "../inventory/services";
 export function SalesPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [activeTab, setActiveTab] = useState<"new" | "history">("new");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const clients = useClientStore((state) => state.clients);
   const {
     data: statements,
@@ -41,6 +42,11 @@ export function SalesPage() {
     cashAmount?: number;
     creditAmount?: number;
   }) => {
+    // Verificar que haya productos seleccionados
+    if (!data.items || data.items.length === 0) {
+      return; // No mostrar mensaje si no hay productos
+    }
+
     console.log("handleCreateSale called with data:", data);
     const sale: Omit<Sale, "id"> = {
       ...data,
@@ -63,7 +69,6 @@ export function SalesPage() {
         });
       } catch (error) {
         console.error("Error updating product stock:", error);
-        // You might want to show an error message to the user here
         return;
       }
     }
@@ -71,32 +76,65 @@ export function SalesPage() {
     console.log("Adding sale to store");
     addSale(sale);
     console.log("Sale added to store");
+
+    // Show success message
+    setShowSuccessMessage(true);
+    setTimeout(() => setShowSuccessMessage(false), 3000);
   };
 
   return (
     <div className="h-full flex flex-col">
+      {showSuccessMessage && (
+        <div className="fixed bottom-4 md:bottom-auto md:top-4 left-0 right-0 md:left-auto md:right-4 mx-auto w-max bg-white border-l-4 border-green-500 text-gray-800 p-4 rounded shadow-lg z-50 flex items-center animate-slide-up md:animate-slide-in">
+          <div className="flex-shrink-0 mr-3">
+            <svg
+              className="h-6 w-6 text-green-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <div>
+            <p className="font-medium">Venta creada exitosamente</p>
+            <p className="text-sm text-gray-500">
+              La venta ha sido registrada en el sistema
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex-none p-4 border-b">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setActiveTab("new")}
-            className={`px-4 py-2 text-sm font-medium rounded-md ${
-              activeTab === "new"
-                ? "bg-indigo-100 text-indigo-700"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Nueva Venta
-          </button>
-          <button
-            onClick={() => setActiveTab("history")}
-            className={`px-4 py-2 text-sm font-medium rounded-md ${
-              activeTab === "history"
-                ? "bg-indigo-100 text-indigo-700"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Historial
-          </button>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-gray-900">Ventas</h1>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setActiveTab("new")}
+              className={`px-4 py-2 rounded-md ${
+                activeTab === "new"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Nueva Venta
+            </button>
+            <button
+              onClick={() => setActiveTab("history")}
+              className={`px-4 py-2 rounded-md ${
+                activeTab === "history"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Historial
+            </button>
+          </div>
         </div>
       </div>
 
