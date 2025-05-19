@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Sale } from "../types";
 import { useClientStore } from "../../../stores/clientStore";
 import { generateInvoicePDF } from "./InvoicePDF";
 import { SalePayments } from "./SalePayments";
 import { useSalesStore } from "../../../stores/salesStore";
 import { formatCurrency } from "../../../utils/formatters";
+import { Product } from "../../inventory/types";
+import { getProducts } from "../../inventory/services";
 
 interface SaleDetailsModalProps {
   sale: Sale | null;
@@ -14,6 +17,9 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
   const clients = useClientStore((state) => state.clients);
   const client = clients.find((c) => c.id === sale?.clientId);
   const updateSale = useSalesStore((state) => state.updateSale);
+  const [activeTab, setActiveTab] = useState<"info" | "payments">("info");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
 
   if (!sale) return null;
 
@@ -70,20 +76,51 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
     }
   };
 
+  const loadProductDetails = async () => {
+    if (products.length > 0) return;
+
+    setIsLoadingProducts(true);
+    try {
+      const productData = await getProducts();
+      setProducts(productData);
+    } catch (error) {
+      console.error("Error al cargar los productos:", error);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  const getProductName = (productId: number) => {
+    const product = products.find((p) => p.id === productId);
+    return product ? product.nombre : `Producto ${productId}`;
+  };
+
+  // Cargar productos cuando se abre el modal
+  if (products.length === 0 && !isLoadingProducts) {
+    loadProductDetails();
+  }
+
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-        <div className="px-6 py-4 border-b flex justify-between items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Encabezado */}
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10 rounded-t-lg">
           <h2 className="text-xl font-semibold text-gray-800">
             Detalles de Venta
+            <span className="ml-2 text-sm font-normal text-gray-500">
+              #{sale.id.substring(0, 8)}
+            </span>
           </h2>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <button
               onClick={handlePrintInvoice}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             >
               <svg
-                className="h-4 w-4 mr-1"
+                className="h-4 w-4 mr-1.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -99,10 +136,11 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
             </button>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full p-1.5 transition-colors"
+              aria-label="Cerrar"
             >
               <svg
-                className="h-6 w-6"
+                className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -118,164 +156,238 @@ export function SaleDetailsModal({ sale, onClose }: SaleDetailsModalProps) {
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">
-                Información General
-              </h3>
-              <dl className="mt-2 space-y-2">
-                <div>
-                  <dt className="text-sm text-gray-500">Fecha</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {new Date(sale.date).toLocaleString()}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">Cliente</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {client?.name || sale.clientId}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">Estado</dt>
-                  <dd>
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                        sale.status
-                      )}`}
-                    >
-                      {getStatusLabel(sale.status)}
-                    </span>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">Tipo</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {getSaleTypeLabel(sale.type)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">Total</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {formatCurrency(sale.total)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-gray-500">ITBIS</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {formatCurrency(sale.itbis)}
-                  </dd>
-                </div>
-                {sale.type === "mixed" && (
-                  <>
-                    <div>
-                      <dt className="text-sm text-gray-500">
-                        Monto en Efectivo
-                      </dt>
-                      <dd className="text-sm font-medium text-gray-900">
-                        {formatCurrency(sale.cashAmount || 0)}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-gray-500">Monto a Crédito</dt>
-                      <dd className="text-sm font-medium text-gray-900">
-                        {formatCurrency(sale.creditAmount || 0)}
-                      </dd>
-                    </div>
-                  </>
+        {/* Pestañas */}
+        <div className="border-b border-gray-200">
+          <nav className="flex px-6 -mb-px">
+            <button
+              onClick={() => setActiveTab("info")}
+              className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "info"
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Información General
+            </button>
+            {(sale.type === "credit" || sale.type === "mixed") && (
+              <button
+                onClick={() => setActiveTab("payments")}
+                className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "payments"
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                Pagos
+                {sale.payments.length > 0 && (
+                  <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-800">
+                    {sale.payments.length}
+                  </span>
                 )}
-                {sale.type === "credit" && (
-                  <>
-                    <div>
-                      <dt className="text-sm text-gray-500">Avance</dt>
-                      <dd className="text-sm font-medium text-gray-900">
-                        {formatCurrency(sale.advancePayment || 0)}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-gray-500">
-                        Balance Pendiente
-                      </dt>
-                      <dd className="text-sm font-medium text-gray-900">
-                        {formatCurrency(sale.remainingBalance || 0)}
-                      </dd>
-                    </div>
-                  </>
-                )}
-              </dl>
-            </div>
+              </button>
+            )}
+          </nav>
+        </div>
 
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
-                Productos
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Producto
-                      </th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Cantidad
-                      </th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Precio
-                      </th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ITBIS
-                      </th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Subtotal
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {sale.items.map((item) => (
-                      <tr key={item.id}>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {item.productId}
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {item.quantity}
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(item.price)}
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(item.itbis)}
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(item.quantity * item.price)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot className="bg-gray-50">
-                    <tr>
-                      <td
-                        colSpan={4}
-                        className="px-3 py-2 text-right text-sm font-medium text-gray-500"
+        {/* Contenido principal */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {activeTab === "info" ? (
+            <div className="space-y-8">
+              {/* Encabezado de venta */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="flex flex-wrap justify-between items-start">
+                  {/* Info del cliente */}
+                  <div className="mb-4 md:mb-0">
+                    <h3 className="text-sm font-medium text-gray-900 mb-1">
+                      Cliente
+                    </h3>
+                    <p className="text-base font-semibold text-gray-900">
+                      {client?.name || "Cliente no encontrado"}
+                    </p>
+                    {client?.rnc && (
+                      <p className="text-sm text-gray-600">RNC: {client.rnc}</p>
+                    )}
+                    {client?.address && (
+                      <p className="text-sm text-gray-600">{client.address}</p>
+                    )}
+                  </div>
+
+                  {/* Info de la venta */}
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-center mb-1">
+                      <span className="text-sm text-gray-500 mr-2">
+                        Estado:
+                      </span>
+                      <span
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                          sale.status
+                        )}`}
                       >
-                        Total:
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {formatCurrency(sale.total)}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+                        {getStatusLabel(sale.status)}
+                      </span>
+                    </div>
+                    <div className="flex items-center mb-1">
+                      <span className="text-sm text-gray-500 mr-2">Tipo:</span>
+                      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {getSaleTypeLabel(sale.type)}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Fecha: {new Date(sale.date).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resumen financiero */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Total venta */}
+                <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">
+                    Total
+                  </h3>
+                  <p className="text-2xl font-bold text-indigo-600">
+                    {formatCurrency(sale.total)}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    ITBIS: {formatCurrency(sale.itbis)}
+                  </p>
+                </div>
+
+                {/* Pagado */}
+                <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">
+                    Pagado
+                  </h3>
+                  <p className="text-2xl font-bold text-green-600">
+                    {formatCurrency(sale.totalPaid)}
+                  </p>
+                  {sale.type !== "cash" && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Avance inicial: {formatCurrency(sale.advancePayment || 0)}
+                    </p>
+                  )}
+                </div>
+
+                {/* Pendiente (solo para credito o mixto) */}
+                {(sale.type === "credit" || sale.type === "mixed") && (
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">
+                      Pendiente
+                    </h3>
+                    <p className="text-2xl font-bold text-red-600">
+                      {formatCurrency(sale.remainingBalance || 0)}
+                    </p>
+                    {sale.type === "mixed" && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        A crédito: {formatCurrency(sale.creditAmount || 0)}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Lista de productos */}
+              <div>
+                <h3 className="text-base font-medium text-gray-900 mb-3">
+                  Productos
+                </h3>
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Producto
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Cantidad
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Precio Unitario
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            ITBIS
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Subtotal
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {isLoadingProducts ? (
+                          <tr>
+                            <td
+                              colSpan={5}
+                              className="px-4 py-4 text-center text-sm text-gray-500"
+                            >
+                              Cargando productos...
+                            </td>
+                          </tr>
+                        ) : (
+                          sale.items.map((item) => (
+                            <tr key={item.id} className="hover:bg-gray-50">
+                              <td className="px-4 py-3 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {getProductName(item.productId)}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  ID: {item.productId}
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                                {item.quantity}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                {formatCurrency(item.price)}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-right">
+                                {formatCurrency(item.itbis)}
+                              </td>
+                              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                                {formatCurrency(
+                                  item.quantity * item.price + item.itbis
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                      <tfoot className="bg-gray-50">
+                        <tr>
+                          <td
+                            colSpan={4}
+                            className="px-4 py-3 text-right text-sm font-medium text-gray-900"
+                          >
+                            Total:
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                            {formatCurrency(sale.total)}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Sección de Pagos */}
-          {(sale.type === "credit" || sale.type === "mixed") && (
-            <div className="mt-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">
-                Historial de Pagos
-              </h3>
+          ) : (
+            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               <SalePayments sale={sale} onUpdateSale={handleUpdateSale} />
             </div>
           )}

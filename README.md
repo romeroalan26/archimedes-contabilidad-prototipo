@@ -102,11 +102,13 @@ El módulo de nómina permite gestionar el proceso de cálculo y pago de salario
 El módulo soporta la exportación de reportes en los siguientes formatos:
 
 1. **TSS (Tesoreria de la Seguridad Social)**
+
    - Formato estándar para reportes de nómina
    - Validación de datos requeridos
    - Generación de archivo plano
 
 2. **Excel**
+
    - Resumen de nóminas
    - Totales y subtotales
    - Formato profesional con estilos
@@ -170,3 +172,19 @@ npm run build
 ```bash
 npm test
 ```
+
+## Configuración de Variables de Entorno
+
+El proyecto utiliza las siguientes variables de entorno que deben ser configuradas:
+
+1. Crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+
+```
+# URL base de la API
+VITE_API_URL=https://api.sistemacontable.lat/api
+
+# ID de la empresa para operaciones con clientes y otros recursos
+VITE_EMPRESA_ID=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df
+```
+
+Nota: Reemplaza estos valores con los apropiados para tu entorno específico.

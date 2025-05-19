@@ -17,6 +17,9 @@ export interface Client {
   /** Optional email address */
   email?: string;
 
+  /** Optional address */
+  address?: string;
+
   /**
    * Indicates the client's preferred billing type:
    * - contado: Cash payment
