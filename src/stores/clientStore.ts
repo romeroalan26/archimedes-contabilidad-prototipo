@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Client } from "../types/types";
-import { mockClients } from "../features/sales/salesData";
 
 interface ClientStore {
   clients: Client[];
+  setClients: (clients: Client[]) => void;
   addClient: (client: Client) => void;
   updateClient: (client: Client) => void;
   deleteClient: (id: string) => void;
@@ -13,7 +13,8 @@ interface ClientStore {
 export const useClientStore = create<ClientStore>()(
   persist(
     (set) => ({
-      clients: mockClients,
+      clients: [],
+      setClients: (clients) => set({ clients }),
       addClient: (client) =>
         set((state) => ({
           clients: [...state.clients, client],
