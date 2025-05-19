@@ -5,16 +5,15 @@ import NcfSummary from "./NcfSummary";
 
 export function NCFPage() {
   const [showForm, setShowForm] = useState(false);
-  const [ncfList, setNcfList] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [ncfList] = useState([]);
 
   const handleSubmit = (data: any) => {
     console.log("NCF submitted:", data);
     setShowForm(false);
   };
 
-  const handleFiltersChange = (newFilters: any) => {
-    setFilters(newFilters);
+  const handleFiltersChange = (_: any) => {
+    // Process filters here
   };
 
   return (

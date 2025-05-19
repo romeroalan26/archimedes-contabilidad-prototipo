@@ -19,12 +19,20 @@ export const useSalesStore = create<SalesStore>()(
           ...saleData,
           id: crypto.randomUUID(),
           payments: [],
-          totalPaid: saleData.advancePayment || 0,
-          remainingBalance: saleData.total - (saleData.advancePayment || 0),
+          totalPaid:
+            saleData.type === "cash"
+              ? saleData.total
+              : saleData.advancePayment || 0,
+          remainingBalance:
+            saleData.type === "cash"
+              ? 0
+              : saleData.total - (saleData.advancePayment || 0),
           status:
-            saleData.advancePayment && saleData.advancePayment > 0
-              ? "partial"
-              : "pending",
+            saleData.type === "cash"
+              ? "completed"
+              : saleData.advancePayment && saleData.advancePayment > 0
+                ? "partial"
+                : "pending",
         };
         set((state) => ({ sales: [...state.sales, newSale] }));
       },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Sale, Payment, PaymentMethod } from "../types";
-import { useSalesStore } from "../../../stores/salesStore";
+
 
 interface SalePaymentsProps {
   sale: Sale;
@@ -291,3 +291,4 @@ export function SalePayments({ sale, onUpdateSale }: SalePaymentsProps) {
     </div>
   );
 }
+

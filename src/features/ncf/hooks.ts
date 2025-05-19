@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { NcfFormData, NcfFilters, NcfStatus } from "./types";
+import { NcfFilters, NcfStatus } from "./types";
 import {
   getNcfList,
   getNcfById,

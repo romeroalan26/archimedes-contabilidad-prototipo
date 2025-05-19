@@ -13,15 +13,6 @@ const simulateError = () => {
   }
 };
 
-// API endpoints (to be replaced with actual endpoints)
-const API_BASE_URL = "/api/assets";
-
-// Types
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-}
-
 // API functions
 const fetchAssets = async (): Promise<Asset[]> => {
   await delay(500);

@@ -1,12 +1,5 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { usePayrollHistory, useEmployees } from "../hooks";
-import { formatCurrency } from "../utils/format";
-import {
-  calculateTotalBonificaciones,
-  calculateTotalDeducciones,
-} from "../utils/calculations";
-import type { PayrollDetails } from "../types/payroll";
 import type { Employee } from "../types/employee";
 import {
   generateTSSFile,
@@ -14,13 +7,7 @@ import {
   generatePDFReport,
 } from "../utils/export";
 import { toast } from "react-hot-toast";
-import {
-  format,
-  isWithinInterval,
-  parseISO,
-  isAfter,
-  isBefore,
-} from "date-fns";
+import { format, isWithinInterval, parseISO, isAfter } from "date-fns";
 import { es } from "date-fns/locale";
 import { mockPayrolls } from "../__mocks__/mockPayrolls";
 

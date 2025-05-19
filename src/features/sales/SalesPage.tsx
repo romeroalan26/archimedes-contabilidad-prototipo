@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { Client } from "../../types/types";
 import { Sale, SaleItem, SaleType } from "./types";
-import { useClientStore } from "../../stores/clientStore";
 import { useSalesStore } from "../../stores/salesStore";
 import { ClientList } from "./components/ClientList";
 import { SalesForm } from "./components/SalesForm";
 import { SalesHistory } from "./components/SalesHistory";
-import { useAccountStatements } from "../../hooks/useAccountStatements";
-import { useCreateSale } from "./hooks/useCreateSale";
 import { useSalesList } from "./hooks/useSalesList";
 import { updateProduct, getProductById } from "../inventory/services";
 
@@ -15,17 +12,7 @@ export function SalesPage() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [activeTab, setActiveTab] = useState<"new" | "history">("new");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const clients = useClientStore((state) => state.clients);
-  const {
-    data: statements,
-    isLoading: isLoadingStatements,
-    error: statementsError,
-  } = useAccountStatements(selectedClient?.id);
-  const {
-    mutate: createSale,
-    isLoading: isCreatingSale,
-    error: createSaleError,
-  } = useCreateSale();
+
   const {
     data: sales,
     isLoading: isLoadingSales,

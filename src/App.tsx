@@ -20,7 +20,7 @@ import { Formato606Page } from "./features/dgiiFormats/606/Formato606Page";
 import { Formato607Page } from "./features/dgiiFormats/607/Formato607Page";
 import { EmployeeDetailsPage } from "./features/payroll/pages/EmployeeDetailsPage";
 import { ClientsPage } from "./features/clients/ClientsPage";
-import { useState } from "react";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -28,13 +28,30 @@ const queryClient = new QueryClient();
 export default function App() {
   const { isAuthenticated } = useAuth();
 
-  if (!isAuthenticated) return <LoginPage />;
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Routes>
+        {/* Ruta pública */}
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
+
+        {/* Rutas protegidas */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/ventas" element={<SalesPage />} />
           <Route path="/compras" element={<PurchasesPage />} />
@@ -58,8 +75,11 @@ export default function App() {
             path="/payroll/employees/:id"
             element={<EmployeeDetailsPage />}
           />
-        </Routes>
-      </Layout>
+        </Route>
+
+        {/* Redirigir cualquier otra ruta al dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
     </QueryClientProvider>
   );
 }

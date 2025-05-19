@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Customer, Receivable } from "../types";
+import { Customer } from "../types";
 import { useReceivables, useCreateReceivable } from "../hooks/useReceivables";
 import ReceivablesForm from "../components/ReceivablesForm";
 import { formatReceivableStatus } from "../utils/formatters";

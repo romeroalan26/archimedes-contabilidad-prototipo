@@ -1,4 +1,3 @@
-import type { Employee } from "../../types/employee";
 import { mockEmployees } from "../../__mocks__/mockEmployees";
 import { formatCurrency } from "../../utils/format";
 import { Link } from "react-router-dom";

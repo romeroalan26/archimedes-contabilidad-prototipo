@@ -1,10 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  FixedAssetFormData,
-  DepreciationMethod,
-} from "../types/fixedAsset.types";
+import { FixedAssetFormData } from "../types/fixedAsset.types";
 import { useCreateFixedAsset } from "../hooks/useCreateFixedAsset";
 import { useUpdateFixedAsset } from "../hooks/useUpdateFixedAsset";
 

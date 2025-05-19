@@ -1,5 +1,3 @@
-/** @jsxImportSource react */
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ReconciliationForm } from "../components/ReconciliationForm";
 import { ReconciliationMovement } from "../types";

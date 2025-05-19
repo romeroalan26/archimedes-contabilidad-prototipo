@@ -5,12 +5,8 @@ import {
 } from "../types/fixedAsset.types";
 import {
   calculateMonthlyDepreciation,
-  calculateAccumulatedDepreciation,
   calculateCurrentValue,
 } from "../utils/depreciation";
-
-// TODO: Replace with actual API endpoints
-const API_BASE_URL = "/api/fixed-assets";
 
 // Simulated data store
 let assets: FixedAsset[] = [

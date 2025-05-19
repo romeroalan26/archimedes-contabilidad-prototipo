@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { usePurchase, useDeletePurchase } from "../hooks/usePurchases";
-import { Purchase } from "../types";
+
 
 export default function PurchaseDetails() {
   const { id } = useParams<{ id: string }>();
@@ -92,6 +92,7 @@ export default function PurchaseDetails() {
             <thead>
               <tr className="bg-gray-50">
                 <th className="px-4 py-2 text-left">Producto</th>
+                <th className="px-4 py-2 text-left">Descripción</th>
                 <th className="px-4 py-2 text-right">Cantidad</th>
                 <th className="px-4 py-2 text-right">Precio</th>
                 <th className="px-4 py-2 text-right">Subtotal</th>
@@ -101,6 +102,7 @@ export default function PurchaseDetails() {
               {purchase.items.map((item, index) => (
                 <tr key={index} className="border-t">
                   <td className="px-4 py-2">{item.productId}</td>
+                  <td className="px-4 py-2">{item.description || "-"}</td>
                   <td className="px-4 py-2 text-right">{item.quantity}</td>
                   <td className="px-4 py-2 text-right">
                     ${item.price.toFixed(2)}
@@ -117,3 +119,4 @@ export default function PurchaseDetails() {
     </div>
   );
 }
+

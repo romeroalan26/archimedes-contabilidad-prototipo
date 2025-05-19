@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { Formato607Page } from "../Formato607Page";
 import { generateFormato607 } from "../utils/generateFormato607";
 import { mockVentas } from "../__mocks__/mockVentas";
@@ -95,13 +94,6 @@ describe("Formato 607 Export Tests", () => {
   // Pruebas de validación
   describe("Validación de datos", () => {
     it("muestra error cuando hay NCF inválido", async () => {
-      const ventasInvalidas = [
-        {
-          ...mockVentas[0],
-          ncf: "", // NCF vacío
-        },
-      ];
-
       (formato607Service.validateVentasForExport as any).mockResolvedValue({
         data: false,
         success: false,

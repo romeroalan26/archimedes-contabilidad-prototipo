@@ -31,6 +31,7 @@ export interface PurchaseItem {
   quantity: number;
   price: number;
   subtotal: number;
+  description?: string;
 }
 
 export interface Purchase {
@@ -40,6 +41,7 @@ export interface Purchase {
   monto: number;
   itbis: number;
   retencionIsr: number;
+  retencionItbisPercentage: number;
   fechaVencimiento: string;
   tipoCuentaPagar: PayableType;
   cuentaGastoId: number;
@@ -54,6 +56,7 @@ export interface CreatePurchaseDTO {
   monto: string;
   itbis: string;
   retencionIsr: string;
+  retencionItbisPercentage: string;
   fechaVencimiento: string;
   tipoCuentaPagar: PayableType;
   cuentaGastoId: string;
@@ -70,6 +73,7 @@ export interface UpdatePurchaseDTO {
   monto?: string;
   itbis?: string;
   retencionIsr?: string;
+  retencionItbisPercentage?: string;
   fechaVencimiento?: string;
   estado?: "PENDING" | "PAID" | "OVERDUE";
   tipoCuentaPagar?: PayableType;

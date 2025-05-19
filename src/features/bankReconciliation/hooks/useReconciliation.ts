@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { reconciliationService } from "../services/reconciliationService";
 import {
-  Reconciliation,
   CreateReconciliationDTO,
   UpdateReconciliationDTO,
   ReconciliationFilters,

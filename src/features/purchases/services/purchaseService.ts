@@ -2,7 +2,7 @@ import { Purchase, CreatePurchaseDTO, UpdatePurchaseDTO } from "../types";
 import { mockPurchases } from "../purchasesData";
 
 // TODO: Replace with actual API client
-const API_BASE_URL = "/api/purchases";
+
 
 export const purchaseService = {
   list: async (): Promise<Purchase[]> => {
@@ -30,6 +30,7 @@ export const purchaseService = {
       monto: parseFloat(data.monto),
       itbis: parseFloat(data.itbis),
       retencionIsr: parseFloat(data.retencionIsr),
+      retencionItbisPercentage: 30, // Default value
       fechaVencimiento: data.fechaVencimiento,
       estado: "PENDING",
       tipoCuentaPagar: data.tipoCuentaPagar,
@@ -89,3 +90,4 @@ export const purchaseService = {
     mockPurchases.splice(index, 1);
   },
 };
+

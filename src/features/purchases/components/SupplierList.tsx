@@ -67,7 +67,7 @@ export default function SupplierList({
                 {onSelectSupplier && (
                   <button
                     onClick={() => onSelectSupplier(supplier)}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded"
                   >
                     Seleccionar
                   </button>

@@ -3,7 +3,7 @@ import {
   calcularAportesTSSEmpleador, 
   calcularISR, 
   calcularSalarioNeto,
-  aplicarTopeCotizable 
+   
 } from '../calculations';
 
 describe('Payroll Calculations', () => {

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Customer, PaymentMethod, ReceivableTransaction } from "../types";
+import { Customer, PaymentMethod } from "../types";
 
 interface ReceivableFormData {
   customerId: string;

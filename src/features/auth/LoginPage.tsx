@@ -1,19 +1,47 @@
 import { useState } from "react";
 import { useAuth } from "../../stores/authStore";
+import { authService } from "../../services/authService";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Obtener la ruta de redirección del estado de la ubicación o usar el dashboard por defecto
+  const from = (location.state as any)?.from?.pathname || "/dashboard";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual authentication
-    login({
-      id: "1",
-      role: "admin",
-      name: username,
-    });
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await authService.login({
+        correo: email,
+        clave: password,
+      });
+
+      login(
+        {
+          id: response.usuario.empresa_id,
+          role: response.usuario.rol,
+          name: response.usuario.nombre,
+        },
+        response.token
+      );
+
+      // Redirigir al usuario a la página que intentaba acceder
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError("Credenciales inválidas. Por favor, intente nuevamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,24 +62,30 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
             <div className="space-y-4">
               <div>
                 <label
-                  htmlFor="username"
+                  htmlFor="email"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Usuario
+                  Correo Electrónico
                 </label>
                 <input
-                  id="username"
-                  name="username"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out"
-                  placeholder="Ingresa tu usuario"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Ingresa tu correo electrónico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
@@ -74,14 +108,13 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-              >
-                Iniciar sesión
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+            </button>
           </form>
 
           <div className="text-center text-sm text-gray-600">

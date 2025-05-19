@@ -1,65 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ReconciliationForm } from "../components/ReconciliationForm";
-import { MovementsList } from "../components/MovementsList";
-import {
-  useReconciliations,
-  useUpdateReconciliation,
-} from "../hooks/useReconciliation";
+import { useReconciliations } from "../hooks/useReconciliation";
 import { Reconciliation } from "../types";
-import { exportService } from "../services/exportService";
 
 export const BankReconciliationPage: React.FC = () => {
   const [selectedReconciliation, setSelectedReconciliation] =
     useState<Reconciliation | null>(null);
   const { data: reconciliations, isLoading } = useReconciliations();
-  const updateReconciliation = useUpdateReconciliation();
-
-  const handleToggleMovement = async (movementId: string) => {
-    if (!selectedReconciliation) return;
-
-    const updatedMovements = selectedReconciliation.movements.map((movement) =>
-      movement.id === movementId
-        ? { ...movement, isReconciled: !movement.isReconciled }
-        : movement
-    );
-
-    const reconciledBalance = updatedMovements.reduce(
-      (acc, movement) => acc + (movement.isReconciled ? movement.amount : 0),
-      0
-    );
-
-    const difference = selectedReconciliation.bankBalance - reconciledBalance;
-
-    await updateReconciliation.mutateAsync({
-      id: selectedReconciliation.id,
-      data: {
-        movements: updatedMovements,
-        balanceConciliado: reconciledBalance,
-        diferencia: difference,
-        movimientosAclarados: updatedMovements
-          .filter((m) => m.isReconciled)
-          .map((m) => m.id),
-        status: difference === 0 ? "RECONCILED" : "DISCREPANCY",
-      },
-    });
-  };
-
-  const handleExportExcel = () => {
-    if (selectedReconciliation) {
-      exportService.exportToExcel(selectedReconciliation);
-    }
-  };
-
-  const handleExportPDF = () => {
-    if (selectedReconciliation) {
-      exportService.exportToPDF(selectedReconciliation);
-    }
-  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Conciliación Bancaria</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Conciliación Bancaria
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -12,28 +12,6 @@ import StockAlerts from "./components/StockAlerts";
 import InventorySummary from "./components/InventorySummary";
 import InventoryAssignment from "./components/InventoryAssignment";
 
-// Define una interfaz para el tipo de inventario
-interface InventoryItem {
-  id: number;
-  nombre: string;
-  unidad: string;
-  stock: number;
-}
-
-// Tipado del inventario inicial
-const initialInventory: InventoryItem[] = [
-  { id: 1, nombre: "Bloques", unidad: "unidad", stock: 800 },
-  { id: 2, nombre: "Cemento", unidad: "saco", stock: 200 },
-  { id: 3, nombre: "Varilla", unidad: "barra", stock: 350 },
-];
-
-// Interfaz para los parámetros de actualizarStock
-interface ActualizarStockParams {
-  producto: string;
-  cantidad: string;
-  tipo: "entrada" | "salida";
-}
-
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<
     "products" | "movements" | "alerts" | "assignments"

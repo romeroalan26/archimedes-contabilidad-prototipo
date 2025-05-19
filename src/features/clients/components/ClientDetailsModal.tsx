@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Client } from "../../../types/types";
 import { useClientStore } from "../../../stores/clientStore";
 import { ClientForm } from "../../../components/ClientForm";

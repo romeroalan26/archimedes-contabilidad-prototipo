@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { receivableService } from "../services/receivableService";
-import { CreateReceivableDTO, UpdateReceivableDTO } from "../types";
+import { UpdateReceivableDTO } from "../types";
 
 export const useReceivables = () => {
   return useQuery({

@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ProjectList from "./ProjectList";
 import ProjectDetail from "./ProjectDetail";
 import ProjectForm from "./ProjectForm";
@@ -15,3 +15,4 @@ export default function ProjectsPage() {
     </div>
   );
 }
+

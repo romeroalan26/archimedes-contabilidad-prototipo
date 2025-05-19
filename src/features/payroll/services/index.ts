@@ -1,6 +1,6 @@
 import type { Employee } from "../types/employee";
 import type { PayrollDetails } from "../types/payroll";
-import { validateDeductions, PAYROLL_LIMITS } from "../utils/validations";
+import { validateDeductions } from "../utils/validations";
 import {
   calculatePayrollDeductions,
   calcularSalarioNeto,
@@ -8,8 +8,6 @@ import {
 import { mockPayrolls } from "../__mocks__/mockPayrolls";
 import { exportToPDF, exportToTSS } from "../utils/export";
 import { mockEmployees } from "../__mocks__/mockEmployees";
-
-const API_URL = "/api/payroll";
 
 export interface PayrollServices {
   // Employee services

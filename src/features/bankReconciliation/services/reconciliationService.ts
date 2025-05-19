@@ -5,9 +5,6 @@ import {
   ReconciliationFilters,
 } from "../types";
 
-// TODO: Replace with actual API endpoints
-const API_BASE_URL = "/api/reconciliations";
-
 // Mock data for development
 const mockReconciliations: Reconciliation[] = [
   {
