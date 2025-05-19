@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Client } from "../../../types/types";
-import { SaleItem, SaleType } from "../types";
+import { SaleItem, SaleType, PaymentMethod } from "../types";
 import { Product } from "../../inventory/types";
 import { getProducts } from "../../inventory/services";
 
@@ -19,6 +19,8 @@ interface SalesFormProps {
 
 export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [items, setItems] = useState<
     Array<{
       productId: number;
@@ -34,20 +36,41 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
   const [creditAmount, setCreditAmount] = useState<number>(0);
   const [advancePayment, setAdvancePayment] = useState<number>(0);
   const [remainingBalance, setRemainingBalance] = useState<number>(0);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("efectivo");
+  const [referenceNumber, setReferenceNumber] = useState("");
+  const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false);
+  const [showITBIS, setShowITBIS] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isFormValid, setIsFormValid] = useState(false);
 
+  // Cargar productos
   useEffect(() => {
-    // Load inventory products
     const loadProducts = async () => {
       try {
         const inventoryProducts = await getProducts();
         setProducts(inventoryProducts);
       } catch (error) {
-        console.error("Error loading products:", error);
+        console.error("Error al cargar productos:", error);
       }
     };
     loadProducts();
   }, []);
 
+  // Filtrar productos según término de búsqueda
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = products.filter(
+        (product) =>
+          product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.codigo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
+    }
+  }, [searchTerm, products]);
+
+  // Reset del formulario cuando cambia el cliente
   useEffect(() => {
     if (!selectedClient) {
       setItems([]);
@@ -56,38 +79,157 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       setCreditAmount(0);
       setAdvancePayment(0);
       setRemainingBalance(0);
+      setPaymentMethod("efectivo");
+      setReferenceNumber("");
+      setFormError(null);
     }
   }, [selectedClient]);
 
-  // Calculate remaining balance whenever advance payment or total changes
+  // Calcular balance pendiente
   useEffect(() => {
     const total = calculateTotal();
     if (saleType === "credit" || saleType === "mixed") {
       const remaining = total - advancePayment;
       setRemainingBalance(remaining >= 0 ? remaining : 0);
+
+      // Actualizar monto de crédito automáticamente
+      if (saleType === "mixed") {
+        setCreditAmount(remaining >= 0 ? remaining : 0);
+      }
     } else {
       setRemainingBalance(0);
     }
   }, [advancePayment, items, saleType]);
 
-  const handleAddItem = () => {
-    setItems([
-      ...items,
-      {
-        productId: 0,
+  // Validar formulario
+  useEffect(() => {
+    const validateForm = () => {
+      if (!selectedClient) {
+        setFormError("Debe seleccionar un cliente para continuar");
+        setIsFormValid(false);
+        return;
+      }
+
+      if (!items.length) {
+        setFormError("Debe agregar al menos un producto");
+        setIsFormValid(false);
+        return;
+      }
+
+      const invalidItems = items.filter(
+        (item) => item.productId === 0 || item.quantity <= 0
+      );
+
+      if (invalidItems.length > 0) {
+        setFormError("Todos los productos deben tener cantidad válida");
+        setIsFormValid(false);
+        return;
+      }
+
+      const total = calculateTotal();
+
+      if (saleType === "mixed") {
+        if (cashAmount <= 0 || creditAmount <= 0) {
+          setFormError(
+            "En ventas mixtas, los montos de efectivo y crédito deben ser mayores que cero"
+          );
+          setIsFormValid(false);
+          return;
+        }
+
+        if (Math.abs(cashAmount + creditAmount - total) > 0.01) {
+          setFormError("La suma de efectivo y crédito debe ser igual al total");
+          setIsFormValid(false);
+          return;
+        }
+      }
+
+      if (
+        (saleType === "credit" || saleType === "mixed") &&
+        advancePayment > total
+      ) {
+        setFormError("El avance no puede ser mayor al total");
+        setIsFormValid(false);
+        return;
+      }
+
+      if (
+        saleType === "cash" ||
+        ((saleType === "credit" || saleType === "mixed") && advancePayment > 0)
+      ) {
+        if (paymentMethod === "transferencia" || paymentMethod === "cheque") {
+          if (!referenceNumber.trim()) {
+            setFormError(
+              `Debe proporcionar un número de referencia para pagos con ${paymentMethod === "transferencia" ? "transferencia" : "cheque"}`
+            );
+            setIsFormValid(false);
+            return;
+          }
+        }
+      }
+
+      setFormError(null);
+      setIsFormValid(true);
+    };
+
+    validateForm();
+  }, [
+    selectedClient,
+    items,
+    saleType,
+    cashAmount,
+    creditAmount,
+    advancePayment,
+    paymentMethod,
+    referenceNumber,
+  ]);
+
+  // Agregar producto al carrito
+  const handleAddProduct = (product: Product) => {
+    // Verificar si el producto ya está en la lista
+    const existingItemIndex = items.findIndex(
+      (item) => item.productId === product.id
+    );
+
+    if (existingItemIndex >= 0) {
+      // Si el producto ya existe, incrementar cantidad
+      const updatedItems = [...items];
+      updatedItems[existingItemIndex].quantity += 1;
+
+      // Recalcular subtotal con descuento
+      updatedItems[existingItemIndex].discountedSubtotal = calculateSubtotal(
+        updatedItems[existingItemIndex].quantity,
+        updatedItems[existingItemIndex].price,
+        updatedItems[existingItemIndex].itbis,
+        updatedItems[existingItemIndex].discount
+      );
+
+      setItems(updatedItems);
+    } else {
+      // Si es un producto nuevo, agregarlo
+      const newItem = {
+        productId: product.id,
         quantity: 1,
-        price: 0,
-        itbis: 0,
+        price: product.precio,
+        itbis: product.precio * 0.18, // 18% ITBIS
         discount: 0,
-        discountedSubtotal: 0,
-      },
-    ]);
+        discountedSubtotal: product.precio + product.precio * 0.18, // Precio + ITBIS
+      };
+
+      setItems([...items, newItem]);
+    }
+
+    // Limpiar búsqueda después de agregar
+    setSearchTerm("");
+    setIsProductDropdownOpen(false);
   };
 
+  // Remover un producto
   const handleRemoveItem = (index: number) => {
     setItems(items.filter((_, i) => i !== index));
   };
 
+  // Calcular subtotal de un item con descuento
   const calculateSubtotal = (
     quantity: number,
     price: number,
@@ -99,6 +241,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     return subtotal - discountedAmount;
   };
 
+  // Manejar cambios en los items
   const handleItemChange = (
     index: number,
     field: keyof (typeof items)[0],
@@ -107,6 +250,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     const newItems = [...items];
     const item = newItems[index];
 
+    // Si es cambio de producto
     if (field === "productId") {
       const selectedProduct = products.find((p) => p.id === value);
       if (selectedProduct) {
@@ -115,9 +259,20 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
       }
     }
 
+    // Si es cambio de cantidad, validar stock
+    if (field === "quantity") {
+      const product = products.find((p) => p.id === item.productId);
+      if (product && value > product.stock) {
+        alert(
+          `Solo hay ${product.stock} unidades disponibles de ${product.nombre}`
+        );
+        value = product.stock;
+      }
+    }
+
     item[field] = value;
 
-    // Recalculate discounted subtotal whenever quantity, price, itbis, or discount changes
+    // Recalcular subtotal con descuento
     if (["quantity", "price", "itbis", "discount"].includes(field)) {
       item.discountedSubtotal = calculateSubtotal(
         item.quantity,
@@ -130,47 +285,34 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     setItems(newItems);
   };
 
+  // Calcular total de la venta
+  const calculateTotal = useCallback(() => {
+    return items.reduce((acc, item) => {
+      return acc + item.discountedSubtotal;
+    }, 0);
+  }, [items]);
+
+  // Enviar formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted", { selectedClient, items, saleType });
-    if (!selectedClient) return;
 
-    // Validate stock before submitting
-    const hasInsufficientStock = items.some((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      return !product || product.stock < item.quantity;
-    });
+    if (!isFormValid || !selectedClient) return;
 
-    if (hasInsufficientStock) {
-      alert("Uno o más productos no tienen suficiente stock disponible");
-      return;
-    }
-
-    // Validate advance payment
     const total = calculateTotal();
-    if (advancePayment > total) {
-      alert("El avance no puede ser mayor al total de la venta");
-      return;
-    }
 
+    // Preparar datos para enviar
     const formData = {
       clientId: selectedClient.id,
       items: items.map((item) => ({
         ...item,
         id: crypto.randomUUID(),
-        discountedSubtotal: calculateSubtotal(
-          item.quantity,
-          item.price,
-          item.itbis,
-          item.discount
-        ),
       })),
       type: saleType,
       ...(saleType === "mixed"
         ? { cashAmount, creditAmount }
         : saleType === "cash"
-          ? { cashAmount: calculateTotal() }
-          : { creditAmount: calculateTotal() }),
+          ? { cashAmount: total }
+          : { creditAmount: total }),
       ...(saleType === "credit" || saleType === "mixed"
         ? {
             advancePayment,
@@ -179,296 +321,604 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
         : {}),
     };
 
-    console.log("Submitting form data:", formData);
     onSubmit(formData);
   };
 
-  const calculateTotal = () => {
-    return items.reduce((acc, item) => {
-      return acc + item.discountedSubtotal;
-    }, 0);
-  };
-
+  // Si no hay cliente seleccionado
   if (!selectedClient) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        Seleccione un cliente para comenzar
+      <div className="flex flex-col items-center justify-center h-full p-6 bg-gray-50">
+        <div className="text-center">
+          <svg
+            className="mx-auto h-16 w-16 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          <h3 className="mt-2 text-lg font-medium text-gray-900">
+            Seleccione un cliente
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Para iniciar una venta, primero debe seleccionar un cliente de la
+            lista.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="h-full flex flex-col bg-white rounded-lg shadow"
-    >
-      <div className="flex-none p-4 border-b">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Nueva Venta</h2>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Tipo:</label>
-              <select
-                value={saleType}
-                onChange={(e) => setSaleType(e.target.value as SaleType)}
-                className="block w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-              >
-                <option value="cash">Contado</option>
-                <option value="credit">Crédito</option>
-                <option value="mixed">Mixta</option>
-              </select>
-            </div>
-            {saleType === "mixed" && (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Efectivo:</label>
-                  <input
-                    type="number"
-                    value={cashAmount}
-                    onChange={(e) => setCashAmount(Number(e.target.value))}
-                    className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Crédito:</label>
-                  <input
-                    type="number"
-                    value={creditAmount}
-                    onChange={(e) => setCreditAmount(Number(e.target.value))}
-                    className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                  />
-                </div>
-              </div>
-            )}
-            {(saleType === "credit" || saleType === "mixed") && (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Avance:</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max={calculateTotal()}
-                    value={advancePayment}
-                    onChange={(e) => setAdvancePayment(Number(e.target.value))}
-                    className="block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Pendiente:</label>
-                  <input
-                    type="number"
-                    value={remainingBalance}
-                    readOnly
-                    className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
-                  />
-                </div>
-              </div>
-            )}
+    <form onSubmit={handleSubmit} className="h-full flex flex-col">
+      {/* Cliente seleccionado */}
+      <div className="p-4 bg-blue-50 border-b border-blue-100">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-sm font-medium text-gray-900">
+              Cliente:{" "}
+              <span className="text-blue-600">{selectedClient.name}</span>
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              RNC: {selectedClient.rnc} •
+              {selectedClient.phone && (
+                <span> Tel: {selectedClient.phone} •</span>
+              )}
+              {selectedClient.address && (
+                <span> Dir: {selectedClient.address}</span>
+              )}
+            </p>
           </div>
-        </div>
-      </div>
-
-      <div className="flex-1 p-4 overflow-auto">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-medium text-gray-700">Productos</h3>
-            <button
-              type="button"
-              onClick={handleAddItem}
-              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          <div className="flex items-center">
+            <span
+              className={`px-2 py-1 text-xs rounded-full ${
+                selectedClient.billingType === "contado"
+                  ? "bg-green-100 text-green-800"
+                  : selectedClient.billingType === "credito"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-purple-100 text-purple-800"
+              }`}
             >
-              + Agregar producto
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Producto
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Detalles
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Cantidad
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Precio
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ITBIS
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Descuento (%)
-                  </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Subtotal
-                  </th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {items.map((item, index) => {
-                  const selectedProduct = products.find(
-                    (p) => p.id === item.productId
-                  );
-                  const subtotal = item.quantity * item.price + item.itbis;
-                  return (
-                    <tr key={index}>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <select
-                          value={item.productId}
-                          onChange={(e) =>
-                            handleItemChange(
-                              index,
-                              "productId",
-                              Number(e.target.value)
-                            )
-                          }
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                        >
-                          <option value={0}>Seleccione un producto</option>
-                          {products
-                            .filter((p) => p.stock > 0)
-                            .map((product) => (
-                              <option key={product.id} value={product.id}>
-                                {product.nombre} (Stock: {product.stock})
-                              </option>
-                            ))}
-                        </select>
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        {selectedProduct && (
-                          <div className="group relative">
-                            <span className="text-sm text-gray-500 cursor-help">
-                              {selectedProduct.codigo} -{" "}
-                              {selectedProduct.unidad}
-                            </span>
-                            <div className="absolute left-0 top-full mt-1 w-64 p-2 bg-gray-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                              <p className="font-medium">
-                                {selectedProduct.nombre}
-                              </p>
-                              <p className="mt-1">
-                                {selectedProduct.descripcion}
-                              </p>
-                              <p className="mt-1">
-                                Código: {selectedProduct.codigo}
-                              </p>
-                              <p>Unidad: {selectedProduct.unidad}</p>
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleItemChange(
-                              index,
-                              "quantity",
-                              Number(e.target.value)
-                            )
-                          }
-                          className="block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                        />
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <input
-                          type="number"
-                          value={item.price}
-                          readOnly
-                          className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
-                        />
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <input
-                          type="number"
-                          value={item.itbis}
-                          readOnly
-                          className="block w-24 rounded-md border-gray-300 shadow-sm bg-gray-50 text-sm"
-                        />
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={item.discount}
-                          onChange={(e) =>
-                            handleItemChange(
-                              index,
-                              "discount",
-                              Number(e.target.value)
-                            )
-                          }
-                          className="block w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                        />
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        <div className="text-sm">
-                          <div className="text-gray-500">
-                            {subtotal.toFixed(2)}
-                          </div>
-                          {item.discount > 0 && (
-                            <div className="text-green-600 font-medium">
-                              {item.discountedSubtotal.toFixed(2)}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveItem(index)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              {selectedClient.billingType === "contado"
+                ? "Contado"
+                : selectedClient.billingType === "credito"
+                  ? "Crédito"
+                  : "Mixto"}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="flex-none p-4 border-t">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            <div>
-              Subtotal:{" "}
-              <span className="font-medium text-gray-900">
-                $
-                {items
-                  .reduce(
-                    (acc, item) =>
-                      acc + (item.quantity * item.price + item.itbis),
-                    0
-                  )
-                  .toFixed(2)}
-              </span>
+      {/* Buscar y agregar productos */}
+      <div className="p-4 border-b border-gray-200">
+        <div className="relative">
+          <label
+            htmlFor="product-search"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Buscar y agregar productos
+          </label>
+          <div className="relative">
+            <input
+              id="product-search"
+              type="text"
+              placeholder="Busque por nombre o código..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setIsProductDropdownOpen(true);
+              }}
+              onFocus={() => setIsProductDropdownOpen(true)}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+            />
+            <svg
+              className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+
+          {/* Dropdown de productos */}
+          {isProductDropdownOpen && filteredProducts.length > 0 && (
+            <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md overflow-auto border border-gray-200">
+              <ul className="divide-y divide-gray-100">
+                {filteredProducts.map((product) => (
+                  <li
+                    key={product.id}
+                    className={`px-4 py-2 cursor-pointer hover:bg-indigo-50 transition-colors ${product.stock <= 0 ? "opacity-50" : ""}`}
+                    onClick={() => {
+                      if (product.stock > 0) {
+                        handleAddProduct(product);
+                      } else {
+                        alert("Este producto no tiene stock disponible");
+                      }
+                    }}
+                  >
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="text-sm font-medium">
+                          {product.nombre}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Código: {product.codigo} • Precio: $
+                          {product.precio.toFixed(2)}
+                        </div>
+                      </div>
+                      <div
+                        className={`text-xs ${product.stock > 5 ? "text-green-600" : product.stock > 0 ? "text-orange-600" : "text-red-600"}`}
+                      >
+                        {product.stock > 0
+                          ? `Stock: ${product.stock}`
+                          : "Sin stock"}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div>
-              Total con descuentos:{" "}
-              <span className="font-medium text-green-600">
-                ${calculateTotal().toFixed(2)}
-              </span>
+          )}
+        </div>
+      </div>
+
+      {/* Lista de productos seleccionados */}
+      <div className="flex-1 overflow-auto p-4">
+        {items.length === 0 ? (
+          <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+            <svg
+              className="mx-auto h-10 w-10 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No hay productos
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Busque y agregue productos para comenzar.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <h3 className="text-sm font-medium text-gray-700">
+                  Productos seleccionados
+                </h3>
+                <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full">
+                  {items.length} {items.length === 1 ? "ítem" : "ítems"}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setShowITBIS(!showITBIS)}
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  {showITBIS ? "Ocultar ITBIS" : "Mostrar ITBIS"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setItems([])}
+                  className="text-xs text-red-600 hover:text-red-800"
+                >
+                  Limpiar todo
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto border border-gray-200 rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Producto
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Cant.
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Precio
+                    </th>
+                    {showITBIS && (
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        ITBIS
+                      </th>
+                    )}
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Desc. %
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Subtotal
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {items.map((item, index) => {
+                    const selectedProduct = products.find(
+                      (p) => p.id === item.productId
+                    );
+                    return (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {selectedProduct?.nombre ||
+                              "Producto no encontrado"}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {selectedProduct?.codigo || ""}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <input
+                            type="number"
+                            min="1"
+                            max={selectedProduct?.stock || 999}
+                            value={item.quantity}
+                            onChange={(e) =>
+                              handleItemChange(
+                                index,
+                                "quantity",
+                                Number(e.target.value)
+                              )
+                            }
+                            className="block w-16 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                          />
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                          ${item.price.toFixed(2)}
+                        </td>
+                        {showITBIS && (
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            ${item.itbis.toFixed(2)}
+                          </td>
+                        )}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            value={item.discount}
+                            onChange={(e) =>
+                              handleItemChange(
+                                index,
+                                "discount",
+                                Number(e.target.value)
+                              )
+                            }
+                            className="block w-16 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                          />
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm font-medium">
+                            {item.discount > 0 ? (
+                              <>
+                                <span className="line-through text-gray-400 mr-1">
+                                  $
+                                  {(
+                                    item.quantity * item.price +
+                                    item.itbis
+                                  ).toFixed(2)}
+                                </span>
+                                <span className="text-green-600">
+                                  ${item.discountedSubtotal.toFixed(2)}
+                                </span>
+                              </>
+                            ) : (
+                              <span>${item.discountedSubtotal.toFixed(2)}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-right text-sm">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem(index)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Crear Venta
-          </button>
+        )}
+      </div>
+
+      {/* Sección de pago */}
+      <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Tipo de venta y totales */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 mb-3">
+              Tipo de Venta
+            </h3>
+            <div className="space-y-3">
+              <div className="flex space-x-2">
+                {["cash", "credit", "mixed"].map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setSaleType(type as SaleType)}
+                    className={`px-3 py-1.5 rounded text-sm font-medium flex-1 ${
+                      saleType === type
+                        ? "bg-indigo-600 text-white"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {type === "cash"
+                      ? "Contado"
+                      : type === "credit"
+                        ? "Crédito"
+                        : "Mixta"}
+                  </button>
+                ))}
+              </div>
+
+              {/* Detalles específicos según tipo de venta */}
+              {saleType === "mixed" && (
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">
+                      Monto en Efectivo
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={cashAmount}
+                      onChange={(e) => setCashAmount(Number(e.target.value))}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">
+                      Monto a Crédito
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={creditAmount}
+                      onChange={(e) => setCreditAmount(Number(e.target.value))}
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {(saleType === "credit" || saleType === "mixed") && (
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">
+                      Avance / Inicial
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      max={calculateTotal()}
+                      value={advancePayment}
+                      onChange={(e) =>
+                        setAdvancePayment(Number(e.target.value))
+                      }
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">
+                      Saldo Pendiente
+                    </label>
+                    <input
+                      type="number"
+                      readOnly
+                      value={remainingBalance}
+                      className="block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Método de pago */}
+              {(saleType === "cash" ||
+                ((saleType === "credit" || saleType === "mixed") &&
+                  advancePayment > 0)) && (
+                <div className="pt-2">
+                  <label className="block text-xs text-gray-500 mb-1">
+                    Método de Pago
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={paymentMethod}
+                      onChange={(e) =>
+                        setPaymentMethod(e.target.value as PaymentMethod)
+                      }
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                    >
+                      <option value="efectivo">Efectivo</option>
+                      <option value="transferencia">Transferencia</option>
+                      <option value="tarjeta">Tarjeta</option>
+                      <option value="cheque">Cheque</option>
+                      <option value="otro">Otro</option>
+                    </select>
+
+                    {(paymentMethod === "transferencia" ||
+                      paymentMethod === "cheque") && (
+                      <input
+                        type="text"
+                        placeholder={`Nº de ${paymentMethod === "transferencia" ? "referencia" : "cheque"}`}
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Mensaje de error */}
+              {formError && (
+                <div className="mt-2 text-sm text-red-600">{formError}</div>
+              )}
+            </div>
+          </div>
+
+          {/* Resumen y botón de venta */}
+          <div className="border-t pt-4 md:border-t-0 md:pt-0">
+            <h3 className="text-sm font-medium text-gray-700 mb-3">
+              Resumen de la Venta
+            </h3>
+
+            <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="font-medium">
+                    $
+                    {items
+                      .reduce(
+                        (acc, item) => acc + item.quantity * item.price,
+                        0
+                      )
+                      .toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ITBIS (18%):</span>
+                  <span className="font-medium">
+                    $
+                    {items
+                      .reduce((acc, item) => acc + item.itbis, 0)
+                      .toFixed(2)}
+                  </span>
+                </div>
+
+                {items.some((item) => item.discount > 0) && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Descuentos:</span>
+                    <span className="font-medium">
+                      -$
+                      {items
+                        .reduce((acc, item) => {
+                          const subtotal =
+                            item.quantity * item.price + item.itbis;
+                          const discountAmount =
+                            subtotal * (item.discount / 100);
+                          return acc + discountAmount;
+                        }, 0)
+                        .toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                <div className="pt-2 border-t border-gray-100">
+                  <div className="flex justify-between font-medium text-lg">
+                    <span>Total:</span>
+                    <span className="text-indigo-600">
+                      ${calculateTotal().toFixed(2)}
+                    </span>
+                  </div>
+
+                  {(saleType === "credit" || saleType === "mixed") && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      <div className="flex justify-between">
+                        <span>Avance:</span>
+                        <span>${advancePayment.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-red-600 font-medium">
+                        <span>Pendiente:</span>
+                        <span>${remainingBalance.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="submit"
+                  disabled={!isFormValid || items.length === 0}
+                  className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg
+                    className="h-4 w-4 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Finalizar Venta
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </form>

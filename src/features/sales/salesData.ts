@@ -1,37 +1,4 @@
-import { Client, Sale, AccountStatement } from "./types";
-
-export const mockClients: Client[] = [
-  {
-    id: "1",
-    name: "Juan Pérez",
-    email: "juan@example.com",
-    phone: "809-123-4567",
-    rnc: "123-456789-0",
-    billingType: "contado",
-    ncfType: "consumidor_final",
-    status: "activo"
-  },
-  {
-    id: "2",
-    name: "María García",
-    email: "maria@example.com",
-    phone: "809-987-6543",
-    rnc: "987-654321-0",
-    billingType: "credito",
-    ncfType: "credito_fiscal",
-    status: "activo"
-  },
-  {
-    id: "3",
-    name: "Carlos Rodríguez",
-    email: "carlos@example.com",
-    phone: "809-456-7890",
-    rnc: "456-789012-0",
-    billingType: "mixto",
-    ncfType: "gubernamental",
-    status: "activo"
-  },
-];
+import { Sale, AccountStatement } from "./types";
 
 export const mockSales: Sale[] = [
   {

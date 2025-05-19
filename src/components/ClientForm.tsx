@@ -10,6 +10,7 @@ const clientSchema = z.object({
   rnc: z.string().min(1, "El RNC o cédula es obligatorio"),
   phone: z.string().optional().or(z.literal("")),
   email: z.string().email("Correo no válido").optional().or(z.literal("")),
+  address: z.string().optional().or(z.literal("")),
   billingType: z.enum(["contado", "credito", "mixto"]),
   ncfType: z.enum([
     "consumidor_final",
@@ -50,6 +51,7 @@ export function ClientForm({
       rnc: "",
       phone: "",
       email: "",
+      address: "",
       billingType: "contado",
       ncfType: "consumidor_final",
       status: "activo",
@@ -139,6 +141,17 @@ export function ClientForm({
         {errors.email && (
           <span className="text-sm text-red-500">{errors.email.message}</span>
         )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Dirección
+        </label>
+        <textarea
+          {...register("address")}
+          rows={2}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        />
       </div>
 
       <div>
