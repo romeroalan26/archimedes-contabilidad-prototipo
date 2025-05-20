@@ -8,7 +8,11 @@ import { clientService } from "../services/clients/clientService";
 
 const clientSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
-  rnc: z.string().min(1, "El RNC o cédula es obligatorio"),
+  rnc: z
+    .string()
+    .min(1, "El RNC o cédula es obligatorio")
+    .max(11, "El RNC o cédula no puede tener más de 11 dígitos")
+    .regex(/^\d*$/, "El RNC o cédula solo puede contener números"),
   phone: z.string().optional().or(z.literal("")),
   email: z.string().email("Correo no válido").optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
@@ -39,6 +43,7 @@ export function ClientFormModal({
 }: ClientFormModalProps) {
   const [activeTab, setActiveTab] = useState<"basic" | "additional">("basic");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const addClient = useClientStore((state) => state.addClient);
   const updateClient = useClientStore((state) => state.updateClient);
 
@@ -73,6 +78,7 @@ export function ClientFormModal({
   const onSubmit = async (data: ClientFormData) => {
     try {
       setIsSubmitting(true);
+      setError(null);
       console.log("Form data submitted:", data);
 
       if (isEdit && defaultValues) {
@@ -92,21 +98,23 @@ export function ClientFormModal({
 
       onClose();
     } catch (error: any) {
-      console.error("Error al guardar cliente:", error);
-
-      // Verificar si el error está relacionado con el empresa_id
-      if (
+      setIsSubmitting(false);
+      let backendMsg = error?.response?.data?.error;
+      if (backendMsg) {
+        setError(backendMsg);
+      } else if (
         error.response?.data?.includes("empresa_id") ||
         error.message?.includes("empresa_id")
       ) {
-        alert(
+        setError(
           "Error: No se ha configurado el ID de empresa. Por favor, contacte al administrador del sistema."
         );
+      } else if (error.response?.status === 409) {
+        setError("Ya existe un cliente con ese nombre y RNC en esta empresa");
       } else {
-        alert("Error al guardar el cliente. Por favor intente nuevamente.");
+        setError("Error al guardar el cliente. Por favor intente nuevamente.");
       }
-    } finally {
-      setIsSubmitting(false);
+      return;
     }
   };
 
@@ -144,6 +152,28 @@ export function ClientFormModal({
             </svg>
           </button>
         </div>
+
+        {/* Mensaje de error */}
+        {error && (
+          <div className="px-6 py-3 bg-red-50 border-b border-red-200">
+            <div className="flex items-center">
+              <svg
+                className="h-5 w-5 text-red-400 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row h-full max-h-[calc(90vh-6rem)]">
           {/* Contenido principal */}
@@ -208,6 +238,7 @@ export function ClientFormModal({
                       <input
                         {...register("rnc")}
                         type="text"
+                        maxLength={11}
                         className={`block w-full rounded-md shadow-sm text-sm ${
                           errors.rnc
                             ? "border-red-300 focus:ring-red-500 focus:border-red-500"

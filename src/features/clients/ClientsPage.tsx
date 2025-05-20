@@ -20,6 +20,10 @@ export function ClientsPage() {
     "all" | "active" | "inactive"
   >("all");
 
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   useEffect(() => {
     const fetchClients = async () => {
       setIsLoading(true);
@@ -55,6 +59,69 @@ export function ClientsPage() {
           client.rnc.toLowerCase().includes(searchTerm.toLowerCase())
       );
   }, [clients, searchTerm, statusFilter]);
+
+  // Cálculo de paginación
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  const paginatedClients = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredClients.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredClients, currentPage, itemsPerPage]);
+
+  // Resetear a la página 1 cuando cambien los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
+
+  // Generar array de páginas para navegación
+  const pageNumbers = useMemo(() => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      // Mostrar todas las páginas si hay pocas
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Lógica para mostrar páginas con elipsis
+      if (currentPage <= 3) {
+        // Cerca del inicio
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // Cerca del final
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // En medio
+        pages.push(1);
+        pages.push("ellipsis");
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  }, [currentPage, totalPages]);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Resetear a la primera página
+  };
 
   const handleViewClient = (client: Client) => {
     setSelectedClient(client);
@@ -187,7 +254,7 @@ export function ClientsPage() {
 
       {/* Barra de filtros y búsqueda */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Buscar Cliente
@@ -230,6 +297,22 @@ export function ClientsPage() {
               <option value="all">Todos los estados</option>
               <option value="active">Activos</option>
               <option value="inactive">Inactivos</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Items por página
+            </label>
+            <select
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              value={itemsPerPage}
+              onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
             </select>
           </div>
 
@@ -381,7 +464,7 @@ export function ClientsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredClients.map((client) => (
+                {paginatedClients.map((client) => (
                   <tr
                     key={client.id}
                     className={`hover:bg-gray-50 transition-colors ${
@@ -497,7 +580,7 @@ export function ClientsPage() {
         ) : (
           // Vista de tarjetas
           <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredClients.map((client) => (
+            {paginatedClients.map((client) => (
               <div
                 key={client.id}
                 className={`border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
@@ -579,14 +662,100 @@ export function ClientsPage() {
         )}
       </div>
 
-      {/* Mensaje de resultados */}
+      {/* Paginación */}
       {!isLoading && !error && filteredClients.length > 0 && (
-        <div className="mt-4 text-sm text-gray-500">
-          Mostrando {filteredClients.length} cliente(s)
-          {statusFilter !== "all" && (
-            <span> {statusFilter === "active" ? "activos" : "inactivos"}</span>
-          )}
-          {searchTerm && <span> que coinciden con "{searchTerm}"</span>}
+        <div className="mt-6 bg-white rounded-lg shadow-md p-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center">
+            <div className="mb-4 sm:mb-0 text-sm text-gray-500">
+              Mostrando {(currentPage - 1) * itemsPerPage + 1} a{" "}
+              {Math.min(currentPage * itemsPerPage, filteredClients.length)} de{" "}
+              {filteredClients.length} cliente(s)
+              {statusFilter !== "all" && (
+                <span>
+                  {" "}
+                  {statusFilter === "active" ? "activos" : "inactivos"}
+                </span>
+              )}
+              {searchTerm && <span> que coinciden con "{searchTerm}"</span>}
+            </div>
+
+            <div className="flex items-center">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`mr-2 p-2 rounded-md ${
+                  currentPage === 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+                aria-label="Página anterior"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              <div className="flex space-x-1">
+                {pageNumbers.map((pageNumber, index) =>
+                  pageNumber === "ellipsis" ? (
+                    <span
+                      key={`ellipsis-${index}`}
+                      className="flex items-center justify-center w-8 h-8 text-gray-500"
+                    >
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber as number)}
+                      className={`w-8 h-8 rounded-md ${
+                        currentPage === pageNumber
+                          ? "bg-indigo-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                )}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`ml-2 p-2 rounded-md ${
+                  currentPage === totalPages
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+                aria-label="Página siguiente"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

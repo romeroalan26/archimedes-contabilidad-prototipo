@@ -3,15 +3,44 @@ import { Client } from "../../types/types";
 import { useAuth } from "../../stores/authStore";
 
 const clientEndpoint = "/clientes";
+// Asegurarnos de que el empresa_id sea un UUID válido
 const EMPRESA_ID = import.meta.env.VITE_EMPRESA_ID;
 
-// Verificar si la variable de entorno está definida
+// Verificar si la variable de entorno está definida y es un UUID válido
 if (!EMPRESA_ID) {
-  console.warn(
-    "⚠️ ADVERTENCIA: La variable de entorno VITE_EMPRESA_ID no está definida. " +
-      "Las operaciones de creación y actualización de clientes podrían fallar."
+  console.error(
+    "❌ ERROR: La variable de entorno VITE_EMPRESA_ID no está definida. " +
+      "Las operaciones de creación y actualización de clientes fallarán."
+  );
+} else if (
+  !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    EMPRESA_ID
+  )
+) {
+  console.error(
+    "❌ ERROR: La variable de entorno VITE_EMPRESA_ID no es un UUID válido. " +
+      "El valor actual es: " +
+      EMPRESA_ID
   );
 }
+
+// Función para validar el RNC/Cédula
+const validateRncCedula = (rnc: string): string => {
+  // Eliminar cualquier carácter que no sea número
+  const cleanRnc = rnc.replace(/\D/g, "");
+
+  // Validar longitud
+  if (cleanRnc.length > 11) {
+    throw new Error("El RNC/Cédula no puede tener más de 11 dígitos");
+  }
+
+  // Validar que no esté vacío
+  if (cleanRnc.length === 0) {
+    throw new Error("El RNC/Cédula es obligatorio");
+  }
+
+  return cleanRnc;
+};
 
 // Función para depuración
 const logToken = () => {
@@ -67,20 +96,34 @@ const adaptApiClient = (apiClient: any): Client => {
 
 // Adaptar el formato de la aplicación al formato de la API
 const adaptClientToApi = (client: Partial<Client>): any => {
+  // Verificar que EMPRESA_ID esté definido y sea un UUID válido
+  if (!EMPRESA_ID) {
+    throw new Error("La variable de entorno VITE_EMPRESA_ID no está definida");
+  }
+
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      EMPRESA_ID
+    )
+  ) {
+    throw new Error(
+      "La variable de entorno VITE_EMPRESA_ID no es un UUID válido"
+    );
+  }
+
   const apiClient: any = {
     // Solo incluir estos campos si están presentes
     ...(client.name && { nombre: client.name }),
-    ...(client.rnc && { rnc_cedula: client.rnc }),
+    ...(client.rnc && { rnc_cedula: validateRncCedula(client.rnc) }),
     ...(client.phone && { telefono: client.phone }),
     ...(client.email && { correo: client.email }),
     ...(client.address && { direccion: client.address }),
-    // Siempre incluir el ID de empresa
+    // Siempre incluir el ID de empresa como UUID
     empresa_id: EMPRESA_ID,
   };
 
   // Mapear billingType a tipo_facturacion si está presente
   if (client.billingType) {
-    // Convertir a formato de API: primera letra mayúscula
     apiClient.tipo_facturacion =
       client.billingType === "contado"
         ? "Contado"
@@ -117,14 +160,12 @@ const adaptClientToApi = (client: Partial<Client>): any => {
 export const clientService = {
   // Obtener todos los clientes (activos e inactivos)
   getAll: async (): Promise<Client[]> => {
-    // Verificar token antes de hacer la llamada
     const token = logToken();
     if (!token) {
       console.error("No hay token disponible para la petición");
     }
 
     try {
-      // Usar el parámetro correcto para incluir clientes inactivos
       const response = await axiosInstance.get(clientEndpoint, {
         params: { incluir_inactivos: true },
       });
@@ -191,10 +232,25 @@ export const clientService = {
   // Crear un nuevo cliente
   create: async (client: Omit<Client, "id">): Promise<Client> => {
     logToken();
-    const apiClient = adaptClientToApi(client);
 
-    // Asegurar que el empresa_id esté incluido
-    apiClient.empresa_id = EMPRESA_ID;
+    // Verificar que EMPRESA_ID esté definido y sea un UUID válido
+    if (!EMPRESA_ID) {
+      throw new Error(
+        "La variable de entorno VITE_EMPRESA_ID no está definida"
+      );
+    }
+
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        EMPRESA_ID
+      )
+    ) {
+      throw new Error(
+        "La variable de entorno VITE_EMPRESA_ID no es un UUID válido"
+      );
+    }
+
+    const apiClient = adaptClientToApi(client);
 
     try {
       console.log("Datos enviados a la API para crear cliente:", apiClient);
@@ -213,10 +269,25 @@ export const clientService = {
   // Actualizar un cliente existente
   update: async (id: string, client: Partial<Client>): Promise<Client> => {
     logToken();
-    const apiClient = adaptClientToApi(client);
 
-    // Asegurar que el empresa_id esté incluido en la actualización si es necesario
-    apiClient.empresa_id = EMPRESA_ID;
+    // Verificar que EMPRESA_ID esté definido y sea un UUID válido
+    if (!EMPRESA_ID) {
+      throw new Error(
+        "La variable de entorno VITE_EMPRESA_ID no está definida"
+      );
+    }
+
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        EMPRESA_ID
+      )
+    ) {
+      throw new Error(
+        "La variable de entorno VITE_EMPRESA_ID no es un UUID válido"
+      );
+    }
+
+    const apiClient = adaptClientToApi(client);
 
     try {
       console.log(
@@ -262,6 +333,7 @@ export const clientService = {
         `${clientEndpoint}/${id}/activate`,
         {
           activo: true,
+          empresa_id: EMPRESA_ID, // Asegurar que empresa_id esté incluido
         }
       );
       return adaptApiClient(response.data);

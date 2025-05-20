@@ -7,7 +7,11 @@ import { useClientStore } from "../stores/clientStore";
 
 const clientSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
-  rnc: z.string().min(1, "El RNC o cédula es obligatorio"),
+  rnc: z
+    .string()
+    .min(1, "El RNC o cédula es obligatorio")
+    .max(11, "El RNC o cédula no puede tener más de 11 dígitos")
+    .regex(/^\d*$/, "El RNC o cédula solo puede contener números"),
   phone: z.string().optional().or(z.literal("")),
   email: z.string().email("Correo no válido").optional().or(z.literal("")),
   address: z.string().optional().or(z.literal("")),
@@ -107,6 +111,7 @@ export function ClientForm({
         <input
           {...register("rnc")}
           type="text"
+          maxLength={11}
           className={`mt-1 block w-full rounded-md shadow-sm ${
             errors.rnc ? "border-red-300" : "border-gray-300"
           }`}
