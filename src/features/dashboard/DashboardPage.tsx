@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { KpiData, AlertData } from "./types";
+import { KpiData } from "./types";
 import { mockDashboardData } from "./dashboardData.tsx";
 import KpiCard from "./components/KpiCard";
-import AlertCard from "./components/AlertCard";
 import ChartCard from "./components/ChartCard";
 import BankReconciliationSummary from "./components/BankReconciliationSummary";
 import { useAuth } from "../../stores/authStore";
@@ -22,6 +21,9 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Verificar acceso por rol
+  const hasAccess = user?.role === "admin" || user?.role === "gerente";
+
   // Actualizar la hora cada minuto
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,6 +39,40 @@ export default function DashboardPage() {
     if (hour < 18) return "Buenas tardes";
     return "Buenas noches";
   };
+
+  // Verificar acceso antes de cualquier otra cosa
+  if (!hasAccess) {
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-900">
+        <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-md">
+          <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              className="w-8 h-8 text-amber-600 dark:text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m0 0v2m0-2h2m-2 0H9m3-7V9a3 3 0 00-6 0v2M5 21h14a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Acceso Restringido
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            No tienes permisos suficientes para acceder a esta sección.
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Contacta al administrador del sistema si necesitas acceso.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -143,122 +179,23 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Charts and Bank Reconciliation */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Charts Row */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Análisis Financiero
-              </h2>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <ChartCard
-                  title="Ingresos Mensuales"
-                  data={data.revenueChart}
-                />
-                <ChartCard title="Gastos Mensuales" data={data.expensesChart} />
-              </div>
-            </div>
-
-            {/* Bank Reconciliation */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Conciliación Bancaria
-              </h2>
-              <BankReconciliationSummary />
-            </div>
+        {/* Charts Section */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Análisis Financiero
+          </h2>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <ChartCard title="Ingresos Mensuales" data={data.revenueChart} />
+            <ChartCard title="Gastos Mensuales" data={data.expensesChart} />
           </div>
+        </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Alerts Section */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Notificaciones
-                {data.alerts.length > 0 && (
-                  <span className="ml-2 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                    {data.alerts.length}
-                  </span>
-                )}
-              </h2>
-              <div className="space-y-3">
-                {data.alerts.length > 0 ? (
-                  data.alerts.map((alert: AlertData) => (
-                    <AlertCard key={alert.id} data={alert} />
-                  ))
-                ) : (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-center">
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <svg
-                        className="w-6 h-6 text-green-600 dark:text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      ¡Todo está al día!
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      No hay notificaciones pendientes
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* System Status */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Estado del Sistema
-              </h2>
-              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Servidor
-                    </span>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                        Operativo
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Base de Datos
-                    </span>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                        Conectada
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Backup
-                    </span>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                        Programado
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Bank Reconciliation */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Conciliación Bancaria
+          </h2>
+          <BankReconciliationSummary />
         </div>
       </div>
     </div>

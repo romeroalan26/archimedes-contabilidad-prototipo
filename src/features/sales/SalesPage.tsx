@@ -257,13 +257,16 @@ export function SalesPage() {
       <div className="flex-1 overflow-hidden">
         {activeTab === "new" ? (
           <div className="h-full grid grid-cols-1 xl:grid-cols-12 gap-4 p-4">
-            {/* Panel de clientes - Súper compacto */}
-            <div className="xl:col-span-2 h-full overflow-hidden flex flex-col">
+            {/* Panel de clientes - Más ancho para mejor usabilidad */}
+            <div className="xl:col-span-4 h-full overflow-hidden flex flex-col">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden h-full flex flex-col border border-gray-200 dark:border-gray-700">
-                <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                  <h2 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Seleccionar Cliente
                   </h2>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Busque y seleccione el cliente para la venta
+                  </p>
                 </div>
                 <div className="flex-1 overflow-hidden">
                   <ClientList
@@ -274,8 +277,8 @@ export function SalesPage() {
               </div>
             </div>
 
-            {/* Panel de venta - Máximo espacio disponible */}
-            <div className="xl:col-span-10 h-full overflow-hidden flex flex-col">
+            {/* Panel de venta - Espacio optimizado */}
+            <div className="xl:col-span-8 h-full overflow-hidden flex flex-col">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden h-full flex flex-col border border-gray-200 dark:border-gray-700">
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                   <h2 className="text-base font-medium text-gray-900 dark:text-gray-100">

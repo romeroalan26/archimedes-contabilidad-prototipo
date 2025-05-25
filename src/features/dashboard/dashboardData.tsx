@@ -8,7 +8,6 @@ export const mockDashboardData: DashboardData = {
       change: "+12.5%",
       trend: "up" as const,
       description: "Comparado con el mes anterior",
-      progress: 75,
     },
     {
       title: "Gastos del Mes",
@@ -16,7 +15,6 @@ export const mockDashboardData: DashboardData = {
       change: "-3.2%",
       trend: "down" as const,
       description: "Reducción respecto al mes pasado",
-      progress: 60,
     },
     {
       title: "Flujo de Efectivo",
@@ -24,7 +22,6 @@ export const mockDashboardData: DashboardData = {
       change: "+8.7%",
       trend: "up" as const,
       description: "Balance positivo este mes",
-      progress: 82,
     },
   ],
   alerts: [

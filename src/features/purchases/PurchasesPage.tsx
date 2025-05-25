@@ -146,7 +146,6 @@ const purchasesService = {
 
 export default function PurchasesPage() {
   const { /* user, */ token } = useAuth();
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,14 +187,6 @@ export default function PurchasesPage() {
 
     loadData();
   }, [token]);
-
-  // Update time every minute
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Helper function to get supplier name
   const getSupplierName = (proveedor_id: string) => {
@@ -314,24 +305,6 @@ export default function PurchasesPage() {
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Gestiona compras, proveedores y control de gastos de tu empresa
               </p>
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {currentTime.toLocaleTimeString("es-ES", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {currentTime.toLocaleDateString("es-ES", {
-                    weekday: "long",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
             </div>
           </div>
         </div>

@@ -131,16 +131,6 @@ export default function Header() {
               />
             </svg>
           </button>
-
-          {/* Logo/Título */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 hidden xs:block">
-              Archímedes
-            </h1>
-          </div>
         </div>
 
         {/* Centro - Barra de búsqueda (solo desktop) */}
@@ -242,8 +232,8 @@ export default function Header() {
 
             {/* Dropdown de notificaciones */}
             {isNotificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+              <div className="absolute left-1/2 transform -translate-x-1/2 sm:left-auto sm:right-0 sm:transform-none mt-2 w-screen max-w-sm sm:w-80 sm:max-w-none mx-4 sm:mx-0 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                <div className="px-3 sm:px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Notificaciones
                   </h3>
@@ -252,7 +242,7 @@ export default function Header() {
                   {notifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-l-4 ${
+                      className={`px-3 sm:px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-l-4 ${
                         notification.type === "warning"
                           ? "border-yellow-400"
                           : notification.type === "success"
@@ -279,7 +269,7 @@ export default function Header() {
                     </div>
                   ))}
                 </div>
-                <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-700">
+                <div className="px-3 sm:px-4 py-2 border-t border-gray-100 dark:border-gray-700">
                   <button className="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
                     Ver todas las notificaciones
                   </button>

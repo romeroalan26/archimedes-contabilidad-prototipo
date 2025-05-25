@@ -27,7 +27,7 @@ export default function Layout() {
           w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-lg
           hover:shadow-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/50 hover:border-indigo-200 dark:hover:border-indigo-600
           transition-all duration-300 ease-in-out group
-          ${isCollapsed ? "left-[68px]" : "left-[308px]"}
+          ${isCollapsed ? "left-[68px]" : "left-[248px]"}
           top-20
         `}
         title={isCollapsed ? "Expandir menú" : "Colapsar menú"}

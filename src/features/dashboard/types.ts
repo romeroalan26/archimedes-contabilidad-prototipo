@@ -1,13 +1,9 @@
-import { ReactNode } from "react";
-
 export interface KpiData {
   title: string;
   value: string;
   change: string;
   trend: "up" | "down";
   description: string;
-  progress: number;
-  icon?: ReactNode;
 }
 
 export interface AlertData {

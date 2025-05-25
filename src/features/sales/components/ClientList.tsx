@@ -30,7 +30,7 @@ export function ClientList({
 
   // Estados de paginación
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 14; // Optimizado para vista súper compacta
+  const itemsPerPage = 10; // Más clientes gracias al diseño compacto
 
   // Función para obtener los clientes activos desde la API
   const fetchClients = async () => {
@@ -116,13 +116,13 @@ export function ClientList({
     }
   };
 
-  // Renderizado compacto optimizado
-  const renderCompactList = () => (
-    <div className="space-y-1">
+  // Lista simple y limpia - información esencial únicamente
+  const renderOptimizedList = () => (
+    <div className="space-y-1.5">
       {paginatedClients.map((client) => (
         <div
           key={client.id}
-          className={`group relative p-2 rounded-md cursor-pointer transition-all duration-150 ${
+          className={`group relative p-2.5 rounded-md cursor-pointer transition-all duration-150 ${
             selectedClient?.id === client.id
               ? "bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 shadow-sm"
               : "hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent"
@@ -130,32 +130,29 @@ export function ClientList({
           onClick={() => handleClientClick(client)}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 flex-1 min-w-0">
-              {/* Avatar compacto */}
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              {/* Avatar simple */}
               <div className="flex-shrink-0">
-                <div className="h-6 w-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                  <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900/50 dark:to-indigo-800/50 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">
                     {client.name?.charAt(0)?.toUpperCase() || "C"}
                   </span>
                 </div>
               </div>
 
-              {/* Información principal */}
+              {/* Solo información esencial */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                    {client.name}
-                  </h3>
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                      {client.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                      {client.rnc}
+                    </p>
+                  </div>
+                  <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                     {billingTypeLabels[client.billingType]}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2 mt-0.5">
-                  <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
-                    {client.rnc}
-                  </span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
-                    {client.rnc?.length === 11 ? "RNC" : "Cédula"}
                   </span>
                 </div>
               </div>
@@ -296,54 +293,61 @@ export function ClientList({
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-800">
-      {/* Header compacto */}
-      <div className="flex-none p-2 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
-            Clientes ({filteredClients.length})
-          </h3>
-          <button
-            onClick={() => setIsEditing("new")}
-            className="bg-indigo-600 text-white px-2 py-1 rounded text-xs hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-400 flex items-center"
-          >
-            <svg
-              className="h-3 w-3 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+      {/* Header mejorado */}
+      <div className="flex-none p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col space-y-3">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Clientes
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {filteredClients.length} clientes disponibles
+              </p>
+            </div>
+            <button
+              onClick={() => setIsEditing("new")}
+              className="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 flex items-center"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-            Nuevo
-          </button>
-        </div>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Buscar cliente..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-6 pr-2 py-1.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400"
-          />
-          <div className="absolute inset-y-0 left-0 pl-1.5 flex items-center pointer-events-none">
-            <svg
-              className="h-3 w-3 text-gray-400 dark:text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+              <svg
+                className="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Nuevo Cliente
+            </button>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Buscar por nombre o RNC..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400"
+            />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg
+                className="h-4 w-4 text-gray-400 dark:text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -390,7 +394,7 @@ export function ClientList({
             </button>
           </div>
         ) : (
-          renderCompactList()
+          renderOptimizedList()
         )}
       </div>
 

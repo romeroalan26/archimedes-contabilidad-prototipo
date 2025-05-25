@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../stores/authStore";
 import { useSidebarStore } from "../stores/sidebarStore";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 interface SidebarProps {
   onLogout: () => void;
@@ -337,19 +336,8 @@ const navigationGroups = [
 
 export default function Sidebar({ onLogout }: SidebarProps) {
   const { pathname } = useLocation();
-  const { user } = useAuth();
   const { isCollapsed, isMobileOpen, toggleMobile, setMobileOpen } =
     useSidebarStore();
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Actualizar la hora cada minuto
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   // Cerrar el menú al hacer clic fuera
   useEffect(() => {
@@ -390,21 +378,21 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         aria-label={isMobileOpen ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={isMobileOpen}
         className={`
-          md:hidden fixed top-4 left-4 z-[100]
-          p-3 rounded-xl
+          md:hidden fixed top-3 left-1 z-[100]
+          p-2 rounded-md
           bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-lg border border-gray-200 dark:border-gray-700
           hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-xl
           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
           transition-all duration-300 ease-in-out
           ${
             isMobileOpen
-              ? `${isCollapsed ? "translate-x-20" : "translate-x-80"} opacity-0 scale-95`
+              ? `${isCollapsed ? "translate-x-16" : "translate-x-60"} opacity-0 scale-95`
               : "translate-x-0 opacity-100 scale-100"
           }
         `}
       >
         <svg
-          className={`w-5 h-5 transition-transform duration-300 ${
+          className={`w-6 h-6 transition-transform duration-300 ${
             isMobileOpen ? "rotate-90" : "rotate-0"
           }`}
           fill="none"
@@ -428,7 +416,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         id="sidebar"
         className={`
           fixed md:static inset-y-0 left-0 z-50 flex-shrink-0
-          ${isCollapsed ? "w-20" : "w-80"} 
+          ${isCollapsed ? "w-16" : "w-60"} 
           bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-xl
           transform transition-all duration-300 ease-in-out
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
@@ -438,58 +426,23 @@ export default function Sidebar({ onLogout }: SidebarProps) {
           {/* Header con logo y branding */}
           <div
             className={`${
-              isCollapsed ? "p-4" : "p-6"
+              isCollapsed ? "p-3" : "p-4"
             } border-b border-gray-100 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden`}
           >
             <div className="flex items-center justify-center">
               {!isCollapsed ? (
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
-                    <span className="text-white font-bold text-lg">A</span>
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3">
+                    <span className="text-white font-bold text-sm">A</span>
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-white">Archímedes</h1>
-                    <p className="text-sm text-indigo-100">Sistema Contable</p>
+                    <h1 className="text-lg font-bold text-white">Archímedes</h1>
+                    <p className="text-xs text-indigo-100">Sistema Contable</p>
                   </div>
                 </div>
               ) : (
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">A</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Información del usuario */}
-          <div
-            className={`${isCollapsed ? "p-4" : "p-6"} border-b border-gray-100 dark:border-gray-700`}
-          >
-            <div
-              className={`flex items-center ${isCollapsed ? "justify-center" : ""}`}
-            >
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-                  <span className="text-white font-semibold text-sm">
-                    {user?.name?.charAt(0).toUpperCase() || "U"}
-                  </span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-gray-800"></div>
-              </div>
-              {!isCollapsed && (
-                <div className="ml-3 flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
-                    {user?.name || "Usuario"}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                    {user?.role || "Administrador"}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                    {currentTime.toLocaleTimeString("es-ES", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
+                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">A</span>
                 </div>
               )}
             </div>
