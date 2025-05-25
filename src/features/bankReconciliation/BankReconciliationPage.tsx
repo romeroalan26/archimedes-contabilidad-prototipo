@@ -102,16 +102,13 @@ export default function BankReconciliationPage() {
   );
   const [selectedBankItems, setSelectedBankItems] = useState<string[]>([]);
   const [selectedSystemItems, setSelectedSystemItems] = useState<string[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Actualizar la hora cada minuto
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
+  const [activeTab, setActiveTab] = useState<"bank" | "system" | "comparison">(
+    "comparison"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "reconciled" | "pending"
+  >("all");
 
   // Calcular estadísticas
   const bankBalance = bankTransactions.reduce((acc, transaction) => {
@@ -133,7 +130,6 @@ export default function BankReconciliationPage() {
   const totalTransactions = bankTransactions.length;
 
   const handleReconcileItems = () => {
-    // Reconciliar items seleccionados
     setBankTransactions((prev) =>
       prev.map((transaction) =>
         selectedBankItems.includes(transaction.id)
@@ -162,6 +158,30 @@ export default function BankReconciliationPage() {
     }).format(amount);
   };
 
+  // Filtrar transacciones
+  const filterTransactions = (transactions: any[]) => {
+    return transactions.filter((transaction) => {
+      const matchesSearch =
+        transaction.description
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        transaction.reference
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        transaction.category?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "reconciled" && transaction.reconciled) ||
+        (statusFilter === "pending" && !transaction.reconciled);
+
+      return matchesSearch && matchesStatus;
+    });
+  };
+
+  const filteredBankTransactions = filterTransactions(bankTransactions);
+  const filteredSystemTransactions = filterTransactions(systemTransactions);
+
   return (
     <div className="min-h-full bg-gray-50 dark:bg-gray-900">
       {/* Header Section */}
@@ -177,19 +197,13 @@ export default function BankReconciliationPage() {
                 sistema
               </p>
             </div>
-            <div className="mt-4 sm:mt-0">
-              <div className="text-right">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Última actualización
-                </p>
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {currentTime.toLocaleTimeString("es-ES", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                </p>
-              </div>
+            <div className="mt-4 sm:mt-0 flex space-x-3">
+              <button className="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                Importar Extracto
+              </button>
+              <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                Generar Reporte
+              </button>
             </div>
           </div>
         </div>
@@ -322,10 +336,10 @@ export default function BankReconciliationPage() {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div
-                  className={`w-8 h-8 ${difference === 0 ? "bg-green-100" : "bg-yellow-100"} dark:bg-green-900/30 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center`}
+                  className={`w-8 h-8 ${difference === 0 ? "bg-green-100 dark:bg-green-900/30" : "bg-yellow-100 dark:bg-yellow-900/30"} rounded-lg flex items-center justify-center`}
                 >
                   <svg
-                    className={`w-5 h-5 ${difference === 0 ? "text-green-600" : "text-yellow-600"} dark:text-green-400 dark:text-yellow-400`}
+                    className={`w-5 h-5 ${difference === 0 ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -344,7 +358,7 @@ export default function BankReconciliationPage() {
                   Diferencia
                 </p>
                 <p
-                  className={`text-2xl font-bold ${difference === 0 ? "text-green-600" : "text-yellow-600"} dark:text-green-400 dark:text-yellow-400`}
+                  className={`text-2xl font-bold ${difference === 0 ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"}`}
                 >
                   {formatCurrency(Math.abs(difference))}
                 </p>
@@ -380,7 +394,7 @@ export default function BankReconciliationPage() {
                 </p>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
                   <div
-                    className="bg-indigo-600 dark:bg-indigo-400 h-2 rounded-full"
+                    className="bg-indigo-600 dark:bg-indigo-400 h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${(reconciledCount / totalTransactions) * 100}%`,
                     }}
@@ -391,266 +405,516 @@ export default function BankReconciliationPage() {
           </div>
         </div>
 
-        {/* Botones de acción */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex space-x-3">
+        {/* Filtros y búsqueda */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <svg
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Buscar por descripción, referencia o categoría..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400"
+                />
+              </div>
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) =>
+                setStatusFilter(
+                  e.target.value as "all" | "reconciled" | "pending"
+                )
+              }
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            >
+              <option value="all">Todos los estados</option>
+              <option value="pending">Pendientes</option>
+              <option value="reconciled">Conciliadas</option>
+            </select>
             <button
               onClick={handleReconcileItems}
               disabled={
                 selectedBankItems.length === 0 &&
                 selectedSystemItems.length === 0
               }
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
             >
-              Conciliar Seleccionados
-            </button>
-            <button className="bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors duration-200">
-              Importar Extracto
+              Conciliar ({selectedBankItems.length + selectedSystemItems.length}
+              )
             </button>
           </div>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
-            Generar Reporte
-          </button>
         </div>
 
-        {/* Tablas de transacciones */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Transacciones Bancarias */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Transacciones Bancarias
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Seleccione las transacciones del banco
-              </p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedBankItems(
-                              bankTransactions
-                                .filter((t) => !t.reconciled)
-                                .map((t) => t.id)
-                            );
-                          } else {
-                            setSelectedBankItems([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Fecha
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Descripción
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Monto
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Estado
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {bankTransactions.map((transaction) => (
-                    <tr
-                      key={transaction.id}
-                      className={
-                        transaction.reconciled
-                          ? "bg-green-50 dark:bg-green-900/10"
-                          : ""
-                      }
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedBankItems.includes(transaction.id)}
-                          disabled={transaction.reconciled}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedBankItems((prev) => [
-                                ...prev,
-                                transaction.id,
-                              ]);
-                            } else {
-                              setSelectedBankItems((prev) =>
-                                prev.filter((id) => id !== transaction.id)
-                              );
-                            }
-                          }}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        {new Date(transaction.date).toLocaleDateString("es-ES")}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                        <div
-                          className="max-w-xs truncate"
-                          title={transaction.description}
-                        >
-                          {transaction.description}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Ref: {transaction.reference}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span
-                          className={
-                            transaction.type === "credit"
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-red-600 dark:text-red-400"
-                          }
-                        >
-                          {transaction.type === "credit" ? "+" : "-"}
-                          {formatCurrency(transaction.amount)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction.reconciled ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/10 text-green-800 dark:text-green-200">
-                            Conciliado
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/10 text-yellow-800 dark:text-yellow-200">
-                            Pendiente
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        {/* Navegación por tabs */}
+        <div className="bg-white dark:bg-gray-800 rounded-t-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="border-b border-gray-200 dark:border-gray-700">
+            <nav className="-mb-px flex space-x-8 px-6">
+              <button
+                onClick={() => setActiveTab("comparison")}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === "comparison"
+                    ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+                }`}
+              >
+                Vista Comparativa
+              </button>
+              <button
+                onClick={() => setActiveTab("bank")}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === "bank"
+                    ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+                }`}
+              >
+                Transacciones Bancarias ({filteredBankTransactions.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("system")}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === "system"
+                    ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+                }`}
+              >
+                Registros del Sistema ({filteredSystemTransactions.length})
+              </button>
+            </nav>
           </div>
 
-          {/* Transacciones del Sistema */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Registros del Sistema
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Seleccione las transacciones del sistema
-              </p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedSystemItems(
-                              systemTransactions
-                                .filter((t) => !t.reconciled)
-                                .map((t) => t.id)
-                            );
-                          } else {
-                            setSelectedSystemItems([]);
-                          }
-                        }}
-                      />
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Fecha
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Descripción
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Monto
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Estado
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {systemTransactions.map((transaction) => (
-                    <tr
-                      key={transaction.id}
-                      className={
-                        transaction.reconciled
-                          ? "bg-green-50 dark:bg-green-900/10"
-                          : ""
-                      }
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
+          <div className="p-6">
+            {/* Vista Comparativa */}
+            {activeTab === "comparison" && (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {/* Transacciones Bancarias - Vista Compacta */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Transacciones Bancarias
+                    </h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {
+                        filteredBankTransactions.filter((t) => !t.reconciled)
+                          .length
+                      }{" "}
+                      pendientes
+                    </span>
+                  </div>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {filteredBankTransactions.map((transaction) => (
+                      <div
+                        key={transaction.id}
+                        className={`p-4 rounded-lg border transition-all duration-200 hover:shadow-md ${
+                          transaction.reconciled
+                            ? "bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800"
+                            : selectedBankItems.includes(transaction.id)
+                              ? "bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-700"
+                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-3">
+                            <input
+                              type="checkbox"
+                              checked={selectedBankItems.includes(
+                                transaction.id
+                              )}
+                              disabled={transaction.reconciled}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedBankItems((prev) => [
+                                    ...prev,
+                                    transaction.id,
+                                  ]);
+                                } else {
+                                  setSelectedBankItems((prev) =>
+                                    prev.filter((id) => id !== transaction.id)
+                                  );
+                                }
+                              }}
+                              className="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                  {transaction.description}
+                                </p>
+                                <span
+                                  className={`text-sm font-semibold ${
+                                    transaction.type === "credit"
+                                      ? "text-green-600 dark:text-green-400"
+                                      : "text-red-600 dark:text-red-400"
+                                  }`}
+                                >
+                                  {transaction.type === "credit" ? "+" : "-"}
+                                  {formatCurrency(transaction.amount)}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(
+                                    transaction.date
+                                  ).toLocaleDateString("es-ES")}{" "}
+                                  • {transaction.reference}
+                                </span>
+                                <span
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                    transaction.reconciled
+                                      ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200"
+                                      : "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200"
+                                  }`}
+                                >
+                                  {transaction.reconciled
+                                    ? "Conciliado"
+                                    : "Pendiente"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Registros del Sistema - Vista Compacta */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Registros del Sistema
+                    </h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {
+                        filteredSystemTransactions.filter((t) => !t.reconciled)
+                          .length
+                      }{" "}
+                      pendientes
+                    </span>
+                  </div>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {filteredSystemTransactions.map((transaction) => (
+                      <div
+                        key={transaction.id}
+                        className={`p-4 rounded-lg border transition-all duration-200 hover:shadow-md ${
+                          transaction.reconciled
+                            ? "bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800"
+                            : selectedSystemItems.includes(transaction.id)
+                              ? "bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-700"
+                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-3">
+                            <input
+                              type="checkbox"
+                              checked={selectedSystemItems.includes(
+                                transaction.id
+                              )}
+                              disabled={transaction.reconciled}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedSystemItems((prev) => [
+                                    ...prev,
+                                    transaction.id,
+                                  ]);
+                                } else {
+                                  setSelectedSystemItems((prev) =>
+                                    prev.filter((id) => id !== transaction.id)
+                                  );
+                                }
+                              }}
+                              className="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                  {transaction.description}
+                                </p>
+                                <span
+                                  className={`text-sm font-semibold ${
+                                    transaction.type === "credit"
+                                      ? "text-green-600 dark:text-green-400"
+                                      : "text-red-600 dark:text-red-400"
+                                  }`}
+                                >
+                                  {transaction.type === "credit" ? "+" : "-"}
+                                  {formatCurrency(transaction.amount)}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(
+                                    transaction.date
+                                  ).toLocaleDateString("es-ES")}{" "}
+                                  • {transaction.category}
+                                </span>
+                                <span
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                    transaction.reconciled
+                                      ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200"
+                                      : "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200"
+                                  }`}
+                                >
+                                  {transaction.reconciled
+                                    ? "Conciliado"
+                                    : "Pendiente"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Vista detallada de Transacciones Bancarias */}
+            {activeTab === "bank" && (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         <input
                           type="checkbox"
-                          checked={selectedSystemItems.includes(transaction.id)}
-                          disabled={transaction.reconciled}
+                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedSystemItems((prev) => [
-                                ...prev,
-                                transaction.id,
-                              ]);
-                            } else {
-                              setSelectedSystemItems((prev) =>
-                                prev.filter((id) => id !== transaction.id)
+                              setSelectedBankItems(
+                                filteredBankTransactions
+                                  .filter((t) => !t.reconciled)
+                                  .map((t) => t.id)
                               );
+                            } else {
+                              setSelectedBankItems([]);
                             }
                           }}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
                         />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        {new Date(transaction.date).toLocaleDateString("es-ES")}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
-                        <div
-                          className="max-w-xs truncate"
-                          title={transaction.description}
-                        >
-                          {transaction.description}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Categoría: {transaction.category}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span
-                          className={
-                            transaction.type === "credit"
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-red-600 dark:text-red-400"
-                          }
-                        >
-                          {transaction.type === "credit" ? "+" : "-"}
-                          {formatCurrency(transaction.amount)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction.reconciled ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/10 text-green-800 dark:text-green-200">
-                            Conciliado
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/10 text-yellow-800 dark:text-yellow-200">
-                            Pendiente
-                          </span>
-                        )}
-                      </td>
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Fecha
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Descripción
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Referencia
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Monto
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Estado
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {filteredBankTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                          transaction.reconciled
+                            ? "bg-green-50 dark:bg-green-900/10"
+                            : ""
+                        }`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedBankItems.includes(transaction.id)}
+                            disabled={transaction.reconciled}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedBankItems((prev) => [
+                                  ...prev,
+                                  transaction.id,
+                                ]);
+                              } else {
+                                setSelectedBankItems((prev) =>
+                                  prev.filter((id) => id !== transaction.id)
+                                );
+                              }
+                            }}
+                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                          {new Date(transaction.date).toLocaleDateString(
+                            "es-ES"
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                          <div className="max-w-xs">
+                            {transaction.description}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {transaction.reference}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <span
+                            className={
+                              transaction.type === "credit"
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"
+                            }
+                          >
+                            {transaction.type === "credit" ? "+" : "-"}
+                            {formatCurrency(transaction.amount)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              transaction.reconciled
+                                ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200"
+                                : "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200"
+                            }`}
+                          >
+                            {transaction.reconciled
+                              ? "Conciliado"
+                              : "Pendiente"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Vista detallada de Registros del Sistema */}
+            {activeTab === "system" && (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedSystemItems(
+                                filteredSystemTransactions
+                                  .filter((t) => !t.reconciled)
+                                  .map((t) => t.id)
+                              );
+                            } else {
+                              setSelectedSystemItems([]);
+                            }
+                          }}
+                        />
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Fecha
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Descripción
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Categoría
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Monto
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Estado
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {filteredSystemTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                          transaction.reconciled
+                            ? "bg-green-50 dark:bg-green-900/10"
+                            : ""
+                        }`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedSystemItems.includes(
+                              transaction.id
+                            )}
+                            disabled={transaction.reconciled}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedSystemItems((prev) => [
+                                  ...prev,
+                                  transaction.id,
+                                ]);
+                              } else {
+                                setSelectedSystemItems((prev) =>
+                                  prev.filter((id) => id !== transaction.id)
+                                );
+                              }
+                            }}
+                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                          {new Date(transaction.date).toLocaleDateString(
+                            "es-ES"
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                          <div className="max-w-xs">
+                            {transaction.description}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {transaction.category}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <span
+                            className={
+                              transaction.type === "credit"
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"
+                            }
+                          >
+                            {transaction.type === "credit" ? "+" : "-"}
+                            {formatCurrency(transaction.amount)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              transaction.reconciled
+                                ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200"
+                                : "bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200"
+                            }`}
+                          >
+                            {transaction.reconciled
+                              ? "Conciliado"
+                              : "Pendiente"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
