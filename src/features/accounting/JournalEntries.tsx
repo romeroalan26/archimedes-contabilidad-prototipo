@@ -31,27 +31,38 @@ const asientos: Asiento[] = [
 
 export default function JournalEntries() {
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">Libro Diario</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        Libro Diario
+      </h3>
       {asientos.map((a, i) => (
         <div key={i} className="mb-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {a.fecha} - {a.descripcion}
           </p>
           <table className="w-full text-sm mt-1">
             <thead>
-              <tr className="text-left border-b">
-                <th>Cuenta</th>
-                <th>Debe</th>
-                <th>Haber</th>
+              <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+                <th className="text-gray-700 dark:text-gray-300">Cuenta</th>
+                <th className="text-gray-700 dark:text-gray-300">Debe</th>
+                <th className="text-gray-700 dark:text-gray-300">Haber</th>
               </tr>
             </thead>
             <tbody>
               {a.detalles.map((d, j) => (
-                <tr key={j} className="border-b">
-                  <td>{d.cuenta}</td>
-                  <td>{d.debe ? `$${d.debe.toLocaleString()}` : ""}</td>
-                  <td>{d.haber ? `$${d.haber.toLocaleString()}` : ""}</td>
+                <tr
+                  key={j}
+                  className="border-b border-gray-100 dark:border-gray-700"
+                >
+                  <td className="text-gray-900 dark:text-gray-100">
+                    {d.cuenta}
+                  </td>
+                  <td className="text-gray-900 dark:text-gray-100">
+                    {d.debe ? `$${d.debe.toLocaleString()}` : ""}
+                  </td>
+                  <td className="text-gray-900 dark:text-gray-100">
+                    {d.haber ? `$${d.haber.toLocaleString()}` : ""}
+                  </td>
                 </tr>
               ))}
             </tbody>

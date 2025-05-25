@@ -4,24 +4,26 @@ export default function BalanceSheet() {
   const patrimonio = activos - pasivos;
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">Balance General</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        Balance General
+      </h3>
       <ul className="text-sm space-y-1">
-        <li>
+        <li className="text-gray-900 dark:text-gray-100">
           Activos:{" "}
-          <span className="font-bold text-green-700">
+          <span className="font-bold text-green-700 dark:text-green-400">
             ${activos.toLocaleString()}
           </span>
         </li>
-        <li>
+        <li className="text-gray-900 dark:text-gray-100">
           Pasivos:{" "}
-          <span className="font-bold text-red-700">
+          <span className="font-bold text-red-700 dark:text-red-400">
             ${pasivos.toLocaleString()}
           </span>
         </li>
-        <li>
+        <li className="text-gray-900 dark:text-gray-100">
           Patrimonio:{" "}
-          <span className="font-bold text-blue-700">
+          <span className="font-bold text-blue-700 dark:text-blue-400">
             ${patrimonio.toLocaleString()}
           </span>
         </li>

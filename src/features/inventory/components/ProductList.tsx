@@ -66,25 +66,25 @@ export default function ProductList({
 
   // Product Card Component (Mobile/Tablet view)
   const ProductCard = ({ product }: { product: Product }) => (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-medium text-gray-900 text-sm">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
               {product.nombre}
             </h3>
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+            <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
               {product.codigo}
             </span>
           </div>
-          <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
             {product.descripcion}
           </p>
         </div>
         <div className="flex space-x-1 ml-3">
           <button
             onClick={() => setEditingProduct(product)}
-            className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded"
+            className="p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded"
             title="Editar"
           >
             <svg
@@ -103,7 +103,7 @@ export default function ProductList({
           </button>
           <button
             onClick={() => handleDelete(product.id)}
-            className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded"
             title="Eliminar"
           >
             <svg
@@ -125,40 +125,42 @@ export default function ProductList({
 
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div>
-          <span className="text-gray-500">Categoría:</span>
-          <span className="ml-1 text-gray-900">{product.categoria}</span>
+          <span className="text-gray-500 dark:text-gray-400">Categoría:</span>
+          <span className="ml-1 text-gray-900 dark:text-gray-100">
+            {product.categoria}
+          </span>
         </div>
         <div>
-          <span className="text-gray-500">Precio:</span>
-          <span className="ml-1 text-gray-900 font-medium">
+          <span className="text-gray-500 dark:text-gray-400">Precio:</span>
+          <span className="ml-1 text-gray-900 dark:text-gray-100 font-medium">
             {formatCurrency(product.precioVenta)}
           </span>
         </div>
         <div>
-          <span className="text-gray-500">Stock:</span>
+          <span className="text-gray-500 dark:text-gray-400">Stock:</span>
           <div className="ml-1 inline-flex items-center gap-1">
-            <span className="text-gray-900">
+            <span className="text-gray-900 dark:text-gray-100">
               {product.stock} {product.unidad}
             </span>
             {product.stock <= product.stockMinimo && product.stock > 0 && (
-              <span className="px-1.5 py-0.5 text-xs rounded-full bg-yellow-100 text-yellow-800">
+              <span className="px-1.5 py-0.5 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
                 Bajo
               </span>
             )}
             {product.stock === 0 && (
-              <span className="px-1.5 py-0.5 text-xs rounded-full bg-red-100 text-red-800">
+              <span className="px-1.5 py-0.5 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
                 Agotado
               </span>
             )}
           </div>
         </div>
         <div>
-          <span className="text-gray-500">Estado:</span>
+          <span className="text-gray-500 dark:text-gray-400">Estado:</span>
           <span
             className={`ml-1 px-1.5 py-0.5 text-xs rounded-full ${
               product.estado === "activo"
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-800"
+                ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
             }`}
           >
             {product.estado}
@@ -166,9 +168,13 @@ export default function ProductList({
         </div>
       </div>
 
-      <div className="mt-2 pt-2 border-t border-gray-100">
-        <span className="text-xs text-gray-500">Ubicación: </span>
-        <span className="text-xs text-gray-900">{product.ubicacion}</span>
+      <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          Ubicación:{" "}
+        </span>
+        <span className="text-xs text-gray-900 dark:text-gray-100">
+          {product.ubicacion}
+        </span>
       </div>
     </div>
   );
@@ -176,20 +182,22 @@ export default function ProductList({
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h2 className="text-xl font-semibold text-gray-800">Productos</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+          Productos
+        </h2>
         <button
           onClick={() => setIsAddingProduct(true)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm font-medium"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 text-sm font-medium"
         >
           + Nuevo Producto
         </button>
       </div>
 
       {/* Filtros */}
-      <div className="bg-white p-4 rounded-lg border border-gray-200">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Buscar
             </label>
             <input
@@ -199,11 +207,11 @@ export default function ProductList({
               onChange={(e) =>
                 handleFilterChange({ searchTerm: e.target.value })
               }
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-md focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Categoría
             </label>
             <select
@@ -211,7 +219,7 @@ export default function ProductList({
               onChange={(e) =>
                 handleFilterChange({ selectedCategory: e.target.value })
               }
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 text-sm"
             >
               <option value="">Todas las categorías</option>
               {categories.map((category) => (
@@ -222,7 +230,7 @@ export default function ProductList({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Estado del Stock
             </label>
             <select
@@ -232,7 +240,7 @@ export default function ProductList({
                   stockFilter: e.target.value as "all" | "low" | "out",
                 })
               }
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 text-sm"
             >
               <option value="all">Todos</option>
               <option value="low">Stock Bajo</option>
@@ -244,8 +252,8 @@ export default function ProductList({
 
       {/* Lista de Productos */}
       {products.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-          <div className="mx-auto h-12 w-12 text-gray-300 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
+          <div className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-500 mb-4">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -255,17 +263,17 @@ export default function ProductList({
               />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
             No se encontraron productos
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
             {searchTerm || selectedCategory || stockFilter !== "all"
               ? "Intenta ajustar los filtros o busca otros términos."
               : "Comienza agregando tu primer producto."}
           </p>
           <button
             onClick={() => setIsAddingProduct(true)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 text-sm font-medium"
           >
             + Agregar Producto
           </button>
@@ -282,74 +290,74 @@ export default function ProductList({
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden lg:block bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="hidden lg:block bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Producto
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Categoría
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Precio
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Stock
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Estado
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Acciones
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {products.map((product) => (
                     <tr
                       key={product.id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
                       <td className="px-4 py-4">
                         <div className="max-w-xs">
                           <div className="flex items-center gap-2 mb-1">
-                            <div className="text-sm font-medium text-gray-900 truncate">
+                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                               {product.nombre}
                             </div>
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded flex-shrink-0">
+                            <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded flex-shrink-0">
                               {product.codigo}
                             </span>
                           </div>
-                          <div className="text-xs text-gray-500 truncate">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
                             {product.descripcion}
                           </div>
-                          <div className="text-xs text-gray-400 mt-1">
+                          <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                             📍 {product.ubicacion}
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-gray-500">
+                      <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
                         {product.categoria}
                       </td>
-                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                         {formatCurrency(product.precioVenta)}
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-900">
+                          <span className="text-sm text-gray-900 dark:text-gray-100">
                             {product.stock} {product.unidad}
                           </span>
                           {product.stock <= product.stockMinimo &&
                             product.stock > 0 && (
-                              <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                              <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
                                 Bajo
                               </span>
                             )}
                           {product.stock === 0 && (
-                            <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                            <span className="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
                               Agotado
                             </span>
                           )}
@@ -359,8 +367,8 @@ export default function ProductList({
                         <span
                           className={`px-2 py-1 text-xs rounded-full ${
                             product.estado === "activo"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                              : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
                           }`}
                         >
                           {product.estado}
@@ -370,7 +378,7 @@ export default function ProductList({
                         <div className="flex justify-end space-x-2">
                           <button
                             onClick={() => setEditingProduct(product)}
-                            className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                            className="p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded transition-colors"
                             title="Editar"
                           >
                             <svg
@@ -389,7 +397,7 @@ export default function ProductList({
                           </button>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                             title="Eliminar"
                           >
                             <svg

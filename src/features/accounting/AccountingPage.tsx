@@ -181,17 +181,17 @@ export default function AccountingPage() {
   const getAccountTypeColor = (type: string) => {
     switch (type) {
       case "assets":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
       case "liabilities":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
       case "equity":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
       case "revenue":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300";
       case "expenses":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
 
@@ -207,16 +207,16 @@ export default function AccountingPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50">
+    <div className="min-h-full bg-gray-50 dark:bg-gray-900">
       {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Módulo de Contabilidad
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Gestiona el plan de cuentas, asientos contables y reportes
                 financieros
               </p>
@@ -224,7 +224,7 @@ export default function AccountingPage() {
             <div className="mt-4 sm:mt-0 flex space-x-3">
               <button
                 onClick={() => setShowAccountForm(true)}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium flex items-center"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200 text-sm font-medium flex items-center"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -243,7 +243,7 @@ export default function AccountingPage() {
               </button>
               <button
                 onClick={() => setShowJournalForm(true)}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium flex items-center"
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-200 text-sm font-medium flex items-center"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -269,11 +269,11 @@ export default function AccountingPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-green-600"
+                  className="w-6 h-6 text-green-600 dark:text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -287,21 +287,21 @@ export default function AccountingPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Total Activos
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(totalAssets)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-red-100 rounded-lg">
+              <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-red-600"
+                  className="w-6 h-6 text-red-600 dark:text-red-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -315,21 +315,21 @@ export default function AccountingPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Total Pasivos
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(totalLiabilities)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-blue-600"
+                  className="w-6 h-6 text-blue-600 dark:text-blue-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -343,19 +343,21 @@ export default function AccountingPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Patrimonio</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Patrimonio
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(totalEquity)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-purple-600"
+                  className="w-6 h-6 text-purple-600 dark:text-purple-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -369,8 +371,10 @@ export default function AccountingPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Ingresos</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Ingresos
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(totalRevenue)}
                 </p>
               </div>
@@ -379,15 +383,15 @@ export default function AccountingPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="-mb-px flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab("accounts")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "accounts"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Plan de Cuentas
@@ -396,8 +400,8 @@ export default function AccountingPage() {
                 onClick={() => setActiveTab("journal")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "journal"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Libro Diario
@@ -406,8 +410,8 @@ export default function AccountingPage() {
                 onClick={() => setActiveTab("reports")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "reports"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Reportes Financieros
@@ -423,7 +427,7 @@ export default function AccountingPage() {
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Buscar Cuenta
                     </label>
                     <div className="relative">
@@ -432,11 +436,11 @@ export default function AccountingPage() {
                         placeholder="Código o nombre..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent pr-10"
                       />
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                         <svg
-                          className="h-5 w-5 text-gray-400"
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -453,13 +457,13 @@ export default function AccountingPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Tipo de Cuenta
                     </label>
                     <select
                       value={accountTypeFilter}
                       onChange={(e) => setAccountTypeFilter(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
                     >
                       <option value="all">Todos los tipos</option>
                       <option value="assets">Activos</option>
@@ -473,7 +477,7 @@ export default function AccountingPage() {
                   <div className="flex items-end">
                     <button
                       onClick={() => setShowAccountForm(true)}
-                      className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm font-medium"
+                      className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium"
                     >
                       Nueva Cuenta
                     </button>
@@ -481,43 +485,43 @@ export default function AccountingPage() {
                 </div>
 
                 {/* Accounts Table */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Código
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Nombre de la Cuenta
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Tipo
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Saldo
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Acciones
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredAccounts.map((account) => (
                           <tr
                             key={account.id}
-                            className="hover:bg-gray-50 transition-colors"
+                            className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           >
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                               {account.code}
                             </td>
                             <td className="px-6 py-4">
                               <div>
-                                <div className="text-sm font-medium text-gray-900">
+                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                   {account.name}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
                                   {account.description}
                                 </div>
                               </div>
@@ -529,15 +533,15 @@ export default function AccountingPage() {
                                 {getAccountTypeLabel(account.type)}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 text-right">
                               {formatCurrency(account.balance)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex justify-end space-x-2">
-                                <button className="text-indigo-600 hover:text-indigo-900">
+                                <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
                                   Ver
                                 </button>
-                                <button className="text-gray-600 hover:text-gray-900">
+                                <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
                                   Editar
                                 </button>
                               </div>
@@ -555,12 +559,12 @@ export default function AccountingPage() {
             {activeTab === "journal" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Asientos del Libro Diario
                   </h3>
                   <button
                     onClick={() => setShowJournalForm(true)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm font-medium"
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 dark:hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium"
                   >
                     Nuevo Asiento
                   </button>
@@ -570,25 +574,25 @@ export default function AccountingPage() {
                   {journalEntries.map((entry) => (
                     <div
                       key={entry.id}
-                      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
                     >
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h4 className="text-lg font-medium text-gray-900">
+                          <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                             {entry.reference}
                           </h4>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             {entry.description}
                           </p>
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                             Fecha: {formatDate(entry.date)}
                           </p>
                         </div>
                         <div className="flex space-x-2">
-                          <button className="text-indigo-600 hover:text-indigo-900 text-sm">
+                          <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm">
                             Ver
                           </button>
-                          <button className="text-gray-600 hover:text-gray-900 text-sm">
+                          <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300 text-sm">
                             Editar
                           </button>
                         </div>
@@ -597,14 +601,14 @@ export default function AccountingPage() {
                       <div className="overflow-x-auto">
                         <table className="min-w-full">
                           <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="text-left text-xs font-medium text-gray-500 uppercase py-2">
+                            <tr className="border-b border-gray-200 dark:border-gray-700">
+                              <th className="text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase py-2">
                                 Cuenta
                               </th>
-                              <th className="text-right text-xs font-medium text-gray-500 uppercase py-2">
+                              <th className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase py-2">
                                 Debe
                               </th>
-                              <th className="text-right text-xs font-medium text-gray-500 uppercase py-2">
+                              <th className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase py-2">
                                 Haber
                               </th>
                             </tr>
@@ -613,17 +617,17 @@ export default function AccountingPage() {
                             {entry.entries.map((line, index) => (
                               <tr
                                 key={index}
-                                className="border-b border-gray-100"
+                                className="border-b border-gray-100 dark:border-gray-700"
                               >
-                                <td className="py-2 text-sm text-gray-900">
+                                <td className="py-2 text-sm text-gray-900 dark:text-gray-100">
                                   {line.accountName}
                                 </td>
-                                <td className="py-2 text-sm text-gray-900 text-right">
+                                <td className="py-2 text-sm text-gray-900 dark:text-gray-100 text-right">
                                   {line.debit > 0
                                     ? formatCurrency(line.debit)
                                     : "-"}
                                 </td>
-                                <td className="py-2 text-sm text-gray-900 text-right">
+                                <td className="py-2 text-sm text-gray-900 dark:text-gray-100 text-right">
                                   {line.credit > 0
                                     ? formatCurrency(line.credit)
                                     : "-"}
@@ -642,40 +646,40 @@ export default function AccountingPage() {
             {/* Reportes Financieros Tab */}
             {activeTab === "reports" && (
               <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                   Reportes Financieros
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
                       Balance General
                     </h4>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Estado de situación financiera
                     </p>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                    <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium">
                       Generar Reporte →
                     </button>
                   </div>
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
                       Estado de Resultados
                     </h4>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Ingresos y gastos del período
                     </p>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                    <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium">
                       Generar Reporte →
                     </button>
                   </div>
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
                       Balance de Comprobación
                     </h4>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Saldos de todas las cuentas
                     </p>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                    <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium">
                       Generar Reporte →
                     </button>
                   </div>
@@ -689,18 +693,18 @@ export default function AccountingPage() {
       {/* Modals */}
       {showAccountForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
               Nueva Cuenta Contable
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               El formulario para crear nuevas cuentas contables estará
               disponible próximamente.
             </p>
             <div className="flex justify-end">
               <button
                 onClick={() => setShowAccountForm(false)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-600"
               >
                 Cerrar
               </button>
@@ -711,18 +715,18 @@ export default function AccountingPage() {
 
       {showJournalForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
               Nuevo Asiento Contable
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               El formulario para crear nuevos asientos contables estará
               disponible próximamente.
             </p>
             <div className="flex justify-end">
               <button
                 onClick={() => setShowJournalForm(false)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-600"
               >
                 Cerrar
               </button>

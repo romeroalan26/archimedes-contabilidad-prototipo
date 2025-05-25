@@ -5,22 +5,31 @@ export default function Report606() {
   ];
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">606 - Reporte de Compras</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        606 - Reporte de Compras
+      </h3>
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left border-b">
-            <th>Proveedor</th>
-            <th>NCF</th>
-            <th>Monto</th>
+          <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+            <th className="text-gray-700 dark:text-gray-300">Proveedor</th>
+            <th className="text-gray-700 dark:text-gray-300">NCF</th>
+            <th className="text-gray-700 dark:text-gray-300">Monto</th>
           </tr>
         </thead>
         <tbody>
           {compras.map((c, i) => (
-            <tr key={i} className="border-b">
-              <td>{c.proveedor}</td>
-              <td>{c.ncf}</td>
-              <td>${c.monto.toLocaleString()}</td>
+            <tr
+              key={i}
+              className="border-b border-gray-100 dark:border-gray-700"
+            >
+              <td className="text-gray-900 dark:text-gray-100">
+                {c.proveedor}
+              </td>
+              <td className="text-gray-900 dark:text-gray-100">{c.ncf}</td>
+              <td className="text-gray-900 dark:text-gray-100">
+                ${c.monto.toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -24,7 +24,7 @@ import { ClientsPage } from "./features/clients/ClientsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BankReconciliationPage from "./features/bankReconciliation/BankReconciliationPage";
-
+import AccountingPage from "./features/accounting/AccountingPage";
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -71,6 +71,7 @@ export default function App() {
           <Route path="/proyectos/*" element={<ProjectsPage />} />
           <Route path="/inventario" element={<InventoryPage />} />
           <Route path="/tesoreria" element={<TreasuryPage />} />
+          <Route path="/contabilidad" element={<AccountingPage />} />
           <Route
             path="/conciliacion-bancaria"
             element={<BankReconciliationPage />}

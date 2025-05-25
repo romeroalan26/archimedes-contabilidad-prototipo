@@ -47,8 +47,8 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
         </svg>
       ),
       bgGradient: "from-blue-500 to-blue-600",
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600",
+      iconBg: "bg-blue-100 dark:bg-blue-900/30",
+      iconColor: "text-blue-600 dark:text-blue-400",
     },
     {
       title: "Valor Inventario",
@@ -70,8 +70,8 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
         </svg>
       ),
       bgGradient: "from-emerald-500 to-green-600",
-      iconBg: "bg-emerald-100",
-      iconColor: "text-emerald-600",
+      iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
+      iconColor: "text-emerald-600 dark:text-emerald-400",
     },
     {
       title: "Alertas Stock",
@@ -93,8 +93,8 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
         </svg>
       ),
       bgGradient: "from-amber-500 to-orange-500",
-      iconBg: "bg-amber-100",
-      iconColor: "text-amber-600",
+      iconBg: "bg-amber-100 dark:bg-amber-900/30",
+      iconColor: "text-amber-600 dark:text-amber-400",
     },
     {
       title: "Margen Promedio",
@@ -116,8 +116,8 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
         </svg>
       ),
       bgGradient: "from-indigo-500 to-purple-600",
-      iconBg: "bg-indigo-100",
-      iconColor: "text-indigo-600",
+      iconBg: "bg-indigo-100 dark:bg-indigo-900/30",
+      iconColor: "text-indigo-600 dark:text-indigo-400",
     },
   ];
 
@@ -125,10 +125,12 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
     <div className="mb-8">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
           Resumen Ejecutivo
         </h2>
-        <p className="text-sm text-gray-600">Métricas clave de tu inventario</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Métricas clave de tu inventario
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -136,24 +138,24 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
         {statsCards.map((card, index) => (
           <div
             key={index}
-            className="relative overflow-hidden bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 group"
+            className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200 group"
           >
             {/* Background Gradient */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${card.bgGradient} opacity-0 group-hover:opacity-5 transition-opacity duration-200`}
+              className={`absolute inset-0 bg-gradient-to-br ${card.bgGradient} opacity-0 group-hover:opacity-5 dark:group-hover:opacity-10 transition-opacity duration-200`}
             />
 
             {/* Content */}
             <div className="relative p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-600 mb-1">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                     {card.title}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 mb-1 truncate">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1 truncate">
                     {card.value}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {card.subtitle}
                   </p>
                 </div>
@@ -169,7 +171,7 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
               {/* Progress indicator for stock alerts */}
               {card.title === "Alertas Stock" && stats.totalProductos > 0 && (
                 <div className="mt-4">
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                     <div
                       className={`h-1.5 rounded-full bg-gradient-to-r ${card.bgGradient} transition-all duration-500`}
                       style={{
@@ -192,35 +194,43 @@ export function InventoryStatsCards({ stats }: InventoryStatsCardsProps) {
 
       {/* Additional Quick Stats */}
       {stats.totalProductos > 0 && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
+        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <p className="text-lg font-semibold text-blue-600">
+              <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                 {stats.movimientosHoy}
               </p>
-              <p className="text-xs text-gray-600">Movimientos Hoy</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Movimientos Hoy
+              </p>
             </div>
             <div>
-              <p className="text-lg font-semibold text-amber-600">
+              <p className="text-lg font-semibold text-amber-600 dark:text-amber-400">
                 {stats.productosStockBajo}
               </p>
-              <p className="text-xs text-gray-600">Stock Bajo</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Stock Bajo
+              </p>
             </div>
             <div>
-              <p className="text-lg font-semibold text-red-600">
+              <p className="text-lg font-semibold text-red-600 dark:text-red-400">
                 {stats.productosStockCritico}
               </p>
-              <p className="text-xs text-gray-600">Stock Crítico</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Stock Crítico
+              </p>
             </div>
             <div>
-              <p className="text-lg font-semibold text-emerald-600">
+              <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
                 {formatPercentage(
                   ((stats.valorInventario - stats.valorCompra) /
                     stats.valorCompra) *
                     100
                 )}
               </p>
-              <p className="text-xs text-gray-600">Margen Global</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Margen Global
+              </p>
             </div>
           </div>
         </div>

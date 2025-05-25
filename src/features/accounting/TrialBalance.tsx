@@ -16,28 +16,41 @@ export default function TrialBalance() {
   const totalHaber = cuentas.reduce((acc, c) => acc + c.haber, 0);
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">Balance de Comprobación</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        Balance de Comprobación
+      </h3>
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left border-b">
-            <th>Cuenta</th>
-            <th>Debe</th>
-            <th>Haber</th>
+          <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+            <th className="text-gray-700 dark:text-gray-300">Cuenta</th>
+            <th className="text-gray-700 dark:text-gray-300">Debe</th>
+            <th className="text-gray-700 dark:text-gray-300">Haber</th>
           </tr>
         </thead>
         <tbody>
           {cuentas.map((c, i) => (
-            <tr key={i} className="border-b">
-              <td>{c.cuenta}</td>
-              <td>{c.debe ? `$${c.debe.toLocaleString()}` : ""}</td>
-              <td>{c.haber ? `$${c.haber.toLocaleString()}` : ""}</td>
+            <tr
+              key={i}
+              className="border-b border-gray-100 dark:border-gray-700"
+            >
+              <td className="text-gray-900 dark:text-gray-100">{c.cuenta}</td>
+              <td className="text-gray-900 dark:text-gray-100">
+                {c.debe ? `$${c.debe.toLocaleString()}` : ""}
+              </td>
+              <td className="text-gray-900 dark:text-gray-100">
+                {c.haber ? `$${c.haber.toLocaleString()}` : ""}
+              </td>
             </tr>
           ))}
-          <tr className="font-bold border-t">
-            <td>Total</td>
-            <td>${totalDebe.toLocaleString()}</td>
-            <td>${totalHaber.toLocaleString()}</td>
+          <tr className="font-bold border-t border-gray-300 dark:border-gray-600">
+            <td className="text-gray-900 dark:text-gray-100">Total</td>
+            <td className="text-gray-900 dark:text-gray-100">
+              ${totalDebe.toLocaleString()}
+            </td>
+            <td className="text-gray-900 dark:text-gray-100">
+              ${totalHaber.toLocaleString()}
+            </td>
           </tr>
         </tbody>
       </table>

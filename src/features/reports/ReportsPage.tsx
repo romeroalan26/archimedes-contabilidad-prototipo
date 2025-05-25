@@ -235,17 +235,17 @@ export default function ReportsPage() {
       case "disponible":
       case "emitido":
       case "generado":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
       case "pendiente":
       case "generando":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300";
       case "anulado":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
       case "enviado":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
 
@@ -272,16 +272,16 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50">
+    <div className="min-h-full bg-gray-50 dark:bg-gray-900">
       {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Centro de Reportes
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Genera reportes financieros, NCF, formatos DGII y análisis
                 personalizados
               </p>
@@ -289,7 +289,7 @@ export default function ReportsPage() {
             <div className="mt-4 sm:mt-0 flex space-x-3">
               <button
                 onClick={() => setShowNCFForm(true)}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium flex items-center"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200 text-sm font-medium flex items-center"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -306,7 +306,7 @@ export default function ReportsPage() {
                 </svg>
                 Nuevo NCF
               </button>
-              <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium flex items-center">
+              <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-200 text-sm font-medium flex items-center">
                 <svg
                   className="w-4 h-4 mr-2"
                   fill="none"
@@ -331,11 +331,11 @@ export default function ReportsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-blue-600"
+                  className="w-6 h-6 text-blue-600 dark:text-blue-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -349,21 +349,21 @@ export default function ReportsPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Total Reportes
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {totalReports}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-green-600"
+                  className="w-6 h-6 text-green-600 dark:text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -377,19 +377,21 @@ export default function ReportsPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   NCF Emitidos
                 </p>
-                <p className="text-2xl font-bold text-gray-900">{totalNCF}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {totalNCF}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-yellow-100 rounded-lg">
+              <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-yellow-600"
+                  className="w-6 h-6 text-yellow-600 dark:text-yellow-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -403,21 +405,21 @@ export default function ReportsPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   DGII Pendientes
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {pendingDGII}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <svg
-                  className="w-6 h-6 text-purple-600"
+                  className="w-6 h-6 text-purple-600 dark:text-purple-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -431,10 +433,10 @@ export default function ReportsPage() {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Reportes del Mes
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {reportsThisMonth}
                 </p>
               </div>
@@ -443,15 +445,15 @@ export default function ReportsPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="-mb-px flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab("financial")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "financial"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Reportes Financieros
@@ -460,8 +462,8 @@ export default function ReportsPage() {
                 onClick={() => setActiveTab("ncf")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "ncf"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 NCF
@@ -470,8 +472,8 @@ export default function ReportsPage() {
                 onClick={() => setActiveTab("dgii")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "dgii"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Formatos DGII
@@ -480,8 +482,8 @@ export default function ReportsPage() {
                 onClick={() => setActiveTab("custom")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "custom"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400"
+                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
                 Reportes Personalizados
@@ -495,10 +497,10 @@ export default function ReportsPage() {
             {activeTab === "financial" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Reportes Financieros
                   </h3>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium">
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium">
                     Generar Reporte Personalizado
                   </button>
                 </div>
@@ -507,17 +509,17 @@ export default function ReportsPage() {
                   {financialReports.map((report) => (
                     <div
                       key={report.id}
-                      className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                      className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-2">
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
                             {report.name}
                           </h4>
-                          <p className="text-sm text-gray-500 mb-4">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                             {report.description}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             Último: {formatDate(report.lastGenerated)}
                           </p>
                         </div>
@@ -529,10 +531,10 @@ export default function ReportsPage() {
                         </span>
                       </div>
                       <div className="mt-4 flex space-x-2">
-                        <button className="flex-1 bg-indigo-600 text-white px-3 py-2 rounded text-sm hover:bg-indigo-700">
+                        <button className="flex-1 bg-indigo-600 text-white px-3 py-2 rounded text-sm hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400">
                           Generar
                         </button>
-                        <button className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm hover:bg-gray-200">
+                        <button className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600">
                           Descargar
                         </button>
                       </div>
@@ -548,7 +550,7 @@ export default function ReportsPage() {
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Buscar NCF
                     </label>
                     <div className="relative">
@@ -557,11 +559,11 @@ export default function ReportsPage() {
                         placeholder="Cliente o número..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent pr-10"
                       />
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                         <svg
-                          className="h-5 w-5 text-gray-400"
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -578,13 +580,13 @@ export default function ReportsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Estado
                     </label>
                     <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
                     >
                       <option value="all">Todos los estados</option>
                       <option value="emitido">Emitido</option>
@@ -596,7 +598,7 @@ export default function ReportsPage() {
                   <div className="flex items-end">
                     <button
                       onClick={() => setShowNCFForm(true)}
-                      className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm font-medium"
+                      className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium"
                     >
                       Nuevo NCF
                     </button>
@@ -604,55 +606,55 @@ export default function ReportsPage() {
                 </div>
 
                 {/* NCF Table */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Tipo
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Número
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Cliente
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Fecha
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Total
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Estado
                           </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Acciones
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredNCF.map((ncf) => (
                           <tr
                             key={ncf.id}
-                            className="hover:bg-gray-50 transition-colors"
+                            className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                              <span className="px-2 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                                 {getNCFTypeLabel(ncf.type)}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                               {ncf.number}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-900">
+                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                               {ncf.client}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                               {formatDate(ncf.date)}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 text-right">
                               {formatCurrency(ncf.total)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -665,10 +667,10 @@ export default function ReportsPage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex justify-end space-x-2">
-                                <button className="text-indigo-600 hover:text-indigo-900">
+                                <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
                                   Ver
                                 </button>
-                                <button className="text-gray-600 hover:text-gray-900">
+                                <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
                                   Editar
                                 </button>
                               </div>
@@ -686,10 +688,10 @@ export default function ReportsPage() {
             {activeTab === "dgii" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Formatos DGII
                   </h3>
-                  <button className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 text-sm font-medium">
+                  <button className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 dark:hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium">
                     Generar Todos los Formatos
                   </button>
                 </div>
@@ -698,20 +700,20 @@ export default function ReportsPage() {
                   {dgiiFormats.map((format) => (
                     <div
                       key={format.id}
-                      className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                      className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-1">
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                             {format.name}
                           </h4>
-                          <p className="text-sm text-gray-500 mb-2">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                             {format.description}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             Período: {format.period}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             Último: {formatDate(format.lastGenerated)}
                           </p>
                         </div>
@@ -723,10 +725,10 @@ export default function ReportsPage() {
                         </span>
                       </div>
                       <div className="flex space-x-2">
-                        <button className="flex-1 bg-orange-600 text-white px-3 py-2 rounded text-sm hover:bg-orange-700">
+                        <button className="flex-1 bg-orange-600 text-white px-3 py-2 rounded text-sm hover:bg-orange-700 dark:hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400">
                           Generar
                         </button>
-                        <button className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm hover:bg-gray-200">
+                        <button className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600">
                           Descargar
                         </button>
                       </div>
@@ -735,18 +737,18 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
-                  <h4 className="font-medium text-orange-900 mb-3">
+                <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-6 border border-orange-200 dark:border-orange-800">
+                  <h4 className="font-medium text-orange-900 dark:text-orange-300 mb-3">
                     Acciones Rápidas DGII
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <button className="bg-white border border-orange-200 text-orange-700 px-4 py-3 rounded-md hover:bg-orange-50 text-sm font-medium">
+                    <button className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 px-4 py-3 rounded-md hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm font-medium">
                       Validar Formatos
                     </button>
-                    <button className="bg-white border border-orange-200 text-orange-700 px-4 py-3 rounded-md hover:bg-orange-50 text-sm font-medium">
+                    <button className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 px-4 py-3 rounded-md hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm font-medium">
                       Envío Automático
                     </button>
-                    <button className="bg-white border border-orange-200 text-orange-700 px-4 py-3 rounded-md hover:bg-orange-50 text-sm font-medium">
+                    <button className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 px-4 py-3 rounded-md hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm font-medium">
                       Historial de Envíos
                     </button>
                   </div>
@@ -758,10 +760,10 @@ export default function ReportsPage() {
             {activeTab === "custom" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Reportes por Módulo
                   </h3>
-                  <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm font-medium">
+                  <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 text-sm font-medium">
                     Crear Reporte Personalizado
                   </button>
                 </div>
@@ -770,34 +772,34 @@ export default function ReportsPage() {
                   {customReports.map((report) => (
                     <div
                       key={report.id}
-                      className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                      className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center mb-2">
-                            <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 mr-2">
+                            <span className="px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 mr-2">
                               {getModuleLabel(report.module)}
                             </span>
-                            <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                            <span className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
                               {report.type}
                             </span>
                           </div>
-                          <h4 className="font-medium text-gray-900 mb-1">
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                             {report.name}
                           </h4>
-                          <p className="text-sm text-gray-500 mb-2">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                             {report.description}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             Último: {formatDate(report.lastGenerated)}
                           </p>
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <button className="flex-1 bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700">
+                        <button className="flex-1 bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400">
                           Generar
                         </button>
-                        <button className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm hover:bg-gray-200">
+                        <button className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600">
                           Programar
                         </button>
                       </div>
@@ -806,8 +808,8 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Module Quick Access */}
-                <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                  <h4 className="font-medium text-purple-900 mb-3">
+                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6 border border-purple-200 dark:border-purple-800">
+                  <h4 className="font-medium text-purple-900 dark:text-purple-300 mb-3">
                     Acceso Rápido por Módulo
                   </h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -821,7 +823,7 @@ export default function ReportsPage() {
                     ].map((module) => (
                       <button
                         key={module}
-                        className="bg-white border border-purple-200 text-purple-700 px-3 py-2 rounded-md hover:bg-purple-50 text-sm font-medium text-center"
+                        className="bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 text-purple-700 dark:text-purple-300 px-3 py-2 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/30 text-sm font-medium text-center"
                       >
                         {getModuleLabel(module)}
                       </button>
@@ -837,18 +839,18 @@ export default function ReportsPage() {
       {/* NCF Modal */}
       {showNCFForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
               Nuevo Comprobante Fiscal
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               El formulario para generar nuevos NCF estará disponible
               próximamente.
             </p>
             <div className="flex justify-end">
               <button
                 onClick={() => setShowNCFForm(false)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-600"
               >
                 Cerrar
               </button>

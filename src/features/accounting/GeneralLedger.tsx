@@ -28,25 +28,36 @@ const cuentas: Cuenta[] = [
 
 export default function GeneralLedger() {
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">Libro Mayor</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        Libro Mayor
+      </h3>
       {cuentas.map((c, i) => (
         <div key={i} className="mb-4">
-          <p className="font-semibold">{c.nombre}</p>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">
+            {c.nombre}
+          </p>
           <table className="w-full text-sm mt-1">
             <thead>
-              <tr className="text-left border-b">
-                <th>Fecha</th>
-                <th>Tipo</th>
-                <th>Monto</th>
+              <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+                <th className="text-gray-700 dark:text-gray-300">Fecha</th>
+                <th className="text-gray-700 dark:text-gray-300">Tipo</th>
+                <th className="text-gray-700 dark:text-gray-300">Monto</th>
               </tr>
             </thead>
             <tbody>
               {c.movimientos.map((m, j) => (
-                <tr key={j} className="border-b">
-                  <td>{m.fecha}</td>
-                  <td>{m.tipo}</td>
-                  <td>${m.monto.toLocaleString()}</td>
+                <tr
+                  key={j}
+                  className="border-b border-gray-100 dark:border-gray-700"
+                >
+                  <td className="text-gray-900 dark:text-gray-100">
+                    {m.fecha}
+                  </td>
+                  <td className="text-gray-900 dark:text-gray-100">{m.tipo}</td>
+                  <td className="text-gray-900 dark:text-gray-100">
+                    ${m.monto.toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

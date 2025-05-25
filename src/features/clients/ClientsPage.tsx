@@ -217,23 +217,23 @@ export function ClientsPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50">
+    <div className="min-h-full bg-gray-50 dark:bg-gray-900">
       {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Gestión de Clientes
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Administre y consulte todos los clientes de su empresa
               </p>
             </div>
             <div className="mt-4 sm:mt-0">
               <button
                 onClick={() => setShowClientForm(true)}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium flex items-center"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200 text-sm font-medium flex items-center"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -259,23 +259,23 @@ export function ClientsPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Barra de filtros y búsqueda */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Buscar Cliente
               </label>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Nombre o RNC..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent pr-10"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                   <svg
-                    className="h-5 w-5 text-gray-400"
+                    className="h-5 w-5 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -292,11 +292,11 @@ export function ClientsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Estado
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
               >
@@ -307,11 +307,11 @@ export function ClientsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Items por página
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
                 value={itemsPerPage}
                 onChange={(e) =>
                   handleItemsPerPageChange(Number(e.target.value))
@@ -325,16 +325,16 @@ export function ClientsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Visualización
               </label>
-              <div className="flex border rounded-md overflow-hidden">
+              <div className="flex border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden">
                 <button
                   onClick={() => setViewMode("table")}
                   className={`flex-1 px-4 py-2 text-sm ${
                     viewMode === "table"
                       ? "bg-indigo-600 text-white"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
                   }`}
                 >
                   <svg
@@ -358,7 +358,7 @@ export function ClientsPage() {
                   className={`flex-1 px-4 py-2 text-sm ${
                     viewMode === "grid"
                       ? "bg-indigo-600 text-white"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
                   }`}
                 >
                   <svg
@@ -383,14 +383,14 @@ export function ClientsPage() {
         </div>
 
         {/* Contenido principal - Lista de clientes */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {isLoading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
             </div>
           ) : error ? (
             <div className="p-8 text-center">
-              <div className="text-red-500 mb-4">
+              <div className="text-red-500 dark:text-red-400 mb-4">
                 <svg
                   className="w-12 h-12 mx-auto"
                   fill="none"
@@ -405,17 +405,17 @@ export function ClientsPage() {
                   />
                 </svg>
               </div>
-              <p className="text-gray-700 mb-4">{error}</p>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
               >
                 Reintentar
               </button>
             </div>
           ) : filteredClients.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="text-gray-400 mb-4">
+              <div className="text-gray-400 dark:text-gray-500 mb-4">
                 <svg
                   className="w-16 h-16 mx-auto"
                   fill="none"
@@ -430,14 +430,14 @@ export function ClientsPage() {
                   />
                 </svg>
               </div>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
                 {searchTerm
                   ? "No se encontraron clientes que coincidan con la búsqueda"
                   : "No hay clientes registrados"}
               </p>
               <button
                 onClick={() => setShowClientForm(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600"
               >
                 Registrar nuevo cliente
               </button>
@@ -445,57 +445,59 @@ export function ClientsPage() {
           ) : viewMode === "table" ? (
             // Vista de tabla
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Nombre
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       RNC
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Teléfono
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell">
                       Tipo Facturación
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Estado
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Acciones
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {paginatedClients.map((client) => (
                     <tr
                       key={client.id}
-                      className={`hover:bg-gray-50 transition-colors ${
-                        client.status === "inactivo" ? "bg-gray-50" : ""
+                      className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
+                        client.status === "inactivo"
+                          ? "bg-gray-50 dark:bg-gray-700/30"
+                          : ""
                       }`}
                     >
                       <td
-                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer"
+                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 cursor-pointer"
                         onClick={() => handleViewClient(client)}
                       >
                         {client.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {client.rnc}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {client.phone || "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden md:table-cell">
                         {client.email || "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
-                        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                           {getBillingTypeLabel(client.billingType)}
                         </span>
                       </td>
@@ -503,8 +505,8 @@ export function ClientsPage() {
                         <span
                           className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             client.status === "activo"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                              : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
                           }`}
                         >
                           {client.status === "activo" ? "Activo" : "Inactivo"}
@@ -513,7 +515,7 @@ export function ClientsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                         <div className="flex justify-end space-x-2">
                           <button
-                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-full transition-colors"
+                            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 p-1.5 rounded-full transition-colors"
                             onClick={() => handleViewClient(client)}
                             title="Ver detalles"
                           >
@@ -539,7 +541,7 @@ export function ClientsPage() {
                           </button>
                           {client.status === "activo" ? (
                             <button
-                              className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-1.5 rounded-full transition-colors"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 p-1.5 rounded-full transition-colors"
                               onClick={() => handleDeactivate(client.id)}
                               title="Desactivar cliente"
                             >
@@ -559,7 +561,7 @@ export function ClientsPage() {
                             </button>
                           ) : (
                             <button
-                              className="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 p-1.5 rounded-full transition-colors"
+                              className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 p-1.5 rounded-full transition-colors"
                               onClick={() => handleReactivate(client.id)}
                               title="Reactivar cliente"
                             >
@@ -591,7 +593,7 @@ export function ClientsPage() {
               {paginatedClients.map((client) => (
                 <div
                   key={client.id}
-                  className={`border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
+                  className={`border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
                     client.status === "inactivo" ? "opacity-75" : ""
                   }`}
                 >
@@ -601,25 +603,27 @@ export function ClientsPage() {
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-1">
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                           {client.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           RNC: {client.rnc}
                         </p>
                         {client.phone && (
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             Tel: {client.phone}
                           </p>
                         )}
                         {client.email && (
-                          <p className="text-sm text-gray-500 truncate max-w-xs">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
                             {client.email}
                           </p>
                         )}
                         {client.address && (
-                          <p className="text-sm text-gray-500 truncate max-w-xs mt-1">
-                            <span className="text-gray-400">Dirección:</span>{" "}
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs mt-1">
+                            <span className="text-gray-400 dark:text-gray-500">
+                              Dirección:
+                            </span>{" "}
                             {client.address}
                           </p>
                         )}
@@ -627,40 +631,40 @@ export function ClientsPage() {
                       <span
                         className={`ml-2 px-2 py-1 text-xs rounded-full flex-shrink-0 ${
                           client.status === "activo"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                            : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
                         }`}
                       >
                         {client.status === "activo" ? "Activo" : "Inactivo"}
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-3">
-                      <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                      <span className="px-2 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                         {getBillingTypeLabel(client.billingType)}
                       </span>
-                      <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">
+                      <span className="px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300">
                         {getNcfTypeLabel(client.ncfType)}
                       </span>
                     </div>
                   </div>
-                  <div className="bg-gray-50 px-5 py-3 flex justify-between">
+                  <div className="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 flex justify-between">
                     <button
                       onClick={() => handleViewClient(client)}
-                      className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-sm font-medium"
                     >
                       Ver detalles
                     </button>
                     {client.status === "activo" ? (
                       <button
                         onClick={() => handleDeactivate(client.id)}
-                        className="text-red-600 hover:text-red-900 text-sm font-medium"
+                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium"
                       >
                         Desactivar
                       </button>
                     ) : (
                       <button
                         onClick={() => handleReactivate(client.id)}
-                        className="text-green-600 hover:text-green-900 text-sm font-medium"
+                        className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 text-sm font-medium"
                       >
                         Reactivar
                       </button>
@@ -674,27 +678,27 @@ export function ClientsPage() {
 
         {/* Paginación */}
         {!isLoading && !error && filteredClients.length > 0 && (
-          <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6 rounded-lg mt-6">
+          <div className="bg-white dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6 rounded-lg mt-6">
             <div className="flex items-center justify-between">
               <div className="flex justify-between flex-1 sm:hidden">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Anterior
                 </button>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Siguiente
                 </button>
               </div>
               <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
                     Mostrando{" "}
                     <span className="font-medium">
                       {(currentPage - 1) * itemsPerPage + 1}
@@ -728,7 +732,7 @@ export function ClientsPage() {
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <svg
                           className="h-5 w-5"
@@ -762,7 +766,7 @@ export function ClientsPage() {
                             return (
                               <span
                                 key={pageNumber}
-                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300"
                               >
                                 ...
                               </span>
@@ -777,8 +781,8 @@ export function ClientsPage() {
                             onClick={() => handlePageChange(pageNumber)}
                             className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                               isCurrentPage
-                                ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                                : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+                                ? "z-10 bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 dark:border-indigo-600 text-indigo-600 dark:text-indigo-300"
+                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700"
                             }`}
                           >
                             {pageNumber}
@@ -789,7 +793,7 @@ export function ClientsPage() {
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <svg
                           className="h-5 w-5"

@@ -19,20 +19,25 @@ const cuentas: Cuenta[] = [
 
 export default function ChartOfAccounts() {
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">Catálogo de Cuentas (NIIF)</h3>
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow border border-gray-200 dark:border-gray-700">
+      <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        Catálogo de Cuentas (NIIF)
+      </h3>
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left border-b">
-            <th>Código</th>
-            <th>Nombre</th>
+          <tr className="text-left border-b border-gray-200 dark:border-gray-700">
+            <th className="text-gray-700 dark:text-gray-300">Código</th>
+            <th className="text-gray-700 dark:text-gray-300">Nombre</th>
           </tr>
         </thead>
         <tbody>
           {cuentas.map((c) => (
-            <tr key={c.codigo} className="border-b">
-              <td>{c.codigo}</td>
-              <td>{c.nombre}</td>
+            <tr
+              key={c.codigo}
+              className="border-b border-gray-100 dark:border-gray-700"
+            >
+              <td className="text-gray-900 dark:text-gray-100">{c.codigo}</td>
+              <td className="text-gray-900 dark:text-gray-100">{c.nombre}</td>
             </tr>
           ))}
         </tbody>
