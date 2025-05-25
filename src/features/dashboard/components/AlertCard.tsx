@@ -9,11 +9,11 @@ export default function AlertCard({ data }: AlertCardProps) {
     switch (type) {
       case "success":
         return {
-          bgColor: "bg-green-50",
-          borderColor: "border-green-200",
-          textColor: "text-green-800",
-          iconBgColor: "bg-green-100",
-          iconColor: "text-green-600",
+          bgColor: "bg-green-50 dark:bg-green-900/20",
+          borderColor: "border-green-200 dark:border-green-700",
+          textColor: "text-green-800 dark:text-green-300",
+          iconBgColor: "bg-green-100 dark:bg-green-900/30",
+          iconColor: "text-green-600 dark:text-green-400",
           icon: (
             <svg
               className="w-5 h-5"
@@ -32,11 +32,11 @@ export default function AlertCard({ data }: AlertCardProps) {
         };
       case "warning":
         return {
-          bgColor: "bg-yellow-50",
-          borderColor: "border-yellow-200",
-          textColor: "text-yellow-800",
-          iconBgColor: "bg-yellow-100",
-          iconColor: "text-yellow-600",
+          bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+          borderColor: "border-yellow-200 dark:border-yellow-700",
+          textColor: "text-yellow-800 dark:text-yellow-300",
+          iconBgColor: "bg-yellow-100 dark:bg-yellow-900/30",
+          iconColor: "text-yellow-600 dark:text-yellow-400",
           icon: (
             <svg
               className="w-5 h-5"
@@ -55,11 +55,11 @@ export default function AlertCard({ data }: AlertCardProps) {
         };
       case "error":
         return {
-          bgColor: "bg-red-50",
-          borderColor: "border-red-200",
-          textColor: "text-red-800",
-          iconBgColor: "bg-red-100",
-          iconColor: "text-red-600",
+          bgColor: "bg-red-50 dark:bg-red-900/20",
+          borderColor: "border-red-200 dark:border-red-700",
+          textColor: "text-red-800 dark:text-red-300",
+          iconBgColor: "bg-red-100 dark:bg-red-900/30",
+          iconColor: "text-red-600 dark:text-red-400",
           icon: (
             <svg
               className="w-5 h-5"
@@ -78,11 +78,11 @@ export default function AlertCard({ data }: AlertCardProps) {
         };
       default:
         return {
-          bgColor: "bg-gray-50",
-          borderColor: "border-gray-200",
-          textColor: "text-gray-800",
-          iconBgColor: "bg-gray-100",
-          iconColor: "text-gray-600",
+          bgColor: "bg-gray-50 dark:bg-gray-800",
+          borderColor: "border-gray-200 dark:border-gray-700",
+          textColor: "text-gray-800 dark:text-gray-300",
+          iconBgColor: "bg-gray-100 dark:bg-gray-700",
+          iconColor: "text-gray-600 dark:text-gray-400",
           icon: (
             <svg
               className="w-5 h-5"
@@ -138,8 +138,10 @@ export default function AlertCard({ data }: AlertCardProps) {
             {data.message}
           </p>
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-xs text-gray-500">{timeAgo}</p>
-            <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {timeAgo}
+            </p>
+            <button className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-200">
               <svg
                 className="w-4 h-4"
                 fill="none"

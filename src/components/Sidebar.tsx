@@ -10,7 +10,23 @@ interface SidebarProps {
 // Organizamos los items de navegación en grupos lógicos
 const navigationGroups = [
   {
+    id: "principal",
     title: "Principal",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+        />
+      </svg>
+    ),
     items: [
       {
         label: "Dashboard",
@@ -35,7 +51,23 @@ const navigationGroups = [
     ],
   },
   {
+    id: "operaciones",
     title: "Operaciones",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+    ),
     items: [
       {
         label: "Ventas",
@@ -140,7 +172,23 @@ const navigationGroups = [
     ],
   },
   {
+    id: "finanzas",
     title: "Finanzas",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
     items: [
       {
         label: "Tesorería",
@@ -224,7 +272,7 @@ const navigationGroups = [
       },
       {
         label: "Activos Fijos",
-        path: "/activos-fijos",
+        path: "/activos",
         icon: (
           <svg
             className="w-5 h-5"
@@ -245,7 +293,23 @@ const navigationGroups = [
     ],
   },
   {
+    id: "reportes",
     title: "Reportes y Cumplimiento",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
     items: [
       {
         label: "Reportes",
@@ -267,46 +331,6 @@ const navigationGroups = [
         ),
         badge: null,
       },
-      {
-        label: "NCF",
-        path: "/ncf",
-        icon: (
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        ),
-        badge: null,
-      },
-      {
-        label: "Formatos DGII",
-        path: "/formatos-dgii",
-        icon: (
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-            />
-          </svg>
-        ),
-        badge: null,
-      },
     ],
   },
 ];
@@ -314,13 +338,8 @@ const navigationGroups = [
 export default function Sidebar({ onLogout }: SidebarProps) {
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const {
-    isCollapsed,
-    isMobileOpen,
-    toggleCollapse,
-    toggleMobile,
-    setMobileOpen,
-  } = useSidebarStore();
+  const { isCollapsed, isMobileOpen, toggleMobile, setMobileOpen } =
+    useSidebarStore();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Actualizar la hora cada minuto
@@ -359,7 +378,7 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       {/* Overlay para móvil */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-all duration-300"
+          className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-40 md:hidden transition-all duration-300"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -373,9 +392,9 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         className={`
           md:hidden fixed top-4 left-4 z-[100]
           p-3 rounded-xl
-          bg-white text-gray-700 shadow-lg border border-gray-200
-          hover:bg-gray-50 hover:shadow-xl
-          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+          bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-lg border border-gray-200 dark:border-gray-700
+          hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-xl
+          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
           transition-all duration-300 ease-in-out
           ${
             isMobileOpen
@@ -408,22 +427,22 @@ export default function Sidebar({ onLogout }: SidebarProps) {
       <aside
         id="sidebar"
         className={`
-          fixed md:static inset-y-0 left-0 z-50
+          fixed md:static inset-y-0 left-0 z-50 flex-shrink-0
           ${isCollapsed ? "w-20" : "w-80"} 
-          bg-white border-r border-gray-200 shadow-xl
+          bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-xl
           transform transition-all duration-300 ease-in-out
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-x-hidden">
           {/* Header con logo y branding */}
           <div
             className={`${
               isCollapsed ? "p-4" : "p-6"
-            } border-b border-gray-100 bg-gradient-to-r from-indigo-600 to-purple-600`}
+            } border-b border-gray-100 bg-gradient-to-r from-indigo-600 to-purple-600 overflow-hidden`}
           >
-            <div className="flex items-center justify-between">
-              <div className={`${isCollapsed ? "hidden" : "block"}`}>
+            <div className="flex items-center justify-center">
+              {!isCollapsed ? (
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                     <span className="text-white font-bold text-lg">A</span>
@@ -433,43 +452,17 @@ export default function Sidebar({ onLogout }: SidebarProps) {
                     <p className="text-sm text-indigo-100">Sistema Contable</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Logo colapsado */}
-              <div className={`${isCollapsed ? "block" : "hidden"} mx-auto`}>
+              ) : (
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-xl">A</span>
                 </div>
-              </div>
-
-              {/* Botón de colapsar/expandir (solo visible en desktop) */}
-              <button
-                onClick={toggleCollapse}
-                className="hidden md:flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 group"
-                title={isCollapsed ? "Expandir menú" : "Colapsar menú"}
-              >
-                <svg
-                  className={`w-4 h-4 text-white transition-transform duration-200 group-hover:scale-110 ${
-                    isCollapsed ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                  />
-                </svg>
-              </button>
+              )}
             </div>
           </div>
 
           {/* Información del usuario */}
           <div
-            className={`${isCollapsed ? "p-4" : "p-6"} border-b border-gray-100`}
+            className={`${isCollapsed ? "p-4" : "p-6"} border-b border-gray-100 dark:border-gray-700`}
           >
             <div
               className={`flex items-center ${isCollapsed ? "justify-center" : ""}`}
@@ -480,17 +473,17 @@ export default function Sidebar({ onLogout }: SidebarProps) {
                     {user?.name?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-gray-800"></div>
               </div>
               {!isCollapsed && (
                 <div className="ml-3 flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
                     {user?.name || "Usuario"}
                   </p>
-                  <p className="text-xs text-gray-500 capitalize">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                     {user?.role || "Administrador"}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                     {currentTime.toLocaleTimeString("es-ES", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -503,93 +496,114 @@ export default function Sidebar({ onLogout }: SidebarProps) {
           </div>
 
           {/* Menú de navegación */}
-          <nav className="flex-1 overflow-y-auto py-4">
-            {navigationGroups.map((group, groupIndex) => (
-              <div
-                key={group.title}
-                className={`${groupIndex > 0 ? "mt-6" : ""}`}
-              >
-                {!isCollapsed && (
-                  <div className="px-6 mb-3">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      {group.title}
-                    </h3>
-                  </div>
-                )}
-                <div className={`px-3 space-y-1 ${isCollapsed ? "mb-6" : ""}`}>
-                  {group.items.map((item) => {
-                    const isActive = pathname.startsWith(item.path);
-                    return (
-                      <div key={item.path} className="relative group">
-                        <Link
-                          to={item.path}
-                          onClick={() => {
-                            if (window.innerWidth < 768) {
-                              setMobileOpen(false);
-                            }
-                          }}
-                          className={`
-                            flex items-center ${
-                              isCollapsed ? "justify-center px-3" : "px-4"
-                            } py-3 rounded-xl text-sm font-medium
-                            transition-all duration-200 relative overflow-hidden group
-                            ${
-                              isActive
-                                ? "bg-indigo-50 text-indigo-700 shadow-sm"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                            }
-                          `}
-                          title={isCollapsed ? item.label : undefined}
-                        >
-                          {/* Active indicator */}
-                          {isActive && (
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r-full"></div>
-                          )}
-
-                          <span
-                            className={`${
-                              isCollapsed ? "" : "mr-3"
-                            } transition-all duration-200 ${
-                              isActive ? "text-indigo-600" : ""
-                            } group-hover:scale-110`}
-                          >
-                            {item.icon}
-                          </span>
-
-                          <span
-                            className={`${isCollapsed ? "hidden" : "flex-1"} truncate`}
-                          >
-                            {item.label}
-                          </span>
-                        </Link>
-
-                        {/* Tooltip para modo colapsado */}
-                        {isCollapsed && (
-                          <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-50 shadow-xl">
-                            {item.label}
-                            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-                          </div>
-                        )}
+          <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4">
+            {navigationGroups.map((group, groupIndex) => {
+              return (
+                <div
+                  key={group.id}
+                  className={`${groupIndex > 0 ? (isCollapsed ? "mt-2" : "mt-4") : ""}`}
+                >
+                  {/* Group Header - Static */}
+                  {!isCollapsed && (
+                    <div className="px-3 mb-3">
+                      <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 rounded-lg px-3 py-2">
+                        <h3 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                          {group.title}
+                        </h3>
                       </div>
-                    );
-                  })}
+                    </div>
+                  )}
+
+                  {/* Group Items */}
+                  <div
+                    className={`
+                      overflow-hidden
+                      ${isCollapsed ? "px-3 space-y-1 mb-3" : "px-3 space-y-1"}
+                    `}
+                  >
+                    {group.items.map((item) => {
+                      const isActive = pathname.startsWith(item.path);
+                      return (
+                        <div key={item.path} className="relative group">
+                          <Link
+                            to={item.path}
+                            onClick={() => {
+                              if (window.innerWidth < 768) {
+                                setMobileOpen(false);
+                              }
+                            }}
+                            className={`
+                              flex items-center rounded-xl text-sm font-medium
+                              transition-all duration-200 relative overflow-hidden
+                              ${
+                                isCollapsed
+                                  ? "justify-center px-2 py-2.5 mb-1"
+                                  : "px-4 py-3"
+                              }
+                              ${
+                                isActive
+                                  ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 shadow-sm"
+                                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100"
+                              }
+                            `}
+                            title={isCollapsed ? item.label : undefined}
+                          >
+                            {/* Active indicator */}
+                            {isActive && !isCollapsed && (
+                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r-full"></div>
+                            )}
+
+                            {/* Active indicator for collapsed mode */}
+                            {isActive && isCollapsed && (
+                              <div className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl"></div>
+                            )}
+
+                            <span
+                              className={`
+                                transition-all duration-200 flex-shrink-0 relative z-10
+                                ${isCollapsed ? "" : "mr-3"}
+                                ${isActive ? "text-indigo-600 dark:text-indigo-400" : ""} 
+                                group-hover:scale-110
+                              `}
+                            >
+                              {item.icon}
+                            </span>
+
+                            <span
+                              className={`${isCollapsed ? "hidden" : "flex-1"} truncate relative z-10`}
+                            >
+                              {item.label}
+                            </span>
+                          </Link>
+
+                          {/* Tooltip para modo colapsado */}
+                          {isCollapsed && (
+                            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-[60] shadow-xl">
+                              {item.label}
+                              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 dark:bg-gray-700 rotate-45"></div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </nav>
 
           {/* Footer con acciones */}
           <div
-            className={`${isCollapsed ? "p-3" : "p-6"} border-t border-gray-100 bg-gray-50`}
+            className={`${isCollapsed ? "p-3" : "p-6"} border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-hidden`}
           >
             {!isCollapsed && (
               <div className="space-y-3">
                 <button
                   onClick={onLogout}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 group"
+                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 group"
                 >
                   <svg
-                    className="w-5 h-5 mr-3 text-gray-500 group-hover:text-red-500 transition-colors duration-200"
+                    className="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors duration-200 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -611,11 +625,11 @@ export default function Sidebar({ onLogout }: SidebarProps) {
               <div className="relative group">
                 <button
                   onClick={onLogout}
-                  className="w-full flex items-center justify-center p-3 text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200"
+                  className="w-full flex items-center justify-center p-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-600 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
                   title="Cerrar sesión"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -630,9 +644,9 @@ export default function Sidebar({ onLogout }: SidebarProps) {
                 </button>
 
                 {/* Tooltip para logout */}
-                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-50 shadow-xl">
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-[60] shadow-xl">
                   Cerrar sesión
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 dark:bg-gray-700 rotate-45"></div>
                 </div>
               </div>
             )}

@@ -10,9 +10,15 @@ interface SalesHistoryProps {
   sales: Sale[];
   isLoading?: boolean;
   error?: Error | null;
+  onCreateCreditNote?: (sale?: Sale) => void;
 }
 
-export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
+export function SalesHistory({
+  sales,
+  isLoading,
+  error,
+  onCreateCreditNote,
+}: SalesHistoryProps) {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -110,7 +116,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
       </div>
     );
   }
@@ -118,11 +124,11 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
   // Estado de error
   if (error) {
     return (
-      <div className="bg-red-50 border-l-4 border-red-500 p-4 m-4">
+      <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 p-4 m-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg
-              className="h-5 w-5 text-red-500"
+              className="h-5 w-5 text-red-500 dark:text-red-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -136,7 +142,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium text-red-800">
+            <p className="text-sm font-medium text-red-800 dark:text-red-200">
               Error al cargar el historial de ventas: {error.message}
             </p>
           </div>
@@ -150,7 +156,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
     return (
       <div className="text-center py-16">
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -162,10 +168,10 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
           />
         </svg>
-        <h3 className="mt-2 text-base font-medium text-gray-900">
+        <h3 className="mt-2 text-base font-medium text-gray-900 dark:text-gray-100">
           No hay ventas registradas
         </h3>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Las ventas que realice aparecerán aquí.
         </p>
       </div>
@@ -176,13 +182,13 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
   return (
     <>
       {/* Barra de filtros y búsqueda */}
-      <div className="bg-white px-4 py-3 border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5 items-end">
           {/* Búsqueda */}
           <div>
             <label
               htmlFor="search"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Buscar
             </label>
@@ -193,11 +199,11 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                 placeholder="Cliente, ID o fecha..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="h-5 w-5 text-gray-400"
+                  className="h-5 w-5 text-gray-400 dark:text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -217,7 +223,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
           <div>
             <label
               htmlFor="filter-status"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Estado
             </label>
@@ -225,7 +231,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               id="filter-status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm"
             >
               <option value="all">Todos los estados</option>
               <option value="completed">Completadas</option>
@@ -239,7 +245,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
           <div>
             <label
               htmlFor="filter-type"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Tipo
             </label>
@@ -247,7 +253,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               id="filter-type"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm"
             >
               <option value="all">Todos los tipos</option>
               <option value="cash">Contado</option>
@@ -260,7 +266,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
           <div>
             <label
               htmlFor="sort-by"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Ordenar por
             </label>
@@ -268,7 +274,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               id="sort-by"
               value={sortBy}
               onChange={(e) => toggleSort(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-sm"
             >
               <option value="date">Fecha</option>
               <option value="client">Cliente</option>
@@ -281,7 +287,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
           <div>
             <label
               htmlFor="sort-direction"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Dirección
             </label>
@@ -292,7 +298,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                 className={`flex-1 py-2 px-3 border rounded-md text-sm font-medium focus:outline-none ${
                   sortDirection === "desc"
                     ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
                 }`}
               >
                 Descendente
@@ -303,7 +309,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                 className={`flex-1 py-2 px-3 border rounded-md text-sm font-medium focus:outline-none ${
                   sortDirection === "asc"
                     ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
                 }`}
               >
                 Ascendente
@@ -315,12 +321,12 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
 
       {/* Tabla de ventas */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                 onClick={() => toggleSort("date")}
               >
                 <div className="flex items-center">
@@ -348,7 +354,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                 onClick={() => toggleSort("client")}
               >
                 <div className="flex items-center">
@@ -376,13 +382,13 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
               >
                 Productos
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                 onClick={() => toggleSort("total")}
               >
                 <div className="flex items-center">
@@ -410,59 +416,62 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
               >
                 Estado
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
               >
                 Tipo
               </th>
               <th
                 scope="col"
-                className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
               >
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {sortedSales.map((sale) => (
-              <tr key={sale.id} className="hover:bg-gray-50 transition-colors">
+              <tr
+                key={sale.id}
+                className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
                 <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {new Date(sale.date).toLocaleDateString()}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
                     {new Date(sale.date).toLocaleTimeString()}
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {getClientName(sale.clientId)}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
                     ID: {sale.clientId.substring(0, 8)}...
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-gray-900 dark:text-gray-100">
                     {sale.items.length}{" "}
                     {sale.items.length === 1 ? "producto" : "productos"}
                   </div>
-                  <div className="text-xs text-gray-500 max-w-xs truncate">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 max-w-xs truncate">
                     {sale.items
                       .map((item) => getProductName(item.productId))
                       .join(", ")}
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     ${sale.total.toFixed(2)}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
                     ITBIS: ${sale.itbis.toFixed(2)}
                   </div>
                 </td>
@@ -470,12 +479,12 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                   <span
                     className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       sale.status === "completed"
-                        ? "bg-green-100 text-green-800"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
                         : sale.status === "partial"
-                          ? "bg-yellow-100 text-yellow-800"
+                          ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
                           : sale.status === "pending"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                            ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
+                            : "bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300"
                     }`}
                   >
                     {sale.status === "completed"
@@ -488,7 +497,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                   </span>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap">
-                  <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                  <span className="px-2 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
                     {sale.type === "cash"
                       ? "Contado"
                       : sale.type === "credit"
@@ -497,10 +506,10 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                   </span>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-3">
+                  <div className="flex justify-end space-x-2">
                     <button
                       onClick={() => handlePrintInvoice(sale)}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300"
                       title="Imprimir Factura"
                     >
                       <svg
@@ -517,9 +526,30 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
                         />
                       </svg>
                     </button>
+                    {onCreateCreditNote && (
+                      <button
+                        onClick={() => onCreateCreditNote(sale)}
+                        className="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300"
+                        title="Crear Nota de Crédito"
+                      >
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                          />
+                        </svg>
+                      </button>
+                    )}
                     <button
                       onClick={() => setSelectedSale(sale)}
-                      className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md text-sm"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-md text-sm"
                     >
                       Ver detalles
                     </button>
@@ -533,7 +563,7 @@ export function SalesHistory({ sales, isLoading, error }: SalesHistoryProps) {
 
       {/* Mensaje de resultados */}
       {filteredSales.length > 0 && (
-        <div className="px-4 py-3 bg-gray-50 text-sm text-gray-500 border-t border-gray-200">
+        <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-600">
           Mostrando {filteredSales.length} de {sales.length} ventas
           {filterStatus !== "all" && (
             <span>

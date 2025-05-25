@@ -40,10 +40,12 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
+      <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-indigo-600 border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-indigo-600 dark:border-indigo-400 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Cargando dashboard...
+          </p>
         </div>
       </div>
     );
@@ -51,11 +53,11 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-sm border border-gray-200 max-w-md">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-900">
+        <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-md">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-8 h-8 text-red-600"
+              className="w-8 h-8 text-red-600 dark:text-red-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -68,16 +70,16 @@ export default function DashboardPage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Error al cargar el dashboard
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             Ocurrió un problema al cargar los datos. Por favor, intente
             nuevamente.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200"
           >
             Reintentar
           </button>
@@ -87,16 +89,16 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-full bg-gray-50">
+    <div className="min-h-full bg-gray-50 dark:bg-gray-900">
       {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {getGreeting()}, {user?.name || "Usuario"}
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Aquí tienes un resumen de tu negocio para el{" "}
                 {currentTime.toLocaleDateString("es-ES", {
                   weekday: "long",
@@ -108,8 +110,10 @@ export default function DashboardPage() {
             </div>
             <div className="mt-4 sm:mt-0 flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-gray-500">Última actualización</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Última actualización
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   {currentTime.toLocaleTimeString("es-ES", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -117,7 +121,7 @@ export default function DashboardPage() {
                   })}
                 </p>
               </div>
-              <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium">
+              <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200 text-sm font-medium">
                 Actualizar datos
               </button>
             </div>
@@ -129,7 +133,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* KPIs Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Métricas Principales
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -145,7 +149,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-8 space-y-8">
             {/* Charts Row */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Análisis Financiero
               </h2>
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -159,7 +163,7 @@ export default function DashboardPage() {
 
             {/* Bank Reconciliation */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Conciliación Bancaria
               </h2>
               <BankReconciliationSummary />
@@ -170,10 +174,10 @@ export default function DashboardPage() {
           <div className="lg:col-span-4 space-y-6">
             {/* Alerts Section */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Notificaciones
                 {data.alerts.length > 0 && (
-                  <span className="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                  <span className="ml-2 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
                     {data.alerts.length}
                   </span>
                 )}
@@ -184,10 +188,10 @@ export default function DashboardPage() {
                     <AlertCard key={alert.id} data={alert} />
                   ))
                 ) : (
-                  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 text-center">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-center">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
                       <svg
-                        className="w-6 h-6 text-green-600"
+                        className="w-6 h-6 text-green-600 dark:text-green-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -200,10 +204,10 @@ export default function DashboardPage() {
                         />
                       </svg>
                     </div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       ¡Todo está al día!
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       No hay notificaciones pendientes
                     </p>
                   </div>
@@ -213,34 +217,40 @@ export default function DashboardPage() {
 
             {/* System Status */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Estado del Sistema
               </h2>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Servidor</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Servidor
+                    </span>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-green-600">
+                      <span className="text-sm font-medium text-green-600 dark:text-green-400">
                         Operativo
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Base de Datos</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Base de Datos
+                    </span>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-green-600">
+                      <span className="text-sm font-medium text-green-600 dark:text-green-400">
                         Conectada
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Backup</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Backup
+                    </span>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-blue-600">
+                      <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
                         Programado
                       </span>
                     </div>

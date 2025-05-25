@@ -159,23 +159,27 @@ export default function ChartCard({ title, data }: ChartCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="px-6 py-4 border-b border-gray-100">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            <p className="text-sm text-gray-500 mt-1">Últimos 6 meses</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {title}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Últimos 6 meses
+            </p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {formatCurrency(latestValue)}
             </p>
             <div className="flex items-center justify-end mt-1">
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                   isPositive
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                    : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300"
                 }`}
               >
                 <svg

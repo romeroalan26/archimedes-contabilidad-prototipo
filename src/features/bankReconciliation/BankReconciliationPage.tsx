@@ -163,47 +163,54 @@ export default function BankReconciliationPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+    <div className="min-h-full bg-gray-50 dark:bg-gray-900">
+      {/* Header Section */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Conciliación Bancaria
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Concilie las transacciones bancarias con los registros del
                 sistema
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">Última actualización</p>
-              <p className="text-sm font-medium text-gray-900">
-                {currentTime.toLocaleTimeString("es-ES", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                })}
-              </p>
+            <div className="mt-4 sm:mt-0">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Última actualización
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {currentTime.toLocaleTimeString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </p>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Configuración de periodo y cuenta */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Configuración de Conciliación
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Cuenta Bancaria
               </label>
               <select
                 value={selectedAccount}
                 onChange={(e) => setSelectedAccount(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
               >
                 <option value="cuenta-principal">
                   Cuenta Principal - ****1234
@@ -215,7 +222,7 @@ export default function BankReconciliationPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Fecha Inicio
               </label>
               <input
@@ -227,11 +234,11 @@ export default function BankReconciliationPage() {
                     startDate: e.target.value,
                   }))
                 }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Fecha Fin
               </label>
               <input
@@ -243,7 +250,7 @@ export default function BankReconciliationPage() {
                     endDate: e.target.value,
                   }))
                 }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
               />
             </div>
           </div>
@@ -251,12 +258,12 @@ export default function BankReconciliationPage() {
 
         {/* Estadísticas de conciliación */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-blue-600"
+                    className="w-5 h-5 text-blue-600 dark:text-blue-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -271,22 +278,22 @@ export default function BankReconciliationPage() {
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Saldo Bancario
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(bankBalance)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-green-600"
+                    className="w-5 h-5 text-green-600 dark:text-green-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -301,24 +308,24 @@ export default function BankReconciliationPage() {
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Saldo Sistema
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {formatCurrency(systemBalance)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div
-                  className={`w-8 h-8 ${difference === 0 ? "bg-green-100" : "bg-yellow-100"} rounded-lg flex items-center justify-center`}
+                  className={`w-8 h-8 ${difference === 0 ? "bg-green-100" : "bg-yellow-100"} dark:bg-green-900/30 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center`}
                 >
                   <svg
-                    className={`w-5 h-5 ${difference === 0 ? "text-green-600" : "text-yellow-600"}`}
+                    className={`w-5 h-5 ${difference === 0 ? "text-green-600" : "text-yellow-600"} dark:text-green-400 dark:text-yellow-400`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -333,9 +340,11 @@ export default function BankReconciliationPage() {
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Diferencia</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Diferencia
+                </p>
                 <p
-                  className={`text-2xl font-bold ${difference === 0 ? "text-green-600" : "text-yellow-600"}`}
+                  className={`text-2xl font-bold ${difference === 0 ? "text-green-600" : "text-yellow-600"} dark:text-green-400 dark:text-yellow-400`}
                 >
                   {formatCurrency(Math.abs(difference))}
                 </p>
@@ -343,12 +352,12 @@ export default function BankReconciliationPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-indigo-600"
+                    className="w-5 h-5 text-indigo-600 dark:text-indigo-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -363,13 +372,15 @@ export default function BankReconciliationPage() {
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Progreso</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Progreso
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {reconciledCount}/{totalTransactions}
                 </p>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
                   <div
-                    className="bg-indigo-600 h-2 rounded-full"
+                    className="bg-indigo-600 dark:bg-indigo-400 h-2 rounded-full"
                     style={{
                       width: `${(reconciledCount / totalTransactions) * 100}%`,
                     }}
@@ -405,23 +416,23 @@ export default function BankReconciliationPage() {
         {/* Tablas de transacciones */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Transacciones Bancarias */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Transacciones Bancarias
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Seleccione las transacciones del banco
               </p>
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
                         onChange={(e) => {
                           if (e.target.checked) {
                             setSelectedBankItems(
@@ -435,25 +446,29 @@ export default function BankReconciliationPage() {
                         }}
                       />
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Fecha
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Descripción
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Monto
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Estado
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {bankTransactions.map((transaction) => (
                     <tr
                       key={transaction.id}
-                      className={transaction.reconciled ? "bg-green-50" : ""}
+                      className={
+                        transaction.reconciled
+                          ? "bg-green-50 dark:bg-green-900/10"
+                          : ""
+                      }
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <input
@@ -472,20 +487,20 @@ export default function BankReconciliationPage() {
                               );
                             }
                           }}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                         {new Date(transaction.date).toLocaleDateString("es-ES")}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                         <div
                           className="max-w-xs truncate"
                           title={transaction.description}
                         >
                           {transaction.description}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           Ref: {transaction.reference}
                         </div>
                       </td>
@@ -493,8 +508,8 @@ export default function BankReconciliationPage() {
                         <span
                           className={
                             transaction.type === "credit"
-                              ? "text-green-600"
-                              : "text-red-600"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-red-600 dark:text-red-400"
                           }
                         >
                           {transaction.type === "credit" ? "+" : "-"}
@@ -503,11 +518,11 @@ export default function BankReconciliationPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {transaction.reconciled ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/10 text-green-800 dark:text-green-200">
                             Conciliado
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/10 text-yellow-800 dark:text-yellow-200">
                             Pendiente
                           </span>
                         )}
@@ -520,23 +535,23 @@ export default function BankReconciliationPage() {
           </div>
 
           {/* Transacciones del Sistema */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Registros del Sistema
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Seleccione las transacciones del sistema
               </p>
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
                         onChange={(e) => {
                           if (e.target.checked) {
                             setSelectedSystemItems(
@@ -550,25 +565,29 @@ export default function BankReconciliationPage() {
                         }}
                       />
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Fecha
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Descripción
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Monto
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Estado
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {systemTransactions.map((transaction) => (
                     <tr
                       key={transaction.id}
-                      className={transaction.reconciled ? "bg-green-50" : ""}
+                      className={
+                        transaction.reconciled
+                          ? "bg-green-50 dark:bg-green-900/10"
+                          : ""
+                      }
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <input
@@ -587,20 +606,20 @@ export default function BankReconciliationPage() {
                               );
                             }
                           }}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                         {new Date(transaction.date).toLocaleDateString("es-ES")}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
                         <div
                           className="max-w-xs truncate"
                           title={transaction.description}
                         >
                           {transaction.description}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           Categoría: {transaction.category}
                         </div>
                       </td>
@@ -608,8 +627,8 @@ export default function BankReconciliationPage() {
                         <span
                           className={
                             transaction.type === "credit"
-                              ? "text-green-600"
-                              : "text-red-600"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-red-600 dark:text-red-400"
                           }
                         >
                           {transaction.type === "credit" ? "+" : "-"}
@@ -618,11 +637,11 @@ export default function BankReconciliationPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {transaction.reconciled ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/10 text-green-800 dark:text-green-200">
                             Conciliado
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/10 text-yellow-800 dark:text-yellow-200">
                             Pendiente
                           </span>
                         )}

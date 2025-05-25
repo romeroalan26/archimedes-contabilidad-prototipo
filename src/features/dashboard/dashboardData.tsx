@@ -26,14 +26,6 @@ export const mockDashboardData: DashboardData = {
       description: "Balance positivo este mes",
       progress: 82,
     },
-    {
-      title: "Items por Conciliar",
-      value: "7",
-      change: "-2 items",
-      trend: "down" as const,
-      description: "Diferencia: RD$ 850.00",
-      progress: 78,
-    },
   ],
   alerts: [
     {

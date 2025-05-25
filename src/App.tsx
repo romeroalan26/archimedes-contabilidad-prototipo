@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import DashboardPage from "./features/dashboard/DashboardPage";
 import { SalesPage } from "./features/sales/SalesPage";
 import PurchasesPage from "./features/purchases/PurchasesPage";
@@ -7,7 +8,6 @@ import ProjectsPage from "./features/projects/ProjectsPage";
 import InventoryPage from "./features/inventory/InventoryPage";
 import TreasuryPage from "./features/treasury/TreasuryPage";
 import ReportsPage from "./features/reports/ReportsPage";
-import AccountingPage from "./features/accounting/AccountingPage";
 import { PayrollPage } from "./features/payroll/pages/PayrollPage";
 import { PayrollHistoryPage } from "./features/payroll/pages/PayrollHistoryPage";
 import { PayrollDetailPage } from "./features/payroll/pages/PayrollDetailPage";
@@ -15,6 +15,7 @@ import AssetsPage from "./features/assets/AssetsPage";
 import LoginPage from "./features/auth/LoginPage";
 import Layout from "./components/Layout";
 import { useAuth } from "./stores/authStore";
+import { useThemeStore } from "./stores/themeStore";
 import { NCFPage } from "./features/ncf/NcfPage";
 import { Formato606Page } from "./features/dgiiFormats/606/Formato606Page";
 import { Formato607Page } from "./features/dgiiFormats/607/Formato607Page";
@@ -28,6 +29,16 @@ const queryClient = new QueryClient();
 
 export default function App() {
   const { isAuthenticated } = useAuth();
+  const { isDarkMode } = useThemeStore();
+
+  // Inicializar el tema al cargar la aplicación
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -65,7 +76,6 @@ export default function App() {
             element={<BankReconciliationPage />}
           />
           <Route path="/reportes" element={<ReportsPage />} />
-          <Route path="/contabilidad" element={<AccountingPage />} />
           <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/nomina">
             <Route index element={<PayrollPage />} />
