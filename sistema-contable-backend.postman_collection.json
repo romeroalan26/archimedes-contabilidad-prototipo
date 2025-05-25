@@ -1,0 +1,2201 @@
+{
+	"info": {
+		"_postman_id": "ba5be2c8-53c8-4498-b848-82a7272017c3",
+		"name": "sistema-contable-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28553096"
+	},
+	"item": [
+		{
+			"name": "clientes",
+			"item": [
+				{
+					"name": "Lista clientes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/clientes?incluir_inactivos=true",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"clientes"
+							],
+							"query": [
+								{
+									"key": "incluir_inactivos",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista a un cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/clientes/882cb77c-c515-4188-9922-c380edef3949",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"clientes",
+								"882cb77c-c515-4188-9922-c380edef3949"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Cliente Prueba Postma2\",\r\n  \"rnc_cedula\": \"40212358\",\r\n  \"telefono\": \"8099999999\",\r\n  \"correo\": \"postman@cliente.com\",\r\n  \"direccion\": \"Zona Industrial, DN\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.sistemacontable.lat/api/clientes",
+							"protocol": "https",
+							"host": [
+								"api",
+								"sistemacontable",
+								"lat"
+							],
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/clientes/bc0489b6-3395-4477-b2dd-e41a0973d2d6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"clientes",
+								"bc0489b6-3395-4477-b2dd-e41a0973d2d6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza un cliente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Cliente Actualizado\",\r\n  \"rnc_cedula\": \"402500223\",\r\n  \"telefono\": \"00000000\",\r\n  \"correo\": \"actualizado@cliente.com\",\r\n  \"direccion\": \"Calle Nueva #45\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/clientes/cabdf647-e02e-4c98-974e-2ee42c2f4f19",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"clientes",
+								"cabdf647-e02e-4c98-974e-2ee42c2f4f19"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "proveedores",
+			"item": [
+				{
+					"name": "Lista proveedores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/proveedores",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea a un proveedor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Proveedor Demo3s S.R.L\",\r\n  \"rnc_cedula\": \"101111222\",\r\n  \"telefono\": \"8098887777\",\r\n  \"correo\": \"proveedor@demo.com\",\r\n  \"direccion\": \"Calle Proveedor #55\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proveedores",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza un proveedor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Proveedor Demo S.R.L.\",\r\n  \"rnc_cedula\": \"101111224\",\r\n  \"telefono\": \"8091000000\",\r\n  \"correo\": \"proveedor@demo.com\",\r\n  \"direccion\": \"Calle Proveedor #55\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proveedores/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proveedores",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "36afe3e1-4889-4019-bed5-2ad6a28a4c95"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar a un proveedor",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Proveedor Demo S.R.L.\",\r\n  \"rnc_cedula\": \"101111222\",\r\n  \"telefono\": \"8098887777\",\r\n  \"correo\": \"proveedor@demo.com\",\r\n  \"direccion\": \"Calle Proveedor #55\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proveedores/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proveedores",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "36afe3e1-4889-4019-bed5-2ad6a28a4c95"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "empresas",
+			"item": [
+				{
+					"name": "Lista empresas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/empresas",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"empresas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza una empresa",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \r\n    \"nombre\": \"Empresa Demo Actualizada\",\r\n    \"rnc\": \"1010101055\",\r\n    \"telefono\": \"8095551234\",\r\n    \"direccion\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/empresas/ac7bb717-3eca-48b1-b463-4cb145919a41",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"empresas",
+								"ac7bb717-3eca-48b1-b463-4cb145919a41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista una empresas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/empresas/ac7bb717-3eca-48b1-b463-4cb145919a41",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"empresas",
+								"ac7bb717-3eca-48b1-b463-4cb145919a41"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea una empresa",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Pintura Blanca 5 Gal\",\r\n  \"descripcion\": \"Pintura blanca mate para interiores\",\r\n  \"unidad_medida\": \"cubeta\",\r\n  \"precio_costo\": 1200.00,\r\n  \"precio_venta\": 1500.00,\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/empresas",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"empresas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "inventario",
+			"item": [
+				{
+					"name": "entrada",
+					"item": [
+						{
+							"name": "Crea una entrada de inventario",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"tipo_entrada\": \"compra\",\r\n  \"referencia\": \"Entrada por compra de proveedor\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"fecha_entrada\": \"2024-08-10\",\r\n  \"detalles\": [\r\n    {\r\n      \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n      \"cantidad\": 10,\r\n      \"precio_unitario\": 200\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/entradas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"entradas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una entrada de inventario",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n    \"tipo_entrada\": \"compra\",\r\n    \"detalle\": [\r\n        {\r\n            \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n            \"cantidad\": 505,\r\n            \"precio_unitario\": 220\r\n        },\r\n        {\r\n            \"producto_id\": \"25167a79-7cb3-4a84-87df-36355f711a94\",\r\n            \"cantidad\": 75,\r\n            \"precio_unitario\": 38\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/entradas/b7414da0-3b97-4aca-9713-ee3b738b0123",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"entradas",
+										"b7414da0-3b97-4aca-9713-ee3b738b0123"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista entradas de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/entradas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"entradas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una entrada de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/entradas/e97e2281-8fc4-452a-a235-25fd301a7e44",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"entradas",
+										"e97e2281-8fc4-452a-a235-25fd301a7e44"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una entrada de inventario",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/entradas/:id",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"entradas",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "c7c77b5e-d789-4c72-9dcf-2dbaf0a0eebf"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "salida",
+					"item": [
+						{
+							"name": "Crea una salida de inventario",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"tipo_salida\": \"venta\",\r\n  \"referencia\": \"Salida por consumo interno\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"fecha_salida\": \"2026-08-10\",\r\n  \"detalles\": [\r\n    {\r\n      \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n      \"cantidad\": 5,\r\n      \"precio_unitario\": 250\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/salidas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"salidas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una salida de inventario",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "",
+										"value": "1a20268f-d419-4ac4-959e-40eb583b746b",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"tipo_salida\": \"venta\",\r\n  \"referencia\": \"Salida por consumo\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"fecha_salida\": \"2026-08-10\",\r\n  \"detalles\": [\r\n    {\r\n      \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n      \"cantidad\": 5,\r\n      \"precio_unitario\": 250\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/salidas/:d",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"salidas",
+										":d"
+									],
+									"variable": [
+										{
+											"key": "d",
+											"value": "1a20268f-d419-4ac4-959e-40eb583b746b"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista salidas de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/salidas?empresa_id=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"salidas"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "23dab87e-cc4a-42ea-bf69-0a27cd0cb3df"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una salida de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/salidas/:id",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"salidas",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1519a0e3-d2f6-4323-a449-3ba212902454"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una salida de inventario",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/salidas/:id",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"salidas",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "11621048-0611-4f9a-9c76-f38c8769f5e0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "movimientos",
+					"item": [
+						{
+							"name": "Crea un movimiento de inventario",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n  \"tipo\": \"entrada\",\r\n  \"cantidad\": 20,\r\n  \"comentario\": \"Entrada por ajuste manual\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/movimientos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"movimientos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista movimientos de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/movimientos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"movimientos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una movimientos de inventario",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/movimientos/6212a730-f698-464b-b756-edc99db02dce",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"movimientos",
+										"6212a730-f698-464b-b756-edc99db02dce"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina un movimiento de inventario",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/movimientos/6212a730-f698-464b-b756-edc99db02dce",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"movimientos",
+										"6212a730-f698-464b-b756-edc99db02dce"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza un movimiento de inventario",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"tipo\": \"entrada\",\r\n    \"cantidad\": 200,\r\n    \"comentario\": \"Entrada por ajuste manual\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/movimientos/79c108d1-b89c-4c0c-9b26-dbb910b8f86d",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"movimientos",
+										"79c108d1-b89c-4c0c-9b26-dbb910b8f86d"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "productos",
+					"item": [
+						{
+							"name": "Lista productos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/productos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"productos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista un producto",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inventario/productos/812d89fa-1a05-4ba7-8609-2116b2e06088",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"productos",
+										"812d89fa-1a05-4ba7-8609-2116b2e06088"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crea un producto",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nombre\": \"Cemento Tipo II\",\r\n    \"descripcion\": \"Saco de cemento gris de 42.5 kg\",\r\n    \"precio_costo\": \"450.00\",\r\n    \"precio_venta\": \"540.00\",\r\n    \"unidad_medida\": \"saco\",\r\n    \"stock_actual\": \"0.00\",\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/productos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"productos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza un producto",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nombre\": \"Cemento Tipo II\",\r\n    \"descripcion\": \"Saco de cemento gris de 42.5 kg\",\r\n    \"precio_costo\": \"450.00\",\r\n    \"precio_venta\": \"540.00\",\r\n    \"unidad_medida\": \"saco\",\r\n    \"stock_actual\": \"0.00\",\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/productos/812d89fa-1a05-4ba7-8609-2116b2e06088",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"productos",
+										"812d89fa-1a05-4ba7-8609-2116b2e06088"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina un producto",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nombre\": \"Cemento Tipo II\",\r\n    \"descripcion\": \"Saco de cemento gris de 42.5 kg\",\r\n    \"precio_costo\": \"450.00\",\r\n    \"precio_venta\": \"540.00\",\r\n    \"unidad_medida\": \"saco\",\r\n    \"stock_actual\": \"0.00\",\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/inventario/productos/812d89fa-1a05-4ba7-8609-2116b2e06088",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inventario",
+										"productos",
+										"812d89fa-1a05-4ba7-8609-2116b2e06088"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "compras",
+			"item": [
+				{
+					"name": "facturas",
+					"item": [
+						{
+							"name": "Crea una factura de compra",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"proveedor_id\": \"36afe3e1-4889-4019-bed5-2ad6a28a4c95\",\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n    \"fecha\": \"2025-05-10\",\r\n    \"total\": 10800.00,\r\n    \"estado\": \"pendiente\",\r\n    \"detalle\": [\r\n        {\r\n            \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n            \"cantidad\": 10,\r\n            \"precio_unitario\": 900,\r\n            \"descripcion\": \"Cemento gris tipo I\"\r\n        },\r\n        {\r\n            \"producto_id\": \"25167a79-7cb3-4a84-87df-36355f711a94\",\r\n            \"cantidad\": 5,\r\n            \"precio_unitario\": 600,\r\n            \"descripcion\": \"Block 6 pulgadas\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/compras/facturas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"compras",
+										"facturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una factura de compras",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"proveedor_id\": \"36afe3e1-4889-4019-bed5-2ad6a28a4c95\",\r\n    \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n    \"fecha\": \"2025-05-10\",\r\n    \"total\": 10800.00,\r\n    \"estado\": \"pendiente\",\r\n    \"detalle\": [\r\n        {\r\n            \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n            \"cantidad\": 10,\r\n            \"precio_unitario\": 900,\r\n            \"descripcion\": \"Cemento gris tipo I\"\r\n        },\r\n        {\r\n            \"producto_id\": \"25167a79-7cb3-4a84-87df-36355f711a94\",\r\n            \"cantidad\": 5,\r\n            \"precio_unitario\": 600,\r\n            \"descripcion\": \"Block 6 pulgadas\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/compras/facturas/49d654e1-5f4b-42cc-8b74-2beb49ccaeef",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"compras",
+										"facturas",
+										"49d654e1-5f4b-42cc-8b74-2beb49ccaeef"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista facturas de compras",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/compras/facturas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"compras",
+										"facturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una factura de compra",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/compras/facturas/ee2c3da5-490d-454a-ae72-80bf230a47b4",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"compras",
+										"facturas",
+										"ee2c3da5-490d-454a-ae72-80bf230a47b4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una factura de compra",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/compras/facturas/ee2c3da5-490d-454a-ae72-80bf230a47b4",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"compras",
+										"facturas",
+										"ee2c3da5-490d-454a-ae72-80bf230a47b4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "ventas",
+			"item": [
+				{
+					"name": "facturas",
+					"item": [
+						{
+							"name": "Crea una factura de venta",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"cliente_id\": \"3bd558c3-949b-4122-9339-94aa01952c59\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"fecha\": \"2025-05-10\",\r\n  \"total\": 9500.00,\r\n  \"estado\": \"pendiente\",\r\n  \"detalle\": [\r\n    {\r\n      \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n      \"cantidad\": 5,\r\n      \"precio_unitario\": 900,\r\n      \"descripcion\": \"Venta de varilla 3/8\\\"\"\r\n    },\r\n    {\r\n      \"producto_id\": \"25167a79-7cb3-4a84-87df-36355f711a94\",\r\n      \"cantidad\": 2,\r\n      \"precio_unitario\": 600,\r\n      \"descripcion\": \"Venta de block 6 pulgadas\"\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/ventas/facturas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"ventas",
+										"facturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una factura de venta",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"cliente_id\": \"3bd558c3-949b-4122-9339-94aa01952c59\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"fecha\": \"2025-05-10\",\r\n  \"total\": 9500.00,\r\n  \"estado\": \"pendiente\",\r\n  \"detalle\": [\r\n    {\r\n      \"producto_id\": \"a15ff427-777b-47ca-bf4c-751c8daaace1\",\r\n      \"cantidad\": 5,\r\n      \"precio_unitario\": 900,\r\n      \"descripcion\": \"Venta de varilla 3/8\\\"\"\r\n    },\r\n    {\r\n      \"producto_id\": \"25167a79-7cb3-4a84-87df-36355f711a94\",\r\n      \"cantidad\": 2,\r\n      \"precio_unitario\": 600,\r\n      \"descripcion\": \"Venta de block 6 pulgadas\"\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/ventas/facturas/3d99874d-be08-49db-a0bc-1dc6286aa792",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"ventas",
+										"facturas",
+										"3d99874d-be08-49db-a0bc-1dc6286aa792"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista facturas de ventas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/ventas/facturas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"ventas",
+										"facturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una factura de venta",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/ventas/facturas/7fa8ccb4-1de6-4062-8d0b-1330e76dcca8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"ventas",
+										"facturas",
+										"7fa8ccb4-1de6-4062-8d0b-1330e76dcca8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una factura de venta",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/ventas/facturas/7fa8ccb4-1de6-4062-8d0b-1330e76dcca8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"ventas",
+										"facturas",
+										"7fa8ccb4-1de6-4062-8d0b-1330e76dcca8"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "cobros",
+			"item": [
+				{
+					"name": "cuentas",
+					"item": [
+						{
+							"name": "Crea una cuenta por cobrar",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"factura_venta_id\": \"3d99874d-be08-49db-a0bc-1dc6286aa792\",\r\n  \"saldo_pendiente\": 9500.00,\r\n  \"fecha_vencimiento\": \"2025-06-10\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/cobros/cuentas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"cobros",
+										"cuentas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una cuenta por cobrar",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"factura_venta_id\": \"3d99874d-be08-49db-a0bc-1dc6286aa792\",\r\n  \"saldo_pendiente\": 950.00,\r\n  \"fecha_vencimiento\": \"2025-06-10\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/cobros/cuentas/95a5e9d6-4858-4c03-b3d9-2e8b21cdf9d0",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"cobros",
+										"cuentas",
+										"95a5e9d6-4858-4c03-b3d9-2e8b21cdf9d0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista cuentas por cobrar",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/cobros/cuentas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"cobros",
+										"cuentas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una cuenta por cobrar",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/cobros/cuentas/72c7bfdf-f99e-48ee-b246-3d2a2e5726e7",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"cobros",
+										"cuentas",
+										"72c7bfdf-f99e-48ee-b246-3d2a2e5726e7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una cuenta por cobrar",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/cobros/cuentas/72c7bfdf-f99e-48ee-b246-3d2a2e5726e7",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"cobros",
+										"cuentas",
+										"72c7bfdf-f99e-48ee-b246-3d2a2e5726e7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "pagos",
+			"item": [
+				{
+					"name": "cuentas",
+					"item": [
+						{
+							"name": "Crea una cuenta por pagar",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"factura_compra_id\": \"8abbe301-8d12-4fa6-969d-d5f32f8489de\",\r\n  \"saldo_pendiente\": 10800.00,\r\n  \"fecha_vencimiento\": \"2025-06-10\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/pagos/cuentas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"pagos",
+										"cuentas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista cuentas por pagar",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/pagos/cuentas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"pagos",
+										"cuentas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una cuenta por pagar",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/pagos/cuentas/e6b45fe1-0887-4d82-b04f-ada9db47266d",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"pagos",
+										"cuentas",
+										"e6b45fe1-0887-4d82-b04f-ada9db47266d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una cuenta por pagar",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/pagos/cuentas/4c721b9d-2761-4a8c-b9d7-e58a639d5fb4",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"pagos",
+										"cuentas",
+										"4c721b9d-2761-4a8c-b9d7-e58a639d5fb4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una cuenta por pagar",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"saldo_pendiente\": 9500.00,\r\n  \"fecha_vencimiento\": \"2025-07-10\"\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/pagos/cuentas/e6b45fe1-0887-4d82-b04f-ada9db47266d",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"pagos",
+										"cuentas",
+										"e6b45fe1-0887-4d82-b04f-ada9db47266d"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "contabilidad",
+			"item": [
+				{
+					"name": "cuentas",
+					"item": [
+						{
+							"name": "Crea una cuenta contable",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"codigo\": \"1.1.01\",\r\n  \"nombre\": \"Caja General\",\r\n  \"tipo\": \"activo\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/cuentas",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"cuentas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista cuentas contables",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/cuentas?empresa_id=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"cuentas"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "23dab87e-cc4a-42ea-bf69-0a27cd0cb3df"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una cuenta contable",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/cuentas/73ded94d-0d03-4ef4-921e-fa8486a666cb",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"cuentas",
+										"73ded94d-0d03-4ef4-921e-fa8486a666cb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina una cuenta contable",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/cuentas/89fa40d0-6019-4610-8ac3-87f0d0c6b117",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"cuentas",
+										"89fa40d0-6019-4610-8ac3-87f0d0c6b117"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza una cuenta contable",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"codigo\": \"1.1.01\",\r\n  \"nombre\": \"Caja General Actualizada\",\r\n  \"tipo\": \"activo\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/cuentas/73ded94d-0d03-4ef4-921e-fa8486a666cb",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"cuentas",
+										"73ded94d-0d03-4ef4-921e-fa8486a666cb"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "asientos",
+					"item": [
+						{
+							"name": "Crea un asiento contable",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"descripcion\": \"Pago de factura de electricidad\",\r\n  \"fecha\": \"2025-05-20\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"detalles\": [\r\n    {\r\n      \"cuenta_id\": \"73ded94d-0d03-4ef4-921e-fa8486a666cb\",\r\n      \"monto\": 4500.00,\r\n      \"tipo_movimiento\": \"debe\"\r\n    },\r\n    {\r\n      \"cuenta_id\": \"73ded94d-0d03-4ef4-921e-fa8486a666cb\",\r\n      \"monto\": 4500.00,\r\n      \"tipo_movimiento\": \"haber\"\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/asientos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"asientos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista asientos contables",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/asientos?empresa_id=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"asientos"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "23dab87e-cc4a-42ea-bf69-0a27cd0cb3df"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista un asiento contable",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/asientos/4e6a88b5-4c1e-403f-b5e3-614010b2f984",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"asientos",
+										"4e6a88b5-4c1e-403f-b5e3-614010b2f984"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Elimina un asiento contable",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/asientos/4e6a88b5-4c1e-403f-b5e3-614010b2f984",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"asientos",
+										"4e6a88b5-4c1e-403f-b5e3-614010b2f984"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualiza un asiento contable",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"fecha\": \"2025-07-15\",\r\n  \"descripcion\": \"Actualización por cierre mensual\",\r\n  \"empresa_id\": \"23dab87e-cc4a-42ea-bf69-0a27cd0cb3df\",\r\n  \"detalles\": [\r\n    {\r\n      \"cuenta_id\": \"73ded94d-0d03-4ef4-921e-fa8486a666cb\",\r\n      \"monto\": 1500,\r\n      \"tipo_movimiento\": \"debe\"\r\n    },\r\n    {\r\n      \"cuenta_id\": \"73ded94d-0d03-4ef4-921e-fa8486a666cb\",\r\n      \"monto\": 1500,\r\n      \"tipo_movimiento\": \"haber\"\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/asientos/6ab9c5e5-8688-4835-8705-7fd7b1449d04",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"asientos",
+										"6ab9c5e5-8688-4835-8705-7fd7b1449d04"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "libro-mayor",
+					"item": [
+						{
+							"name": "Lista libro mayor",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/libro-mayor?empresa_id=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df&fecha_inicio=2025-05-20&fecha_fin=2025-05-20",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"libro-mayor"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "23dab87e-cc4a-42ea-bf69-0a27cd0cb3df"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2025-05-20"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-05-20"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "balance-comprobacion",
+					"item": [
+						{
+							"name": "Lista balance de comprobacion",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/balance-comprobacion?empresa_id=23dab87e-cc4a-42ea-bf69-0a27cd0cb3df&fecha_inicio=2025-01-01&fecha_fin=2025-12-31",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"balance-comprobacion"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "23dab87e-cc4a-42ea-bf69-0a27cd0cb3df"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2025-01-01"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2025-12-31"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "estado-resultados",
+					"item": [
+						{
+							"name": "Lista estado de resultados",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/estado-resultados?empresa_id=123e4567-e89b-12d3-a456-426614174000&fecha_inicio=2024-01-01&fecha_fin=2024-12-31",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"estado-resultados"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "123e4567-e89b-12d3-a456-426614174000"
+										},
+										{
+											"key": "fecha_inicio",
+											"value": "2024-01-01"
+										},
+										{
+											"key": "fecha_fin",
+											"value": "2024-12-31"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "balance-general",
+					"item": [
+						{
+							"name": "Lista estado de resultados",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/contabilidad/balance-general?empresa_id=123e4567-e89b-12d3-a456-426614174000&fecha_corte=2024-12-31",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"contabilidad",
+										"balance-general"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "123e4567-e89b-12d3-a456-426614174000"
+										},
+										{
+											"key": "fecha_corte",
+											"value": "2024-12-31"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "tesoreria",
+			"item": [
+				{
+					"name": "conciliaciones",
+					"item": [
+						{
+							"name": "Crea una conciliacion bancaria",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"banco_id\": \"1c9e28d3-8f6e-4a6a-8eb9-f120d8451a30\",\r\n  \"periodo\": \"2024-06\",\r\n  \"balance_banco\": 15000.00,\r\n  \"balance_conciliado\": 14500.00\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/tesoreria/conciliaciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"tesoreria",
+										"conciliaciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una conciliacion bancaria",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/tesoreria/conciliaciones?empresa_id=123e4567-e89b-12d3-a456-426614174000",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"tesoreria",
+										"conciliaciones"
+									],
+									"query": [
+										{
+											"key": "empresa_id",
+											"value": "123e4567-e89b-12d3-a456-426614174000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Lista una conciliacion bancaria por id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/tesoreria/conciliaciones/:id",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"tesoreria",
+										"conciliaciones",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "90e9572d-9df9-4016-9b61-197a92108b32"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "proyectos",
+			"item": [
+				{
+					"name": "Crea un nuevo proyecto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Construcción Edificio Corporativo\",\r\n  \"descripcion\": \"Proyecto de construcción de un edificio corporativo de 5 niveles en Santo Domingo.\",\r\n  \"fecha_inicio\": \"2024-01-10\",\r\n  \"fecha_fin\": \"2024-12-20\",\r\n  \"estado\": \"en_progreso\",\r\n  \"presupuesto\": 8500000.00,\r\n  \"ubicacion\": \"Av. Winston Churchill, Santo Domingo\",\r\n  \"responsable\": \"Ing. Carlos Ramírez\",\r\n  \"notas_adicionales\": \"Requiere aprobación final del plano estructural.\",\r\n  \"empresa_id\": \"123e4567-e89b-12d3-a456-426614174000\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyectos",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyectos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza un proyecto",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Construcción Edificio Corporati\",\r\n  \"descripcion\": \"Proyecto de construcción de un edificio corporativo de 5 niveles en Santo Domingo.\",\r\n  \"fecha_inicio\": \"2024-01-10\",\r\n  \"fecha_fin\": \"2024-12-20\",\r\n  \"estado\": \"en_progreso\",\r\n  \"presupuesto\": 8500000.00,\r\n  \"ubicacion\": \"Av. Winston Churchill, Santo Domingo\",\r\n  \"responsable\": \"Ing. Carlos Ramírez\",\r\n  \"notas_adicionales\": \"Requiere aprobación final del plano estructural.\",\r\n  \"empresa_id\": \"123e4567-e89b-12d3-a456-426614174000\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyectos/63a0fcae-8fc8-4d34-b8ba-459acaee85b0",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyectos",
+								"63a0fcae-8fc8-4d34-b8ba-459acaee85b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista proyectos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Construcción Edificio Corporati\",\r\n  \"descripcion\": \"Proyecto de construcción de un edificio corporativo de 5 niveles en Santo Domingo.\",\r\n  \"fecha_inicio\": \"2024-01-10\",\r\n  \"fecha_fin\": \"2024-12-20\",\r\n  \"estado\": \"en_progreso\",\r\n  \"presupuesto\": 8500000.00,\r\n  \"ubicacion\": \"Av. Winston Churchill, Santo Domingo\",\r\n  \"responsable\": \"Ing. Carlos Ramírez\",\r\n  \"notas_adicionales\": \"Requiere aprobación final del plano estructural.\",\r\n  \"empresa_id\": \"123e4567-e89b-12d3-a456-426614174000\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyectos?empresa_id=123e4567-e89b-12d3-a456-426614174000",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyectos"
+							],
+							"query": [
+								{
+									"key": "empresa_id",
+									"value": "123e4567-e89b-12d3-a456-426614174000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista proyectos por id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Construcción Edificio Corporati\",\r\n  \"descripcion\": \"Proyecto de construcción de un edificio corporativo de 5 niveles en Santo Domingo.\",\r\n  \"fecha_inicio\": \"2024-01-10\",\r\n  \"fecha_fin\": \"2024-12-20\",\r\n  \"estado\": \"en_progreso\",\r\n  \"presupuesto\": 8500000.00,\r\n  \"ubicacion\": \"Av. Winston Churchill, Santo Domingo\",\r\n  \"responsable\": \"Ing. Carlos Ramírez\",\r\n  \"notas_adicionales\": \"Requiere aprobación final del plano estructural.\",\r\n  \"empresa_id\": \"123e4567-e89b-12d3-a456-426614174000\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyectos?empresa_id=123e4567-e89b-12d3-a456-426614174000",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyectos"
+							],
+							"query": [
+								{
+									"key": "empresa_id",
+									"value": "123e4567-e89b-12d3-a456-426614174000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un proyecto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Construcción Edificio Corporati\",\r\n  \"descripcion\": \"Proyecto de construcción de un edificio corporativo de 5 niveles en Santo Domingo.\",\r\n  \"fecha_inicio\": \"2024-01-10\",\r\n  \"fecha_fin\": \"2024-12-20\",\r\n  \"estado\": \"en_progreso\",\r\n  \"presupuesto\": 8500000.00,\r\n  \"ubicacion\": \"Av. Winston Churchill, Santo Domingo\",\r\n  \"responsable\": \"Ing. Carlos Ramírez\",\r\n  \"notas_adicionales\": \"Requiere aprobación final del plano estructural.\",\r\n  \"empresa_id\": \"123e4567-e89b-12d3-a456-426614174000\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyectos/f3c0ba80-5e4f-4035-8b31-3111d5a4755",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyectos",
+								"f3c0ba80-5e4f-4035-8b31-3111d5a4755"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login - contador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extrae la respuesta del servidor\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Guarda el valor del token en una variable de entorno\r",
+									"pm.environment.set(\"token\", jsonData.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"correo\": \"milimar@sistemacontable.com\",\r\n  \"clave\": \"milimar123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - gerente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extrae la respuesta del servidor\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Guarda el valor del token en una variable de entorno\r",
+									"pm.environment.set(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"correo\": \"gerente@sistemacontable.com\",\r\n  \"clave\": \"gerente123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - consulta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extrae la respuesta del servidor\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Guarda el valor del token en una variable de entorno\r",
+									"pm.environment.set(\"token\", jsonData.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"correo\": \"consulta@sistemacontable.com\",\r\n  \"clave\": \"consulta123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extrae la respuesta del servidor\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Guarda el valor del token en una variable de entorno\r",
+									"pm.environment.set(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"correo\": \"admin@sistemacontable.com\",\r\n  \"clave\": \"admin123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

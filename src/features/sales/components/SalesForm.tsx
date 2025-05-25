@@ -208,12 +208,13 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     } else {
       // Si es un producto nuevo, agregarlo
       const newItem = {
+        id: crypto.randomUUID(),
         productId: product.id,
         quantity: 1,
-        price: product.precio,
-        itbis: product.precio * 0.18, // 18% ITBIS
+        price: product.precioVenta,
+        itbis: product.precioVenta * 0.18, // 18% ITBIS
         discount: 0,
-        discountedSubtotal: product.precio + product.precio * 0.18, // Precio + ITBIS
+        discountedSubtotal: product.precioVenta + product.precioVenta * 0.18, // Precio + ITBIS
       };
 
       setItems([...items, newItem]);
@@ -254,8 +255,8 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
     if (field === "productId") {
       const selectedProduct = products.find((p) => p.id === value);
       if (selectedProduct) {
-        item.price = selectedProduct.precio;
-        item.itbis = selectedProduct.precio * 0.18; // 18% ITBIS
+        item.price = selectedProduct.precioVenta;
+        item.itbis = selectedProduct.precioVenta * 0.18; // 18% ITBIS
       }
     }
 
@@ -454,7 +455,7 @@ export function SalesForm({ selectedClient, onSubmit }: SalesFormProps) {
                         </div>
                         <div className="text-xs text-gray-500">
                           Código: {product.codigo} • Precio: $
-                          {product.precio.toFixed(2)}
+                          {product.precioVenta.toFixed(2)}
                         </div>
                       </div>
                       <div

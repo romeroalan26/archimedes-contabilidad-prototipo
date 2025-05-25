@@ -98,22 +98,67 @@ export function ClientFormModal({
 
       onClose();
     } catch (error: any) {
+      console.error("Error en ClientFormModal:", error);
       setIsSubmitting(false);
-      let backendMsg = error?.response?.data?.error;
-      if (backendMsg) {
-        setError(backendMsg);
-      } else if (
-        error.response?.data?.includes("empresa_id") ||
-        error.message?.includes("empresa_id")
-      ) {
-        setError(
-          "Error: No se ha configurado el ID de empresa. Por favor, contacte al administrador del sistema."
-        );
-      } else if (error.response?.status === 409) {
-        setError("Ya existe un cliente con ese nombre y RNC en esta empresa");
-      } else {
-        setError("Error al guardar el cliente. Por favor intente nuevamente.");
+
+      // Manejo mejorado de errores
+      let errorMessage =
+        "Error al guardar el cliente. Por favor intente nuevamente.";
+
+      // Verificar si hay un mensaje específico del backend
+      if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        // Manejar errores específicos basados en el mensaje
+        if (error.message.includes("Token")) {
+          errorMessage =
+            "Su sesión ha expirado. Por favor, inicie sesión nuevamente.";
+        } else if (error.message.includes("permisos")) {
+          errorMessage = "No tiene permisos para realizar esta operación.";
+        } else if (
+          error.message.includes("conexión") ||
+          error.message.includes("Network")
+        ) {
+          errorMessage = "Error de conexión. Verifique su conexión a internet.";
+        } else if (error.message.includes("servidor")) {
+          errorMessage =
+            "Error del servidor. Intente nuevamente en unos minutos.";
+        } else {
+          errorMessage = error.message;
+        }
+      } else if (error?.response?.status) {
+        // Manejar errores por código de estado HTTP
+        switch (error.response.status) {
+          case 400:
+            errorMessage =
+              "Datos inválidos. Verifique la información ingresada.";
+            break;
+          case 401:
+            errorMessage =
+              "Su sesión ha expirado. Por favor, inicie sesión nuevamente.";
+            break;
+          case 403:
+            errorMessage = "No tiene permisos para realizar esta operación.";
+            break;
+          case 409:
+            errorMessage =
+              "Ya existe un cliente con ese nombre y RNC en esta empresa.";
+            break;
+          case 422:
+            errorMessage = "Los datos proporcionados no son válidos.";
+            break;
+          case 500:
+            errorMessage =
+              "Error interno del servidor. Intente nuevamente más tarde.";
+            break;
+          default:
+            errorMessage = `Error del servidor (${error.response.status}). Intente nuevamente.`;
+        }
       }
+
+      setError(errorMessage);
       return;
     }
   };

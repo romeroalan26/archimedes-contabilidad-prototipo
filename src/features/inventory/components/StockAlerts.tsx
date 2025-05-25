@@ -1,33 +1,47 @@
-import { Product, StockAlert } from "../types";
+import { StockAlert, Product } from "../types";
 
 interface StockAlertsProps {
   alerts: StockAlert[];
   products: Product[];
 }
 
-export default function StockAlerts({ alerts, products }: StockAlertsProps) {
+export default function StockAlerts({ alerts }: StockAlertsProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-800">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-900">
           Alertas de Stock
         </h2>
-        <div className="flex space-x-2">
-          <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-            {alerts.filter((a) => a.estado === "bajo").length} Bajos
-          </span>
-          <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-            {alerts.filter((a) => a.estado === "critico").length} Críticos
-          </span>
-        </div>
+        <p className="text-sm text-gray-500 mt-1">
+          {alerts.filter((a) => a.nivel === "bajo").length} Bajos -{" "}
+          {alerts.filter((a) => a.nivel === "critico").length} Críticos
+        </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {alerts.length === 0 ? (
-          <div className="p-8 text-center">
-            <p className="text-gray-500">No hay alertas de stock</p>
-          </div>
-        ) : (
+      {alerts.length === 0 ? (
+        <div className="text-center py-12">
+          <svg
+            className="mx-auto h-12 w-12 text-gray-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            Sin alertas de stock
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Todos los productos tienen niveles de stock adecuados.
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -36,7 +50,7 @@ export default function StockAlerts({ alerts, products }: StockAlertsProps) {
                     Producto
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Código
+                    Categoría
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stock Actual
@@ -48,51 +62,61 @@ export default function StockAlerts({ alerts, products }: StockAlertsProps) {
                     Diferencia
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Estado
+                    Nivel
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {alerts.map((alert) => {
-                  const product = products.find(
-                    (p) => p.id === alert.productId
-                  );
-                  return (
-                    <tr key={alert.productId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {product?.nombre}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product?.codigo}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {alert.stockActual} {product?.unidad}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {alert.stockMinimo} {product?.unidad}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {alert.diferencia} {product?.unidad}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            alert.estado === "bajo"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {alert.estado === "bajo" ? "Bajo" : "Crítico"}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {alerts.map((alert) => (
+                  <tr key={alert.productId} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {alert.nombre}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {alert.codigo}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {alert.categoria}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {alert.stockActual}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {alert.stockMinimo}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <span
+                        className={`font-medium ${
+                          alert.diferencia < 0
+                            ? "text-red-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
+                        {alert.diferencia}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          alert.nivel === "bajo"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {alert.nivel === "bajo" ? "Bajo" : "Crítico"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

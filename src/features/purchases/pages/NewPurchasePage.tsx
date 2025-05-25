@@ -4,7 +4,17 @@ import { Supplier, Account } from "../types";
 import { useCreatePurchase } from "../hooks/usePurchases";
 import PurchasesForm from "../components/PurchasesForm";
 import { mockSuppliers } from "../purchasesData";
-import { mockProducts } from "../../inventory/inventoryData";
+import { mockProducts as inventoryProducts } from "../../inventory/mockData";
+
+// Adaptar productos de inventario al formato de compras
+const mockProducts = inventoryProducts.map((product) => ({
+  id: product.id,
+  codigo: product.codigo,
+  nombre: product.nombre,
+  precio: product.precioCompra, // Usar precio de compra para el módulo de compras
+  stock: product.stock,
+  unidad: product.unidad,
+}));
 
 // Mock accounts data
 const mockAccounts: Account[] = [
@@ -75,8 +85,6 @@ export default function NewPurchasePage() {
   const [selectedSupplier, setSelectedSupplier] = useState<
     Supplier | undefined
   >();
-
-  
 
   const handleClearSupplier = () => {
     setSelectedSupplier(undefined);
@@ -169,4 +177,3 @@ export default function NewPurchasePage() {
     </div>
   );
 }
-

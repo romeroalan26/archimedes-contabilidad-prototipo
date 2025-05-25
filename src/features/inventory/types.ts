@@ -3,15 +3,16 @@ export interface Product {
   codigo: string;
   nombre: string;
   descripcion: string;
-  precio: number;
+  categoria: string;
+  precioCompra: number;
+  precioVenta: number;
   stock: number;
   stockMinimo: number;
-  stockMaximo: number;
-  categoria: string;
   unidad: string;
+  ubicacion: string;
   estado: "activo" | "inactivo";
-  createdAt: string;
-  updatedAt: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
 }
 
 export interface Project {
@@ -26,12 +27,14 @@ export interface Project {
 export interface InventoryMovement {
   id: number;
   productId: number;
-  tipo: "entrada" | "salida";
+  tipo: "entrada" | "salida" | "ajuste";
   cantidad: number;
+  precioUnitario: number;
   motivo: string;
+  referencia: string;
   fecha: string;
   usuario: string;
-  createdAt: string;
+  fechaCreacion: string;
 }
 
 export interface InventoryAssignment {
@@ -48,6 +51,7 @@ export interface Category {
   id: number;
   nombre: string;
   descripcion: string;
+  codigo: string;
   estado: "activo" | "inactivo";
 }
 
@@ -58,7 +62,8 @@ export interface StockAlert {
   stockActual: number;
   stockMinimo: number;
   diferencia: number;
-  estado: "bajo" | "critico";
+  categoria: string;
+  nivel: "bajo" | "critico";
 }
 
 export interface InventoryReport {
@@ -68,4 +73,24 @@ export interface InventoryReport {
   productosCriticos: number;
   movimientosRecientes: InventoryMovement[];
   alertasStock: StockAlert[];
+}
+
+export interface InventoryStats {
+  totalProductos: number;
+  productosActivos: number;
+  productosInactivos: number;
+  valorInventario: number;
+  valorCompra: number;
+  productosStockBajo: number;
+  productosStockCritico: number;
+  categorias: number;
+  movimientosHoy: number;
+  margenPromedio: number;
+}
+
+export interface InventoryFilter {
+  categoria?: string;
+  estado?: "activo" | "inactivo" | "all";
+  stockBajo?: boolean;
+  busqueda?: string;
 }

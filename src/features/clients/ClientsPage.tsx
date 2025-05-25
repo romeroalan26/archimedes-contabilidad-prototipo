@@ -30,12 +30,36 @@ export function ClientsPage() {
       setError(null);
       try {
         const data = await clientService.getAll();
+
+        // Verificar que se recibieron datos válidos
+        if (!data || !Array.isArray(data)) {
+          throw new Error("Datos de clientes inválidos recibidos del servidor");
+        }
+
         setClients(data);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching clients:", err);
-        setError(
-          "No se pudieron cargar los clientes. Por favor, intente nuevamente."
-        );
+
+        // Establecer mensaje de error más específico
+        let errorMessage =
+          "No se pudieron cargar los clientes. Por favor, intente nuevamente.";
+
+        if (err.message?.includes("Token")) {
+          errorMessage =
+            "Sesión expirada. Por favor, inicie sesión nuevamente.";
+        } else if (
+          err.message?.includes("conexión") ||
+          err.message?.includes("Network")
+        ) {
+          errorMessage = "Error de conexión. Verifique su conexión a internet.";
+        } else if (err.message?.includes("servidor")) {
+          errorMessage =
+            "Error del servidor. Intente nuevamente en unos minutos.";
+        } else if (err.message?.includes("permisos")) {
+          errorMessage = "No tiene permisos para ver los clientes.";
+        }
+
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -55,8 +79,10 @@ export function ClientsPage() {
       )
       .filter(
         (client) =>
-          client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          client.rnc.toLowerCase().includes(searchTerm.toLowerCase())
+          (client.name?.toLowerCase() || "").includes(
+            searchTerm.toLowerCase()
+          ) ||
+          (client.rnc?.toLowerCase() || "").includes(searchTerm.toLowerCase())
       );
   }, [clients, searchTerm, statusFilter]);
 

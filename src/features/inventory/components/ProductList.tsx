@@ -44,6 +44,13 @@ export default function ProductList({ products }: ProductListProps) {
     return matchesSearch && matchesCategory && matchesStock;
   });
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("es-DO", {
+      style: "currency",
+      currency: "DOP",
+    }).format(amount);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -134,10 +141,13 @@ export default function ProductList({ products }: ProductListProps) {
                     Categoría
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Precio
+                    Precio Venta
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stock
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ubicación
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Estado
@@ -153,31 +163,42 @@ export default function ProductList({ products }: ProductListProps) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {product.codigo}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {product.nombre}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {product.nombre}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {product.descripcion}
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {product.categoria}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      ${product.precio.toFixed(2)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {formatCurrency(product.precioVenta)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-900">
                           {product.stock} {product.unidad}
                         </span>
-                        {product.stock <= product.stockMinimo && (
-                          <span className="ml-2 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                            Bajo
-                          </span>
-                        )}
+                        {product.stock <= product.stockMinimo &&
+                          product.stock > 0 && (
+                            <span className="ml-2 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                              Bajo
+                            </span>
+                          )}
                         {product.stock === 0 && (
                           <span className="ml-2 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                             Agotado
                           </span>
                         )}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.ubicacion}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -212,19 +233,17 @@ export default function ProductList({ products }: ProductListProps) {
         )}
       </div>
 
-      {/* Modal de Producto */}
-      {(isAddingProduct || editingProduct) && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
-          <div className="max-w-3xl w-full">
-            <ProductForm
-              product={editingProduct || undefined}
-              onClose={() => {
-                setIsAddingProduct(false);
-                setEditingProduct(null);
-              }}
-            />
-          </div>
-        </div>
+      {/* Modal para agregar producto */}
+      {isAddingProduct && (
+        <ProductForm onClose={() => setIsAddingProduct(false)} />
+      )}
+
+      {/* Modal para editar producto */}
+      {editingProduct && (
+        <ProductForm
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+        />
       )}
     </div>
   );

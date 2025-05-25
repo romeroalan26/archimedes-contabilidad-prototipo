@@ -23,6 +23,8 @@ export interface SaleItem {
   quantity: number;
   price: number;
   itbis: number; // ITBIS por item
+  discount?: number; // Descuento por item
+  discountedSubtotal?: number; // Subtotal con descuento aplicado
 }
 
 export type SaleType = "credit" | "cash" | "mixed";

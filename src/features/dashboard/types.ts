@@ -5,7 +5,9 @@ export interface KpiData {
   value: string;
   change: string;
   trend: "up" | "down";
-  icon: ReactNode;
+  description: string;
+  progress: number;
+  icon?: ReactNode;
 }
 
 export interface AlertData {

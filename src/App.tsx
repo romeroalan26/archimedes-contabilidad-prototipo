@@ -3,7 +3,7 @@ import DashboardPage from "./features/dashboard/DashboardPage";
 import { SalesPage } from "./features/sales/SalesPage";
 import PurchasesPage from "./features/purchases/PurchasesPage";
 import NewPurchasePage from "./features/purchases/pages/NewPurchasePage";
-import ProjectsPage from "./features/projects/components/ProjectsPage";
+import ProjectsPage from "./features/projects/ProjectsPage";
 import InventoryPage from "./features/inventory/InventoryPage";
 import TreasuryPage from "./features/treasury/TreasuryPage";
 import ReportsPage from "./features/reports/ReportsPage";
@@ -22,6 +22,7 @@ import { EmployeeDetailsPage } from "./features/payroll/pages/EmployeeDetailsPag
 import { ClientsPage } from "./features/clients/ClientsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import BankReconciliationPage from "./features/bankReconciliation/BankReconciliationPage";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,10 @@ export default function App() {
           <Route path="/proyectos/*" element={<ProjectsPage />} />
           <Route path="/inventario" element={<InventoryPage />} />
           <Route path="/tesoreria" element={<TreasuryPage />} />
+          <Route
+            path="/conciliacion-bancaria"
+            element={<BankReconciliationPage />}
+          />
           <Route path="/reportes" element={<ReportsPage />} />
           <Route path="/contabilidad" element={<AccountingPage />} />
           <Route path="/clientes" element={<ClientsPage />} />

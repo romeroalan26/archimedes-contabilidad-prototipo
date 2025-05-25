@@ -1,28 +1,38 @@
 import { DashboardData } from "./types";
-import { RevenueIcon, ExpensesIcon, BalanceIcon } from "./components/KpiIcons";
 
 export const mockDashboardData: DashboardData = {
   kpis: [
     {
-      title: "Ingresos Totales",
-      value: "RD$ 1,234,567",
+      title: "Ingresos del Mes",
+      value: "RD$ 245,678",
       change: "+12.5%",
-      trend: "up",
-      icon: <RevenueIcon />,
+      trend: "up" as const,
+      description: "Comparado con el mes anterior",
+      progress: 75,
     },
     {
-      title: "Gastos Totales",
-      value: "RD$ 987,654",
-      change: "+8.2%",
-      trend: "down",
-      icon: <ExpensesIcon />,
+      title: "Gastos del Mes",
+      value: "RD$ 156,234",
+      change: "-3.2%",
+      trend: "down" as const,
+      description: "Reducción respecto al mes pasado",
+      progress: 60,
     },
     {
-      title: "Balance Neto",
-      value: "RD$ 246,913",
-      change: "+15.3%",
-      trend: "up",
-      icon: <BalanceIcon />,
+      title: "Flujo de Efectivo",
+      value: "RD$ 89,444",
+      change: "+8.7%",
+      trend: "up" as const,
+      description: "Balance positivo este mes",
+      progress: 82,
+    },
+    {
+      title: "Items por Conciliar",
+      value: "7",
+      change: "-2 items",
+      trend: "down" as const,
+      description: "Diferencia: RD$ 850.00",
+      progress: 78,
     },
   ],
   alerts: [

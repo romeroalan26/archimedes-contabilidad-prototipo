@@ -1,179 +1,276 @@
 import {
   Product,
-  Project,
-  InventoryMovement,
-  InventoryAssignment,
   Category,
+  InventoryMovement,
   StockAlert,
-  InventoryReport,
+  InventoryStats,
 } from "./types";
 import {
   mockProducts,
-  mockProjects,
-  mockMovements,
-  mockAssignments,
   mockCategories,
+  mockMovements,
   mockStockAlerts,
-  mockInventoryReport,
 } from "./mockData";
 
 // Simular delay de red
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Servicios para Productos
+// Servicios de Productos
+export const productService = {
+  async getAll(): Promise<Product[]> {
+    await delay(500);
+    return mockProducts;
+  },
+
+  async getById(id: number): Promise<Product | null> {
+    await delay(300);
+    return mockProducts.find((product: Product) => product.id === id) || null;
+  },
+
+  async create(
+    productData: Omit<Product, "id" | "fechaCreacion" | "fechaActualizacion">
+  ): Promise<Product> {
+    await delay(800);
+    const newProduct: Product = {
+      ...productData,
+      id: Math.max(...mockProducts.map((p: Product) => p.id)) + 1,
+      fechaCreacion: new Date().toISOString(),
+      fechaActualizacion: new Date().toISOString(),
+    };
+    mockProducts.push(newProduct);
+    return newProduct;
+  },
+
+  async update(
+    id: number,
+    productData: Partial<Product>
+  ): Promise<Product | null> {
+    await delay(600);
+    const index = mockProducts.findIndex(
+      (product: Product) => product.id === id
+    );
+    if (index === -1) return null;
+
+    mockProducts[index] = {
+      ...mockProducts[index],
+      ...productData,
+      fechaActualizacion: new Date().toISOString(),
+    };
+    return mockProducts[index];
+  },
+
+  async delete(id: number): Promise<boolean> {
+    await delay(400);
+    const index = mockProducts.findIndex(
+      (product: Product) => product.id === id
+    );
+    if (index === -1) return false;
+
+    mockProducts.splice(index, 1);
+    return true;
+  },
+};
+
+// Servicios de Categorías
+export const categoryService = {
+  async getAll(): Promise<Category[]> {
+    await delay(300);
+    return mockCategories;
+  },
+
+  async create(categoryData: Omit<Category, "id">): Promise<Category> {
+    await delay(600);
+    const newCategory: Category = {
+      ...categoryData,
+      id: Math.max(...mockCategories.map((c: Category) => c.id)) + 1,
+    };
+    mockCategories.push(newCategory);
+    return newCategory;
+  },
+
+  async update(
+    id: number,
+    categoryData: Partial<Category>
+  ): Promise<Category | null> {
+    await delay(500);
+    const index = mockCategories.findIndex(
+      (category: Category) => category.id === id
+    );
+    if (index === -1) return null;
+
+    mockCategories[index] = { ...mockCategories[index], ...categoryData };
+    return mockCategories[index];
+  },
+
+  async delete(id: number): Promise<boolean> {
+    await delay(400);
+    const index = mockCategories.findIndex(
+      (category: Category) => category.id === id
+    );
+    if (index === -1) return false;
+
+    mockCategories.splice(index, 1);
+    return true;
+  },
+};
+
+// Servicios de Movimientos
+export const movementService = {
+  async getAll(): Promise<InventoryMovement[]> {
+    await delay(400);
+    return mockMovements.sort(
+      (a: InventoryMovement, b: InventoryMovement) =>
+        new Date(b.fechaCreacion).getTime() -
+        new Date(a.fechaCreacion).getTime()
+    );
+  },
+
+  async getByProductId(productId: number): Promise<InventoryMovement[]> {
+    await delay(300);
+    return mockMovements.filter(
+      (movement: InventoryMovement) => movement.productId === productId
+    );
+  },
+
+  async create(
+    movementData: Omit<InventoryMovement, "id" | "fechaCreacion">
+  ): Promise<InventoryMovement> {
+    await delay(700);
+    const newMovement: InventoryMovement = {
+      ...movementData,
+      id: Math.max(...mockMovements.map((m: InventoryMovement) => m.id)) + 1,
+      fechaCreacion: new Date().toISOString(),
+    };
+
+    mockMovements.push(newMovement);
+
+    // Actualizar stock del producto
+    const productIndex = mockProducts.findIndex(
+      (p: Product) => p.id === movementData.productId
+    );
+    if (productIndex !== -1) {
+      const stockChange =
+        movementData.tipo === "entrada"
+          ? movementData.cantidad
+          : movementData.tipo === "salida"
+            ? -movementData.cantidad
+            : movementData.cantidad; // ajuste puede ser positivo o negativo
+
+      mockProducts[productIndex].stock += stockChange;
+      mockProducts[productIndex].fechaActualizacion = new Date().toISOString();
+    }
+
+    return newMovement;
+  },
+};
+
+// Servicios de Alertas de Stock
+export const alertService = {
+  async getStockAlerts(): Promise<StockAlert[]> {
+    await delay(200);
+    return mockStockAlerts;
+  },
+
+  async generateAlerts(): Promise<StockAlert[]> {
+    await delay(500);
+    const alerts: StockAlert[] = [];
+
+    mockProducts.forEach((product: Product) => {
+      if (product.stock <= product.stockMinimo && product.estado === "activo") {
+        const diferencia = product.stock - product.stockMinimo;
+        alerts.push({
+          productId: product.id,
+          codigo: product.codigo,
+          nombre: product.nombre,
+          stockActual: product.stock,
+          stockMinimo: product.stockMinimo,
+          diferencia,
+          categoria: product.categoria,
+          nivel:
+            product.stock === 0
+              ? "critico"
+              : diferencia <= -5
+                ? "critico"
+                : "bajo",
+        });
+      }
+    });
+
+    return alerts;
+  },
+};
+
+// Servicios de Estadísticas
+export const statsService = {
+  async getInventoryStats(): Promise<InventoryStats> {
+    await delay(400);
+
+    // Calcular estadísticas en tiempo real basadas en los datos actuales
+    const productosActivos = mockProducts.filter(
+      (p: Product) => p.estado === "activo"
+    ).length;
+    const productosInactivos = mockProducts.filter(
+      (p: Product) => p.estado === "inactivo"
+    ).length;
+
+    const valorInventario = mockProducts.reduce(
+      (total: number, product: Product) =>
+        total + product.precioVenta * product.stock,
+      0
+    );
+
+    const valorCompra = mockProducts.reduce(
+      (total: number, product: Product) =>
+        total + product.precioCompra * product.stock,
+      0
+    );
+
+    const alerts = await alertService.generateAlerts();
+    const productosStockBajo = alerts.filter(
+      (a: StockAlert) => a.nivel === "bajo"
+    ).length;
+    const productosStockCritico = alerts.filter(
+      (a: StockAlert) => a.nivel === "critico"
+    ).length;
+
+    const hoy = new Date().toISOString().split("T")[0];
+    const movimientosHoy = mockMovements.filter(
+      (m: InventoryMovement) => m.fecha === hoy
+    ).length;
+
+    const margenPromedio =
+      valorCompra > 0
+        ? ((valorInventario - valorCompra) / valorCompra) * 100
+        : 0;
+
+    return {
+      totalProductos: mockProducts.length,
+      productosActivos,
+      productosInactivos,
+      valorInventario,
+      valorCompra,
+      productosStockBajo,
+      productosStockCritico,
+      categorias: mockCategories.filter((c: Category) => c.estado === "activo")
+        .length,
+      movimientosHoy,
+      margenPromedio,
+    };
+  },
+};
+
+// Funciones de compatibilidad para otros módulos
 export const getProducts = async (): Promise<Product[]> => {
-  await delay(300);
-  return mockProducts;
+  return productService.getAll();
 };
 
-export const getProductById = async (
-  id: number
-): Promise<Product | undefined> => {
-  await delay(300);
-  return mockProducts.find((p) => p.id === id);
-};
-
-export const createProduct = async (
-  product: Omit<Product, "id" | "createdAt" | "updatedAt">
-): Promise<Product> => {
-  await delay(500);
-  const newProduct: Product = {
-    ...product,
-    id: mockProducts.length + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  mockProducts.push(newProduct);
-  return newProduct;
+export const getProductById = async (id: number): Promise<Product | null> => {
+  return productService.getById(id);
 };
 
 export const updateProduct = async (
   id: number,
-  product: Partial<Product>
-): Promise<Product> => {
-  await delay(500);
-  const index = mockProducts.findIndex((p) => p.id === id);
-  if (index === -1) throw new Error("Producto no encontrado");
-  mockProducts[index] = { ...mockProducts[index], ...product };
-  return mockProducts[index];
-};
-
-export const deleteProduct = async (id: number): Promise<void> => {
-  await delay(500);
-  const index = mockProducts.findIndex((p) => p.id === id);
-  if (index === -1) throw new Error("Producto no encontrado");
-  mockProducts.splice(index, 1);
-};
-
-// Servicios para Movimientos
-export const getMovements = async (): Promise<InventoryMovement[]> => {
-  await delay(300);
-  return mockMovements;
-};
-
-export const createMovement = async (
-  movement: Omit<InventoryMovement, "id" | "createdAt">
-): Promise<InventoryMovement> => {
-  await delay(500);
-  const newMovement: InventoryMovement = {
-    ...movement,
-    id: mockMovements.length + 1,
-    createdAt: new Date().toISOString(),
-  };
-  mockMovements.push(newMovement);
-
-  // Actualizar stock del producto
-  const product = mockProducts.find((p) => p.id === movement.productId);
-  if (product) {
-    product.stock +=
-      movement.tipo === "entrada" ? movement.cantidad : -movement.cantidad;
-  }
-
-  return newMovement;
-};
-
-// Servicios para Proyectos
-export const getProjects = async (): Promise<Project[]> => {
-  await delay(300);
-  return mockProjects;
-};
-
-export const getProjectById = async (
-  id: number
-): Promise<Project | undefined> => {
-  await delay(300);
-  return mockProjects.find((p) => p.id === id);
-};
-
-// Servicios para Asignaciones
-export const getAssignments = async (): Promise<InventoryAssignment[]> => {
-  await delay(300);
-  return mockAssignments;
-};
-
-export const createAssignment = async (
-  assignment: Omit<InventoryAssignment, "id" | "fecha" | "usuario" | "estado">
-): Promise<InventoryAssignment> => {
-  await delay(500);
-  const newAssignment: InventoryAssignment = {
-    ...assignment,
-    id: mockAssignments.length + 1,
-    fecha: new Date().toISOString().split("T")[0],
-    usuario: "admin",
-    estado: "pendiente",
-  };
-  mockAssignments.push(newAssignment);
-  return newAssignment;
-};
-
-export const updateAssignmentStatus = async (
-  id: number,
-  estado: InventoryAssignment["estado"]
-): Promise<InventoryAssignment> => {
-  await delay(500);
-  const index = mockAssignments.findIndex((a) => a.id === id);
-  if (index === -1) throw new Error("Asignación no encontrada");
-
-  const assignment = mockAssignments[index];
-  mockAssignments[index] = { ...assignment, estado };
-
-  // Si se aprueba, actualizar el stock
-  if (estado === "aprobada") {
-    const product = mockProducts.find((p) => p.id === assignment.productId);
-    if (product) {
-      product.stock -= assignment.cantidad;
-    }
-  }
-
-  return mockAssignments[index];
-};
-
-// Servicios para Categorías
-export const getCategories = async (): Promise<Category[]> => {
-  await delay(300);
-  return mockCategories;
-};
-
-export const createCategory = async (
-  category: Omit<Category, "id">
-): Promise<Category> => {
-  await delay(500);
-  const newCategory: Category = {
-    ...category,
-    id: mockCategories.length + 1,
-  };
-  mockCategories.push(newCategory);
-  return newCategory;
-};
-
-// Servicios para Alertas de Stock
-export const getStockAlerts = async (): Promise<StockAlert[]> => {
-  await delay(300);
-  return mockStockAlerts;
-};
-
-// Servicios para Reportes
-export const getInventoryReport = async (): Promise<InventoryReport> => {
-  await delay(500);
-  return mockInventoryReport;
+  data: Partial<Product>
+): Promise<Product | null> => {
+  return productService.update(id, data);
 };

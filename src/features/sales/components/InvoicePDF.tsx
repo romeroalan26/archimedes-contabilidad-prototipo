@@ -15,7 +15,6 @@ export const generateInvoicePDF = ({ sale, client }: InvoicePDFProps) => {
   // Configuración de la página
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 20;
-  
 
   // Título y encabezado
   doc.setFontSize(20);
@@ -185,4 +184,3 @@ export const generateInvoicePDF = ({ sale, client }: InvoicePDFProps) => {
   // Guardar el PDF
   doc.save(`factura-${sale.id}.pdf`);
 };
-

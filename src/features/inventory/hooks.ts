@@ -1,36 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Product, Category, InventoryFilter } from "./types";
 import {
-  getProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  getMovements,
-  createMovement,
-  getCategories,
-  createCategory,
-  getStockAlerts,
-  getInventoryReport,
-  getProjects,
-  getProjectById,
-  getAssignments,
-  createAssignment,
-  updateAssignmentStatus,
+  productService,
+  categoryService,
+  movementService,
+  alertService,
+  statsService,
 } from "./services";
-import type { Product, InventoryAssignment } from "./types";
+import { useState } from "react";
 
-// Hooks para Productos
+// Hook para productos
 export const useProducts = () => {
   return useQuery({
     queryKey: ["products"],
-    queryFn: getProducts,
+    queryFn: productService.getAll,
   });
 };
 
 export const useProduct = (id: number) => {
   return useQuery({
-    queryKey: ["products", id],
-    queryFn: () => getProductById(id),
+    queryKey: ["product", id],
+    queryFn: () => productService.getById(id),
     enabled: !!id,
   });
 };
@@ -39,9 +29,11 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createProduct,
+    mutationFn: productService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-alerts"] });
     },
   });
 };
@@ -50,11 +42,12 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, product }: { id: number; product: Partial<Product> }) =>
-      updateProduct(id, product),
-    onSuccess: (_, { id }) => {
+    mutationFn: ({ id, data }: { id: number; data: Partial<Product> }) =>
+      productService.update(id, data),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["products", id] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-alerts"] });
     },
   });
 };
@@ -63,39 +56,20 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteProduct,
+    mutationFn: productService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-alerts"] });
     },
   });
 };
 
-// Hooks para Movimientos
-export const useMovements = () => {
-  return useQuery({
-    queryKey: ["movements"],
-    queryFn: getMovements,
-  });
-};
-
-export const useCreateMovement = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: createMovement,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["movements"] });
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["stockAlerts"] });
-    },
-  });
-};
-
-// Hooks para Categorías
+// Hook para categorías
 export const useCategories = () => {
   return useQuery({
     queryKey: ["categories"],
-    queryFn: getCategories,
+    queryFn: categoryService.getAll,
   });
 };
 
@@ -103,81 +77,157 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createCategory,
+    mutationFn: categoryService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
     },
   });
 };
 
-// Hooks para Alertas de Stock
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Category> }) =>
+      categoryService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: categoryService.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+    },
+  });
+};
+
+// Hook para movimientos
+export const useMovements = () => {
+  return useQuery({
+    queryKey: ["movements"],
+    queryFn: movementService.getAll,
+  });
+};
+
+export const useProductMovements = (productId: number) => {
+  return useQuery({
+    queryKey: ["movements", productId],
+    queryFn: () => movementService.getByProductId(productId),
+    enabled: !!productId,
+  });
+};
+
+export const useCreateMovement = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: movementService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["movements"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["stock-alerts"] });
+    },
+  });
+};
+
+// Hook para alertas de stock
 export const useStockAlerts = () => {
   return useQuery({
-    queryKey: ["stockAlerts"],
-    queryFn: getStockAlerts,
+    queryKey: ["stock-alerts"],
+    queryFn: alertService.generateAlerts,
   });
 };
 
-// Hooks para Reportes
-export const useInventoryReport = () => {
+// Hook para estadísticas
+export const useInventoryStats = () => {
   return useQuery({
-    queryKey: ["inventoryReport"],
-    queryFn: getInventoryReport,
+    queryKey: ["inventory-stats"],
+    queryFn: statsService.getInventoryStats,
   });
 };
 
-// Hooks para Proyectos
-export const useProjects = () => {
-  return useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
+// Hook para filtros de productos
+export const useProductFilter = (products: Product[]) => {
+  const [filter, setFilter] = useState<InventoryFilter>({
+    categoria: "all",
+    estado: "all",
+    stockBajo: false,
+    busqueda: "",
   });
-};
 
-export const useProject = (id: number) => {
-  return useQuery({
-    queryKey: ["projects", id],
-    queryFn: () => getProjectById(id),
-    enabled: !!id,
-  });
-};
+  const filteredProducts =
+    products?.filter((product) => {
+      // Filtro por categoría
+      if (
+        filter.categoria &&
+        filter.categoria !== "all" &&
+        product.categoria !== filter.categoria
+      ) {
+        return false;
+      }
 
-// Hooks para Asignaciones
-export const useAssignments = () => {
-  return useQuery({
-    queryKey: ["assignments"],
-    queryFn: getAssignments,
-  });
-};
+      // Filtro por estado
+      if (
+        filter.estado &&
+        filter.estado !== "all" &&
+        product.estado !== filter.estado
+      ) {
+        return false;
+      }
 
-export const useCreateAssignment = () => {
-  const queryClient = useQueryClient();
+      // Filtro por stock bajo
+      if (filter.stockBajo && product.stock > product.stockMinimo) {
+        return false;
+      }
 
-  return useMutation({
-    mutationFn: createAssignment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["stockAlerts"] });
-    },
-  });
-};
+      // Filtro por búsqueda
+      if (filter.busqueda) {
+        const searchTerm = filter.busqueda.toLowerCase();
+        const matchesSearch =
+          product.nombre.toLowerCase().includes(searchTerm) ||
+          product.codigo.toLowerCase().includes(searchTerm) ||
+          product.descripcion.toLowerCase().includes(searchTerm);
 
-export const useUpdateAssignmentStatus = () => {
-  const queryClient = useQueryClient();
+        if (!matchesSearch) {
+          return false;
+        }
+      }
 
-  return useMutation({
-    mutationFn: ({
-      id,
-      estado,
-    }: {
-      id: number;
-      estado: InventoryAssignment["estado"];
-    }) => updateAssignmentStatus(id, estado),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["stockAlerts"] });
-    },
-  });
+      return true;
+    }) || [];
+
+  const updateFilter = (newFilter: Partial<InventoryFilter>) => {
+    setFilter((prev) => ({ ...prev, ...newFilter }));
+  };
+
+  const clearFilter = () => {
+    setFilter({
+      categoria: "all",
+      estado: "all",
+      stockBajo: false,
+      busqueda: "",
+    });
+  };
+
+  return {
+    filter,
+    filteredProducts,
+    updateFilter,
+    clearFilter,
+    hasActiveFilters:
+      filter.categoria !== "all" ||
+      filter.estado !== "all" ||
+      filter.stockBajo ||
+      filter.busqueda !== "",
+  };
 };
